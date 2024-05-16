@@ -12,4 +12,7 @@ public interface ICell<T> {
 
     // returns true if the cell is empty
     boolean isEmpty();
+
+    // Recalculates the value of the cell (only really relavent for functions)
+    void recalculateCell();
 }
