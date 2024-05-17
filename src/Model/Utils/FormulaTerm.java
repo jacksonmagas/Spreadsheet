@@ -1,4 +1,4 @@
-public class FormulaTerm implements ITerm{
+public class FormulaTerm implements ITerm {
 
     @Override
     public String getResult() {

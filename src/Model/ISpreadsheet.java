@@ -9,6 +9,7 @@ public interface ISpreadsheet {
     // Return the ID of this spreadsheet
     UUID getId();
 
-    // 
+    // Update the cell pointed to by each reference 
+    
     void updateSheet(List<Pair<IRef, ITerm>> update);
 }
