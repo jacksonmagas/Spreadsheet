@@ -1,12 +1,14 @@
 import java.util.UUID;
+import java.util.List;
+import javafx.util.Pair;
 
 public interface ISpreadsheet {
     // Return the cell at the given coordinates
-    ICell<?> getCell(int x, int y);
+    ICell getCell(int row, int column);
 
     // Return the ID of this spreadsheet
     UUID getId();
 
-    // Sends request to server to get data for the sheet with the given UUID
-    ISpreadsheet loadSpreadsheet(UUID id);
+    // 
+    void updateSheet(List<Pair<IRef, ITerm>> update);
 }
