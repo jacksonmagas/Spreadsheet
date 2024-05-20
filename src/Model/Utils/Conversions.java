@@ -64,7 +64,7 @@ public final class Conversions {
         }
     }
 
-    static String columnNumToString(int column) {
+    static String columnToString(int column) {
         StringBuilder columnString = new StringBuilder();
         while (column > 0) {
             int remainder = column % 26;

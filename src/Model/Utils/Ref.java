@@ -21,6 +21,6 @@ public class Ref implements IRef{
 
     @Override
     public String toString() {
-        return "$" + columnToString() + row;
+        return "$" + Conversions.columnToString(column) + row;
     }
 }
