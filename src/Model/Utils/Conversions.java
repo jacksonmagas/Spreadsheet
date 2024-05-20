@@ -1,5 +1,3 @@
-package Model.Utils;
-
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 public final class Conversions {
@@ -66,7 +64,16 @@ public final class Conversions {
         }
     }
 
-
+    static String columnNumToString(int column) {
+        StringBuilder columnString = new StringBuilder();
+        while (column > 0) {
+            int remainder = column % 26;
+            char digit = (char) (remainder + 'A');
+            columnString.insert(0, digit);
+            column = column / 26;
+        }
+        return columnString.toString();
+    }
 
     
     // public static int convertToBase10(String base26) {
