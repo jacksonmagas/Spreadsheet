@@ -8,7 +8,7 @@ import java.util.List;
 import javafx.util.Pair;
 
 public interface ISpreadsheet {
-    // Return the cell at the given coordinates
+    // Return the cell at the given coordinates, creating a new cell object if the cell is empty.
     ICell getCell(int row, int column);
 
     // Return the ID of this spreadsheet
