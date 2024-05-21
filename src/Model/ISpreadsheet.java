@@ -1,4 +1,9 @@
+package Model;
+
+import Model.Utils.IRef;
+import Model.Utils.ITerm;
 import java.util.UUID;
+
 import java.util.List;
 import javafx.util.Pair;
 

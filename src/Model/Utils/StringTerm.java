@@ -1,3 +1,5 @@
+package Model.Utils;
+
 public class StringTerm implements ITerm {
 
     @Override

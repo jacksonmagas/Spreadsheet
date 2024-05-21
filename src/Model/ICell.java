@@ -1,4 +1,7 @@
+package Model;
 
+import Model.Utils.IRef;
+import Model.Utils.ITerm;
 
 public interface ICell {
     // Change the contents of the cell to the given data and call 

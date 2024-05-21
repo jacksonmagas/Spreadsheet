@@ -1,3 +1,4 @@
+package Model.Utils;
 
 public interface ITerm {
     // get the result of evaluating the term as a string

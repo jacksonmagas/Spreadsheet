@@ -1,3 +1,5 @@
+package Model.Utils;
+
 public class FormulaTerm implements ITerm {
 
     @Override

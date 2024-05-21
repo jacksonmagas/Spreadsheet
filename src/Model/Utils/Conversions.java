@@ -1,3 +1,5 @@
+package Model.Utils;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 public final class Conversions {

@@ -1,3 +1,7 @@
+package Model.Utils;
+
+import Model.ICell;
+
 public interface IRef {
     // get the cell this refence points to
     ICell getCell();
