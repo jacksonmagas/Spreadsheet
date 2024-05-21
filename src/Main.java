@@ -1,4 +1,10 @@
+import java.awt.*;
+
 import Client.Client;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 public class Main {
   public static void main(String[] args) {
@@ -8,7 +14,7 @@ public class Main {
     gui.start();
 
     Client client = new Client();
-    client.initialize();
+    // client.initialize();
 
     Server server = new Server();
     server.start();
