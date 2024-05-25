@@ -1,0 +1,68 @@
+CREATE DATABASE spreadsheetProject;
+USE spreadsheetProject;
+
+create table users
+(
+userId int primary key,
+name varchar(32) not null
+);
+
+create table spreadsheet
+(
+spreadsheetNumber int primary key,
+s_name varchar(32) not null,
+created_by int not null,
+created_date DATE not null,
+FOREIGN KEY (created_by) REFERENCES users(userId)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+create table worksheet
+(
+worksheet_id int primary key,
+spreadsheet_id int not null,
+name varchar(32) not null,
+num_rows int not null,
+num_cols int not null,
+FOREIGN KEY (spreadsheet_id) REFERENCES spreadsheet(spreadsheetNumber)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+create table cells
+(
+cell_id int primary key,
+worksheet_id int not null,
+row_num int not null,
+col_num int not null,
+cell_type varchar(32),
+content TEXT,
+FOREIGN KEY (worksheet_id) REFERENCES worksheet(worksheet_id)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+create table lastEdit
+(
+userId int,
+spreadsheetNumber int,
+last_edit_date DATE,
+last_edit_time TIME,
+PRIMARY KEY (userId, spreadsheetNumber),
+FOREIGN KEY (userId) REFERENCES users(userId)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (spreadsheetNumber) REFERENCES spreadsheet(spreadsheetNumber)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+create table get_permission
+(
+permissionId int primary key,
+userId int not null,
+spreadsheetId int not null,
+type_of_permission enum('view', 'edit', 'owner'),
+FOREIGN KEY (userId) REFERENCES users(userId)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (spreadsheetId) REFERENCES spreadsheet(spreadsheetNumber)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+
