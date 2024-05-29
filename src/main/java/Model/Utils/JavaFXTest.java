@@ -10,8 +10,8 @@ public class JavaFXTest extends Application {
   @Override
   public void start(Stage primaryStage) {
     java.awt.Label label = new Label("Hello, JavaFX!");
-    Scene scene = new Scene(label, 400, 200);
-    primaryStage.setScene(scene);
+   // Scene scene = new Scene(label, 400, 200);
+   // primaryStage.setScene(scene);
     primaryStage.setTitle("JavaFX Test");
     primaryStage.show();
   }
