@@ -4,7 +4,7 @@ public class StringFunctionElement extends AbstractFunctionElement {
 
     private String value;
 
-    StringFunctionElement(String value) {
+    public StringFunctionElement(String value) {
         this.value = value;
     }
 

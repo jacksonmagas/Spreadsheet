@@ -6,6 +6,10 @@ public class RefFunctionElement extends AbstractFunctionElement {
 
     private IRef value;
 
+    public RefFunctionElement(IRef value) {
+        this.value = value;
+    }
+
     // TODO: implement range method
     @Override
     public IFunctionElement range(IFunctionElement e) {
