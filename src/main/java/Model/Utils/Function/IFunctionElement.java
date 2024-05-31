@@ -3,7 +3,7 @@ package Model.Utils.Function;
 import Model.Utils.IRef;
 
 /*
- * A function element can be a string, integer, or cell referance
+ * A function element can be a string, integer, or cell referance.
  */
 public interface IFunctionElement {
     // basic ops
