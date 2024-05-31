@@ -1,5 +1,8 @@
 package Model.Utils.Function;
 
+/*
+ * Represents a string element in an IFunction.
+ */
 public class StringFunctionElement extends AbstractFunctionElement {
 
     private String value;

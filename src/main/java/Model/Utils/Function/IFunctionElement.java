@@ -6,6 +6,7 @@ import Model.Utils.IRef;
  * A function element can be a string, integer, or cell referance
  */
 public interface IFunctionElement {
+    // basic ops
     IFunctionElement add(IFunctionElement e);
     IFunctionElement subtract(IFunctionElement e);
     IFunctionElement multiply(IFunctionElement e);

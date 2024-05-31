@@ -1,5 +1,8 @@
 package Model.Utils.Function;
 
+/*
+ * Represents a number element in an IFunction.
+ */
 public class NumberFunctionElement extends AbstractFunctionElement {
 
     private double value;

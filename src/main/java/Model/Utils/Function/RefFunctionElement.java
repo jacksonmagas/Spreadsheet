@@ -2,6 +2,9 @@ package Model.Utils.Function;
 
 import Model.Utils.IRef;
 
+/*
+ * Represents a cell referance element in an IFunction.
+ */
 public class RefFunctionElement extends AbstractFunctionElement {
 
     private IRef value;

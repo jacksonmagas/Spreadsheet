@@ -2,6 +2,9 @@ package Model.Utils.Function;
 
 import Model.Utils.IRef;
 
+/*
+ * By default, operations are unsupported (with exception of 'notEquals(...)'). Only implement relevent functions when extending.
+ */
 public abstract class AbstractFunctionElement implements IFunctionElement {
     private static String IllegalOperationMessage(String op) {
         return "Operation \'" + op + "\' not supported for type";
