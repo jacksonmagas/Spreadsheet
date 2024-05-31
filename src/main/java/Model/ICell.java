@@ -19,7 +19,7 @@ public interface ICell {
     ITerm getData();
 
     // returns an object containing details about the formatting of the cell
-    ICellFormat getFormatting();
+    CellFormat getFormatting();
 
     // returns true if the cell is empty
     boolean isEmpty();
