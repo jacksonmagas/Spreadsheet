@@ -1,102 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="New Sheet" />
-                  <MenuItem mnemonicParsing="false" text="Delete Sheet" />
-                  <MenuItem mnemonicParsing="false" text="Rename Sheet" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Open" />
-                  <MenuItem mnemonicParsing="false" text="Close" />
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.huskysheet.HelloController">
+    <children>
+        <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New Sheet" />
+                        <MenuItem mnemonicParsing="false" text="Delete Sheet" />
+                        <MenuItem mnemonicParsing="false" text="Rename Sheet" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Open" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
 
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Font">
-            <items>
-                  <RadioMenuItem mnemonicParsing="false" text="Small">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="sizeGroup" />
-                     </toggleGroup></RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="Medium" toggleGroup="$sizeGroup" />
-                  <RadioMenuItem mnemonicParsing="false" text="Large" toggleGroup="$sizeGroup" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <RadioMenuItem mnemonicParsing="false" text="Arial">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="fontSize" />
-                     </toggleGroup></RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="Serif" toggleGroup="$fontSize" />
-                  <RadioMenuItem mnemonicParsing="false" text="Times New Roman" toggleGroup="$fontSize" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <RadioMenuItem mnemonicParsing="false" text="Bold" />
-                  <RadioMenuItem mnemonicParsing="false" text="Italic" />
-                  <RadioMenuItem mnemonicParsing="false" text="Underline" />
-                <RadioMenuItem mnemonicParsing="false" text="Black">
-                    <toggleGroup>
-                        <ToggleGroup fx:id="textColor" />
-                    </toggleGroup></RadioMenuItem>
-                <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$textColor" />
-                <SeparatorMenuItem mnemonicParsing="false" />
-                <RadioMenuItem mnemonicParsing="false" text="Black">
-                    <toggleGroup>
-                        <ToggleGroup fx:id="backColor" />
-                    </toggleGroup></RadioMenuItem>
-                <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$backColor" />
-                <RadioMenuItem mnemonicParsing="false" text="Blue" toggleGroup="$backColor" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Font">
+                    <items>
+                        <RadioMenuItem mnemonicParsing="false" text="Small">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="sizeGroup" />
+                            </toggleGroup></RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" text="Medium" toggleGroup="$sizeGroup" />
+                        <RadioMenuItem mnemonicParsing="false" text="Large" toggleGroup="$sizeGroup" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <RadioMenuItem mnemonicParsing="false" text="Arial">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="fontSize" />
+                            </toggleGroup></RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" text="Serif" toggleGroup="$fontSize" />
+                        <RadioMenuItem mnemonicParsing="false" text="Times New Roman" toggleGroup="$fontSize" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <RadioMenuItem mnemonicParsing="false" text="Bold" />
+                        <RadioMenuItem mnemonicParsing="false" text="Italic" />
+                        <RadioMenuItem mnemonicParsing="false" text="Underline" />
+                        <RadioMenuItem mnemonicParsing="false" text="Black">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="textColor" />
+                            </toggleGroup></RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$textColor" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <RadioMenuItem mnemonicParsing="false" text="Black">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="backColor" />
+                            </toggleGroup></RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$backColor" />
+                        <RadioMenuItem mnemonicParsing="false" text="Blue" toggleGroup="$backColor" />
 
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="Cell Color">
-               <items>
-                  <RadioMenuItem mnemonicParsing="false" text="Grey">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="cellColor" />
-                     </toggleGroup>
-                  </RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$cellColor" />
-                  <RadioMenuItem mnemonicParsing="false" text="Blue" toggleGroup="$cellColor" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Alignment">
-              <items>
-                  <RadioMenuItem mnemonicParsing="false" text="Align Left">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="alignment" />
-                     </toggleGroup>
-                  </RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="Center" toggleGroup="$alignment" />
-                  <RadioMenuItem mnemonicParsing="false" text="Align Right" toggleGroup="$alignment" />
-                  <RadioMenuItem mnemonicParsing="false" text="Text Wrap" toggleGroup="$alignment" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Borders">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Add Border" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Solid" />
-                  <MenuItem mnemonicParsing="false" text="Dashed" />
-                  <MenuItem mnemonicParsing="false" text="Dotted" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Black" />
-                  <MenuItem mnemonicParsing="false" text="Green" />
-                  <MenuItem mnemonicParsing="false" text="Blue" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="View">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Zoom In" />
-                  <MenuItem mnemonicParsing="false" text="Zoom Out" />
-                  <MenuItem mnemonicParsing="false" text="Dafault Zoom" />
-               </items>
-            </Menu>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Cell Color">
+                    <items>
+                        <RadioMenuItem mnemonicParsing="false" text="Grey">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="cellColor" />
+                            </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$cellColor" />
+                        <RadioMenuItem mnemonicParsing="false" text="Blue" toggleGroup="$cellColor" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Alignment">
+                    <items>
+                        <RadioMenuItem mnemonicParsing="false" text="Align Left">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="alignment" />
+                            </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" text="Center" toggleGroup="$alignment" />
+                        <RadioMenuItem mnemonicParsing="false" text="Align Right" toggleGroup="$alignment" />
+                        <RadioMenuItem mnemonicParsing="false" text="Text Wrap" toggleGroup="$alignment" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Borders">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Add Border" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Solid" />
+                        <MenuItem mnemonicParsing="false" text="Dashed" />
+                        <MenuItem mnemonicParsing="false" text="Dotted" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Black" />
+                        <MenuItem mnemonicParsing="false" text="Green" />
+                        <MenuItem mnemonicParsing="false" text="Blue" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="View">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Zoom In" />
+                        <MenuItem mnemonicParsing="false" text="Zoom Out" />
+                        <MenuItem mnemonicParsing="false" text="Dafault Zoom" />
+                    </items>
+                </Menu>
 
-        </menus>
-      </MenuBar>
-   </children>
-</AnchorPane>
+            </menus>
+        </MenuBar>
+        <TableView id="table" layoutX="-1.0" layoutY="24.0" prefHeight="376.0" prefWidth="600.0">
+            <columns>
+                <TableColumn id="c1" prefWidth="75.0" text="C1" />
+                <TableColumn id="c2" prefWidth="75.0" text="C2" />
+                <TableColumn id="c3" prefWidth="75.0" text="C3" />
+                <TableColumn id="c4" prefWidth="75.0" text="C4" />
+                <TableColumn id="c5" prefWidth="75.0" text="C5" />
+                <TableColumn id="c6" prefWidth="75.0" text="C6" />
+                <TableColumn id="c7" prefWidth="75.0" text="C7" />
+                <TableColumn id="c8" prefWidth="75.0" text="C8" />
+                <TableColumn prefWidth="75.0" text="C9" />
+                <TableColumn prefWidth="75.0" text="C10" />
+
+            </columns>
+        </TableView>
+
+    </children>
+</fx:root>
