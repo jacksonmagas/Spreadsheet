@@ -21,6 +21,7 @@ public class HelloApplication extends Application {
         stage.setTitle("HuskySheet");
         stage.setScene(scene);
         stage.show();
+
     }
 
 
