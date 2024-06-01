@@ -98,15 +98,16 @@
 
             </menus>
         </MenuBar>
-        <TableView fx:id="table" layoutX="-1.0" layoutY="24.0" prefHeight="376.0" prefWidth="600.0">
+        <TableView fx:id="table" layoutX="-1.0" layoutY="24.0" prefHeight="376.0" prefWidth="600.0" editable="true">
             <columns>
-                <TableColumn fx:id="id" prefWidth="75.0" text="C1" />
-                <TableColumn fx:id="name" prefWidth="75.0" text="C2" />
-                <TableColumn fx:id="lname" prefWidth="75.0" text="C3" />
-                <TableColumn fx:id="gmail" prefWidth="75.0" text="C4" />
-                <TableColumn fx:id="yahoo" prefWidth="75.0" text="C5" />
-                <TableColumn fx:id="phone" prefWidth="75.0" text="C6" />
-                <TableColumn fx:id="country" prefWidth="75.0" text="C7" />
+                <TableColumn fx:id="c1" prefWidth="75.0" text="C1" />
+                <TableColumn fx:id="c2" prefWidth="75.0" text="C2" />
+                <TableColumn fx:id="c3" prefWidth="75.0" text="C3" />
+                <TableColumn fx:id="c4" prefWidth="75.0" text="C4" />
+                <TableColumn fx:id="c5" prefWidth="75.0" text="C5" />
+                <TableColumn fx:id="c6" prefWidth="75.0" text="C6" />
+                <TableColumn fx:id="c7" prefWidth="75.0" text="C7" />
+                <TableColumn fx:id="c8" prefWidth="75.0" text="C8" />
             <TableColumn prefWidth="75.0" text="C8" />
 
 
