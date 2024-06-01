@@ -39,8 +39,6 @@ public class HelloController implements Initializable {
             new CellFormat(8,  "Frank", "Moore", "frank.moore@gmail.com", "frank_m@yahoo.com", "8901234567"),
             new CellFormat(9,  "Grace", "Lee", "grace.lee@gmail.com", "grace_l@yahoo.com", "9012345678"),
             new CellFormat(10,  "Henry", "Davis", "henry.davis@gmail.com", "henry_d@yahoo.com", "0123456789")
-
-
     );
 
     @Override
