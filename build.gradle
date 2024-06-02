@@ -38,11 +38,18 @@ dependencies {
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-  testImplementation("org.mockito:mockito-core:3.11.2")
+  testImplementation 'org.mockito:mockito-core:4.8.0'
+  testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
+  testImplementation 'org.mockito:mockito-inline:4.8.0'
+  testImplementation 'net.bytebuddy:byte-buddy:1.12.7'
+  testImplementation 'net.bytebuddy:byte-buddy-agent:1.12.7'
 }
 
 test {
-useJUnitPlatform()}
+  useJUnitPlatform()
+  jvmArgs += "-Dnet.bytebuddy.experimental=true"
+}
+
 
 jlink {
   imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
