@@ -26,6 +26,14 @@ public Spreadsheet(List<User> users, String name, int rows, int cols) {
 }
 
 
+public int getRows() {
+    return this.rows;
+}
+
+public int getCols() {
+    return this.cols;
+}
+
 public void setValue(int row, int col, String input) {
     if (isValidCell(row, col)) {
         data[row][col] = input;
