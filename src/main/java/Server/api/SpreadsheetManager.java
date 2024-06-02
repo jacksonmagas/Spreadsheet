@@ -5,15 +5,40 @@ import Server.model.Spreadsheet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collection;
 
-public class CreateNewSpreadsheet {
+public class SpreadsheetManager {
     private final Map<String, Spreadsheet> spreadsheetMap;
 
-    public CreateNewSpreadsheet() {
+    public SpreadsheetManager() {
         this.spreadsheetMap = new HashMap<>();
     }
 
-    public CreateNewSpreadsheet(Map<String, Spreadsheet> spreadsheetMap) {
-        this.spreadsheetMap = spreadsheetMap;
+    public void addSpreadsheet(Spreadsheet spreadsheet) {
+        spreadsheetMap.put(spreadsheet.getSpreadsheetName(), spreadsheet);
     }
 
+    public Spreadsheet getSpreadsheet(String uniqueName) {
+        return spreadsheetMap.get(uniqueName);
+    }
+
+    public void removeSpreadsheet(String uniqueName) {
+        spreadsheetMap.remove(uniqueName);
+    }
+
+    public void updateSpreadsheet(Spreadsheet spreadsheet) {
+        spreadsheetMap.put(spreadsheet.getSpreadsheetName(), spreadsheet);
+    }
+
+    public Collection<Spreadsheet> getAllSpreadsheets() {
+        return spreadsheetMap.values();
+    }
+
+    public boolean containsSpreadsheet(String uniqueName) {
+        return spreadsheetMap.containsKey(uniqueName);
+    }
+
+    public void clear() {
+        spreadsheetMap.clear();
+    }
+}
