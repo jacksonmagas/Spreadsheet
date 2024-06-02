@@ -7,8 +7,14 @@ public class ConcreteFunction implements IFunction {
     ArrayList<IFunctionElement> elements;
     ArrayList<FunctionOperation> operations;
 
+    public ConcreteFunction() {
+        this.elements = new ArrayList<>();
+        this.operations = new ArrayList<>();
+    }
+
     public ConcreteFunction(String s) {
-        // TODO: Parse string into elements and operations
+        String[] tokens = s.split("\\s+");
+        this.proccessTokens(tokens);
     }
 
     public ConcreteFunction(ArrayList<IFunctionElement> elements, ArrayList<FunctionOperation> operations) {
@@ -24,6 +30,10 @@ public class ConcreteFunction implements IFunction {
     public IFunctionElement evaluate() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
+    }
+
+    private void proccessTokens(String[] tokens) {
+        // TODO
     }
     
 }
