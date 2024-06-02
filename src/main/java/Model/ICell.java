@@ -8,9 +8,9 @@ import Model.Utils.ITerm;
  * and formatting details
  * Jackson Magas
  */
-public interface ICell {
+public interface ICell extends ICellListener {
     // Change the contents of the cell to the given data and call
-    boolean updateCell(ITerm data);
+    void updateCell(ITerm data);
 
     // get a reference to this cell
     IRef getRef();
@@ -19,13 +19,14 @@ public interface ICell {
     ITerm getData();
 
     // returns an object containing details about the formatting of the cell
-    ICellFormat getFormatting();
+    CellFormat getFormatting();
 
     // returns true if the cell is empty
     boolean isEmpty();
 
-    // Recalculates the value of the cell (only really relavent for functions)
-    void recalculateCell();
+    // Recalculates the value of the cell in response to a cell
+    // this depends on changes
+    void handleUpdate();
 
     // Register as a listener for changes to this cell
     void registerListener(ICellListener listener);

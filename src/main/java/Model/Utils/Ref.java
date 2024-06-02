@@ -3,7 +3,6 @@ package Model.Utils;
 import Model.ICell;
 
 public class Ref implements IRef {
-
     private int column;
     private int row;
 

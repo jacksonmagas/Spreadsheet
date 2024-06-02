@@ -1,6 +1,6 @@
 package Model.Utils;
 
-public class FormulaTerm implements ITerm {
+public abstract class FormulaTerm implements ITerm {
 
     @Override
     public String getResult() {
