@@ -2,7 +2,7 @@ package Model.Utils;
 
 import java.util.List;
 
-public class RefTerm extends FormulaTerm {
+public class RefTerm extends Expression {
 
     public RefTerm(Coordinate ref) {
         // TODO
