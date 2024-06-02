@@ -1,7 +1,12 @@
 package Model;
 
+import static java.lang.Double.parseDouble;
+
+import Model.Utils.Conversions;
 import Model.Utils.Coordinate;
 import Model.Utils.ITerm;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +59,59 @@ public class Spreadsheet implements ISpreadsheet {
      * Class implementing formula parsing for this spreadsheet including looking up references
      */
     class FormulaParser {
+        List<String> operators = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
+        List<String> functions = Arrays.asList("IF", "SUM", "MAX", "MIN", "AVG", "CONCAT", "DEBUG");
 
+        private enum TokenType {
+            string, number, operator, function, reference, parenthesis, comma
+        }
+
+        /**
+         * A token has a type and possibly a value.
+         * type        : string value
+         * string      : contents of the string
+         * number      : numerical value as a string
+         * operator    : which operator it is
+         * function    : function name
+         * reference   : cell location in $A1 format
+         * parenthesis : ( or )
+         * comma       : ,
+         */
+        private static class Token {
+            TokenType type;
+            String strValue;
+
+            Token(TokenType type, String strValue) {
+                this.type = type;
+                this.strValue = strValue;
+            }
+        }
+
+        public ITerm parse(String formula) {
+
+        }
+
+        private List<Token> tokenize(String input) {
+            List<Token> tokens = new ArrayList<>();
+            for (String tok: input.split(" ")) {
+                if (operators.contains(tok)) {
+                    tokens.add(new Token(TokenType.operator, tok));
+                } else if (functions.contains(tok)) {
+                    tokens.add(new Token(TokenType.function, tok));
+                } else if (Conversions.isValidRef(tok)) {
+                    tokens.add(new Token(TokenType.reference, tok));
+                } else {
+                    try {
+                        double doubleVal = Double.parseDouble(tok);
+                        tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
+                    } catch (NumberFormatException e) {
+                        tokens.add(new Token(TokenType.string, tok));
+                    }
+                }
+            }
+
+            return tokens;
+        }
     }
 
     /**

@@ -12,7 +12,7 @@ public final class Conversions {
      * @param ref the string reference to a cell in the form "$A1" for first column first row
      * @return True if the string is a reference of the proper form
      */
-    static boolean isValidRef(String ref) {
+    public static boolean isValidRef(String ref) {
         Pattern validRef = Pattern.compile("^\\$\\[a-zA-Z]+\\d+$");
         return validRef.matcher(ref).matches();
     }
@@ -24,7 +24,7 @@ public final class Conversions {
      * @throws IllegalArgumentException if the string is not a reference
      * @return The 1 indexed row number
      */
-    static int row(String reference) {
+    public static int row(String reference) {
         if (!isValidRef(reference)) {
             throw new IllegalArgumentException(reference + " is not a valid Reference.");
         }
@@ -45,7 +45,7 @@ public final class Conversions {
      * @throws IllegalArgumentException if the string is not a reference
      * @return The 1 indexed column number
      */
-    static int column(String reference) {
+    public static int column(String reference) {
         if (!isValidRef(reference)) {
             throw new IllegalArgumentException(reference + " is not a valid Reference.");
         }
@@ -69,7 +69,7 @@ public final class Conversions {
         }
     }
 
-    static String columnToString(int column) {
+    public static String columnToString(int column) {
         StringBuilder columnString = new StringBuilder();
         while (column > 0) {
             int remainder = column % 26;
