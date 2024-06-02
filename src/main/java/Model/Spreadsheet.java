@@ -11,29 +11,43 @@ import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
     private final HashMap<Coordinate, SpreadsheetCell> cells;
+    private final CellFormat defaultFormat;
+    private final HashMap<Integer, CellFormat> rowDefaults;
+    private final HashMap<Integer, CellFormat> columnDefaults;
 
     public Spreadsheet() {
         this.cells = new HashMap<>();
+        // TODO implement methods for setting default color/font/etc for a row/col
+        rowDefaults = new HashMap<>();
+        columnDefaults = new HashMap<>();
+        // TODO set default formatting options
+        defaultFormat = new CellFormat();
     }
 
     @Override
     public ICell getCell(Coordinate coordinate) {
-        if (cells.containsKey(coordinate)) {
-            return cells.get(coordinate);
-        } else {
+        if (!cells.containsKey(coordinate)) {
             cells.put(coordinate, new SpreadsheetCell(coordinate));
-            return cells.get(coordinate);
         }
+        return cells.get(coordinate);
     }
 
+    // TODO is this used anywhere?
     @Override
     public UUID getId() {
         return null;
     }
 
+    /**
+     * Update the sheet based on a list of cells and new data for those cells
+     * @param updates A list of coordinate, term pairs to update the sheet with
+     * Jackson Magas
+     */
     @Override
-    public void updateSheet(List<Pair<Coordinate, ITerm>> update) {
-
+    public void updateSheet(List<Pair<Coordinate, ITerm>> updates) {
+        for (Pair<Coordinate, ITerm> pair : updates) {
+            getCell(pair.getKey()).updateCell(pair.getValue());
+        }
     }
 
     /**
@@ -45,6 +59,7 @@ public class Spreadsheet implements ISpreadsheet {
 
     /**
      * Cell class for this spreadsheet
+     * Jackson Magas
      */
     private class SpreadsheetCell implements ICell {
         private final Coordinate coordinate;
@@ -55,7 +70,14 @@ public class Spreadsheet implements ISpreadsheet {
         SpreadsheetCell(Coordinate coordinate) {
             this.coordinate = coordinate;
             this.listeners = new HashSet<>();
-            // TODO initialize format
+            this.format = initFormat();
+        }
+
+        private CellFormat initFormat() {
+            if (rowDefaults.containsKey(coordinate.getRow())) {
+                return rowDefaults.get(coordinate.getRow());
+            } else
+                return columnDefaults.getOrDefault(coordinate.getColumn(), defaultFormat);
         }
 
         @Override
@@ -88,6 +110,7 @@ public class Spreadsheet implements ISpreadsheet {
         /**
          * When a cell this depends on changes recalculate this
          * cell and all cells that depend on it
+         * Jackson Magas
          */
         @Override
         public void handleUpdate() {
@@ -99,6 +122,7 @@ public class Spreadsheet implements ISpreadsheet {
          * Check if this cell appears in its dependency tree
          * @param source the Coordinate of the source cell
          * @return true if this cell depends on itself
+         * Jackson Magas
          */
         @Override
         public boolean circularReference(ICell source) {

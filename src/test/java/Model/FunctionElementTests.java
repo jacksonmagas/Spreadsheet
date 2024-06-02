@@ -2,7 +2,6 @@ package Model;
 
 import Model.Utils.Function.*;
 import Model.Utils.Coordinate;
-import Model.Utils.Ref;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,7 +35,7 @@ public class FunctionElementTests {
 
     @Test
     public void numEqualsRef() {
-        Coordinate ref = new Ref(1, 1);
+        Coordinate ref = new Coordinate(1, 1);
         IFunctionElement e1 = new NumberFunctionElement(3.5);
         IFunctionElement e2 = new RefFunctionElement(ref);
         assertFalse(e1.equals(e2));
