@@ -11,4 +11,6 @@ module com.example.huskysheet {
     exports com.example.huskysheet;
     exports Model;
     opens Model to javafx.fxml;
+    exports Model.Utils;
+    opens Model.Utils to javafx.fxml;
 }

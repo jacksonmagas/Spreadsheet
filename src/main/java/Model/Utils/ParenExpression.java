@@ -1,5 +1,15 @@
 package Model.Utils;
 
-public class ParenTerm extends Expression {
+public class ParenExpression extends Expression {
 
+    ITerm enclosed;
+
+    public ParenExpression(ITerm enclosed) {
+        this.enclosed = enclosed;
+    }
+
+    @Override
+    public void recalculate() {
+
+    }
 }

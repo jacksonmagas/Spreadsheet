@@ -1,14 +1,25 @@
 package Model.Utils;
 
+import Model.Spreadsheet.FormulaParser.Token;
+
 public class StringTerm implements ITerm {
+    String value;
+
+    public StringTerm(String value) {
+        this.value = value;
+    }
 
     @Override
     public String getResult() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResult'");
+        return value;
     }
     
     public String toString() {
-        throw new UnsupportedOperationException("Unimplemented method 'toString'");
+        return value;
+    }
+
+    @Override
+    public void recalculate() {
+
     }
 }

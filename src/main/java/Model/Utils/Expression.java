@@ -1,15 +1,24 @@
 package Model.Utils;
 
-public abstract class FormulaTerm implements ITerm {
+import java.util.List;
+
+public abstract class Expression implements ITerm {
+    String value;
+    String plaintext;
+    List<Coordinate> dependencies;
 
     @Override
     public String getResult() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResult'");
+        return value;
     }
 
+    @Override
     public String toString() {
-        throw new UnsupportedOperationException("Unimplemented method 'toString'");
+        return plaintext;
     }
-    
+
+    @Override
+    public List<Coordinate> dependencies() {
+        return dependencies;
+    }
 }

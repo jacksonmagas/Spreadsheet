@@ -15,4 +15,10 @@ public interface ITerm {
      * updated values of cells it references
      */
     void recalculate();
+
+    /**
+     * Return the coordinates of all cells who's value this formula depends on
+     * @return A list of dependency coordinates
+     */
+    List<Coordinate> dependencies();
 }

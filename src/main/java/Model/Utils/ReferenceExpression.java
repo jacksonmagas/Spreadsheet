@@ -1,15 +1,23 @@
 package Model.Utils;
 
+import Model.ICell;
 import java.util.List;
 
-public class RefTerm extends Expression {
+public class ReferenceExpression extends Expression {
+    ICell reference;
 
-    public RefTerm(Coordinate ref) {
-        // TODO
+    public ReferenceExpression(ICell cell) {
+        reference = cell;
     }
 
     @Override
-    public List<Ref> dependencies() {
+    public List<Coordinate> dependencies() {
+        // TODO
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void recalculate() {
+
     }
 }

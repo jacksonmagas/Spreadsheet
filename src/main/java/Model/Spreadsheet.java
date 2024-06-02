@@ -1,17 +1,27 @@
 package Model;
 
-import static java.lang.Double.parseDouble;
-
+import Model.Utils.BiOperatorExpression;
 import Model.Utils.Conversions;
 import Model.Utils.Coordinate;
+import Model.Utils.EmptyTerm;
+import Model.Utils.ErrorTerm;
+import Model.Utils.FunctionExpression;
+import Model.Utils.FunctionExpression.FunctionType;
 import Model.Utils.ITerm;
+import Model.Utils.NumberTerm;
+import Model.Utils.ParenExpression;
+import Model.Utils.ReferenceExpression;
+import Model.Utils.StringTerm;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
@@ -88,25 +98,200 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         public ITerm parse(String formula) {
+            List<Token> tokens;
+            try {
+                tokens = tokenize(formula);
+            } catch (ParseException e) {
+                return new ErrorTerm(formula);
+            }
 
+            if (tokens.isEmpty()) {
+                return new EmptyTerm();
+            }
+
+            // special case of just text or a number
+            if (tokens.size() == 1) {
+                if (tokens.getFirst().type == TokenType.string) {
+                    return new StringTerm(tokens.getFirst().strValue);
+                } else if (tokens.getFirst().type == TokenType.number) {
+                    return new NumberTerm(Double.parseDouble(tokens.getFirst().strValue));
+                } else {
+                    return new ErrorTerm(formula);
+                }
+            }
+
+            // not text or a number must start with =
+            if (tokens.getFirst().type != TokenType.operator
+                || !tokens.getFirst().strValue.equals("=")) {
+                return new ErrorTerm(formula);
+            }
+
+            try {
+                // already parsed the =
+                return parse(tokens.subList(1, tokens.size()));
+            } catch (ParseException e) {
+                return new ErrorTerm(formula);
+            }
         }
 
-        private List<Token> tokenize(String input) {
+        private ITerm parse(List<Token> tokens) throws ParseException {
+            if (tokens.isEmpty()) {
+                return new EmptyTerm();
+            }
+
+            switch (tokens.getFirst().type) {
+                case TokenType.function -> {
+                    int parenIdx = 1;
+                    if (tokens.size() >= 3
+                        && tokens.get(parenIdx).type == TokenType.parenthesis
+                        && tokens.get(parenIdx).strValue.equals("(")) {
+                        if(closeParenIndex(tokens, parenIdx) == tokens.size() - 1){
+                            List<List<Token>> args = splitByCommas(tokens.subList(parenIdx + 1, tokens.size()));
+                            List<ITerm> parsedArgs = new ArrayList<>();
+                            for (List<Token> arg : args) {
+                                ITerm parse = parse(arg);
+                                parsedArgs.add(parse);
+                            }
+                            return new FunctionExpression(FunctionType.valueOf(tokens.getFirst().strValue), parsedArgs);
+                        } else {
+                            throw new ParseException("Illegal tokens after close parenthesis", 0);
+                        }
+                    } else {
+                        throw new ParseException("Function no open parenthesis", 0);
+                    }
+                }
+                case TokenType.string -> {
+                    if (tokens.size() == 1) {
+                        return new StringTerm(tokens.getFirst().strValue);
+                    } else {
+                        return parseOperator(tokens);
+                    }
+                }
+                case TokenType.number -> {
+                    if (tokens.size() == 1) {
+                        return new NumberTerm(Double.parseDouble(tokens.getFirst().strValue));
+                    } else {
+                        return parseOperator(tokens);
+                    }
+                }
+                case TokenType.operator -> {
+                    throw new ParseException("illegal leading operator", 0);
+                }
+                case TokenType.parenthesis -> {
+                    int match = closeParenIndex(tokens, 0);
+                    if (match == tokens.size() - 1) {
+                        return new ParenExpression(parse(tokens.subList(1, tokens.size() - 1)));
+                    } else {
+                        return parseOperator(tokens.subList(match + 1, tokens.size()));
+                    }
+                }
+                case TokenType.reference -> {
+                    if (tokens.size() == 1) {
+                        Coordinate referenced = Conversions.stringToCoordinate(tokens.getFirst().strValue);
+                        ICell cell = getCell(referenced);
+                        return new ReferenceExpression(cell);
+                    } else {
+                        return parseOperator(tokens);
+                    }
+                }
+                case TokenType.comma -> {
+                    throw new ParseException("illegal leading comma", 0);
+                }
+            }
+        }
+
+        private ITerm parseOperator(List<Token> tokens) throws ParseException {
+            int operatorIndex = 0;
+            for (Token token : tokens) {
+                if (token.type == TokenType.operator) {
+                    if (operatorIndex == tokens.size() - 1) {
+                        throw new ParseException("Nothing after operator", 0);
+                    }
+                    return new BiOperatorExpression(token.strValue,
+                        parse(tokens.subList(0, operatorIndex)),
+                            parse(tokens.subList(operatorIndex + 1, tokens.size())));
+                }
+                ++operatorIndex;
+            }
+            throw new ParseException("Illegal leading value", 0);
+        }
+
+        private List<List<Token>> splitByCommas(List<Token> tokens) {
+            List<List<Token>> result = new ArrayList<>();
+            result.add(new ArrayList<>());
+            int i = 0;
+            for (Token token : tokens) {
+                if (token.type == TokenType.comma) {
+                    ++i;
+                }
+                result.get(i).add(token);
+            }
+
+            return result;
+        }
+
+        private int closeParenIndex(List<Token> tokens, int startIndex) throws ParseException {
+            int oParenCount = 0;
+            for (; startIndex < tokens.size(); startIndex++) {
+                Token token = tokens.get(startIndex);
+                if (token.type == TokenType.parenthesis) {
+                    if (token.strValue.equals("(")) {
+                        oParenCount++;
+                    } else if (token.strValue.equals(")")) {
+                        oParenCount--;
+                    }
+                }
+                if (oParenCount == 0) {
+                    return startIndex;
+                }
+            }
+            throw new ParseException("unclosed parenthesis", 0);
+        }
+
+        // TODO fix tokenizing when the tokens are not all separated by a space
+        private List<Token> tokenize(String input) throws ParseException {
             List<Token> tokens = new ArrayList<>();
-            for (String tok: input.split(" ")) {
+            // starting = for formula does not need to be followed by a space
+            if (input.charAt(0) == '=') {
+                tokens.add(new Token(TokenType.operator, "="));
+                input = input.substring(1);
+            }
+            String[] canidates = input.split(" ");
+            // if the only thing in the cell is text then the text needs no quotes
+            if (canidates.length == 1) {
+                try {
+                    double doubleVal = Double.parseDouble(canidates[0]);
+                    tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
+                } catch (NumberFormatException e) {
+                    tokens.add(new Token(TokenType.string, canidates[0]));
+                }
+            }
+            for (String tok : canidates) {
+                if (tok.isEmpty()) {
+                    // ignore double spaces
+                    continue;
+                }
                 if (operators.contains(tok)) {
                     tokens.add(new Token(TokenType.operator, tok));
                 } else if (functions.contains(tok)) {
                     tokens.add(new Token(TokenType.function, tok));
                 } else if (Conversions.isValidRef(tok)) {
                     tokens.add(new Token(TokenType.reference, tok));
+                } else if ("()".contains(tok))  {
+                    tokens.add(new Token(TokenType.parenthesis, tok));
+                } else if (tok.equals(",")) {
+                    tokens.add(new Token(TokenType.comma, tok));
                 } else {
-                    try {
-                        double doubleVal = Double.parseDouble(tok);
-                        tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
-                    } catch (NumberFormatException e) {
-                        tokens.add(new Token(TokenType.string, tok));
-                    }
+                        try {
+                            double doubleVal = Double.parseDouble(tok);
+                            tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
+                        } catch (NumberFormatException e) {
+                            if (tok.startsWith("\"") && tok.endsWith("\"")) {
+                                tokens.add(new Token(TokenType.string, tok.substring(1, tok.length() - 1)));
+                            } else {
+                                throw new ParseException("Failed to tokenize", 0);
+                            }
+                        }
                 }
             }
 

@@ -1,15 +1,24 @@
 package Model.Utils;
 
-public class IntTerm implements ITerm {
+public class NumberTerm implements ITerm {
+    private final double value;
+
+    public NumberTerm(double value) {
+        this.value = value;
+    }
 
     @Override
     public String getResult() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResult'");
+        return Double.toString(value);
     }
 
     public String toString() {
-        throw new UnsupportedOperationException("Unimplemented method 'toString'");
+        return Double.toString(value);
     }
-    
+
+    @Override
+    public void recalculate() {
+
+    }
+
 }
