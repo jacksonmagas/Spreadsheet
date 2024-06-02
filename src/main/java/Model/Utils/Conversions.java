@@ -1,6 +1,9 @@
 package Model.Utils;
 
 import java.util.regex.Pattern;
+
+import Model.Utils.Function.FunctionOperation;
+
 import java.util.regex.Matcher;
 public final class Conversions {
 
@@ -75,6 +78,35 @@ public final class Conversions {
             column = column / 26;
         }
         return columnString.toString();
+    }
+
+    static FunctionOperation stringToOp(String s) {
+        switch (s) {
+            case "+":
+                return FunctionOperation.ADD;
+            case "-":
+                return FunctionOperation.SUB;
+            case "*":
+                return FunctionOperation.MULT;
+            case "/":
+                return FunctionOperation.DIV;
+            case "<":
+                return FunctionOperation.LESSTHAN;
+            case ">":
+                return FunctionOperation.GREATERTHAN;
+            case "=":
+                return FunctionOperation.EQUAL;
+            case "<>":
+                return FunctionOperation.NOTEQUAL;
+            case "&":
+                return FunctionOperation.AND;
+            case "|":
+                return FunctionOperation.OR;
+            case ":":
+                return FunctionOperation.RANGE;
+            default:
+                throw new IllegalArgumentException("Invalid function operation: \'" + s + "\'");
+        }
     }
 
     
