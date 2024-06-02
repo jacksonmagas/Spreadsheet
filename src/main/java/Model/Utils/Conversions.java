@@ -1,6 +1,10 @@
 package Model.Utils;
 
+import Model.Spreadsheet.FormulaParser.Token;
 import java.util.regex.Pattern;
+
+import Model.Utils.Function.FunctionOperation;
+
 import java.util.regex.Matcher;
 public final class Conversions {
 
@@ -9,7 +13,7 @@ public final class Conversions {
      * @param ref the string reference to a cell in the form "$A1" for first column first row
      * @return True if the string is a reference of the proper form
      */
-    static boolean isValidRef(String ref) {
+    public static boolean isValidRef(String ref) {
         Pattern validRef = Pattern.compile("^\\$\\[a-zA-Z]+\\d+$");
         return validRef.matcher(ref).matches();
     }
@@ -21,7 +25,7 @@ public final class Conversions {
      * @throws IllegalArgumentException if the string is not a reference
      * @return The 1 indexed row number
      */
-    static int row(String reference) {
+    public static int row(String reference) {
         if (!isValidRef(reference)) {
             throw new IllegalArgumentException(reference + " is not a valid Reference.");
         }
@@ -42,7 +46,7 @@ public final class Conversions {
      * @throws IllegalArgumentException if the string is not a reference
      * @return The 1 indexed column number
      */
-    static int column(String reference) {
+    public static int column(String reference) {
         if (!isValidRef(reference)) {
             throw new IllegalArgumentException(reference + " is not a valid Reference.");
         }
@@ -66,7 +70,7 @@ public final class Conversions {
         }
     }
 
-    static String columnToString(int column) {
+    public static String columnToString(int column) {
         StringBuilder columnString = new StringBuilder();
         while (column > 0) {
             int remainder = column % 26;
@@ -77,42 +81,42 @@ public final class Conversions {
         return columnString.toString();
     }
 
-    
-    // public static int convertToBase10(String base26) {
-    //     if (base26 == null || base26.isEmpty()) {
-    //         throw new IllegalArgumentException("Input string must not be null or empty");
-    //     }
+    static FunctionOperation stringToOp(String s) {
+        switch (s) {
+            case "+":
+                return FunctionOperation.ADD;
+            case "-":
+                return FunctionOperation.SUB;
+            case "*":
+                return FunctionOperation.MULT;
+            case "/":
+                return FunctionOperation.DIV;
+            case "<":
+                return FunctionOperation.LESSTHAN;
+            case ">":
+                return FunctionOperation.GREATERTHAN;
+            case "=":
+                return FunctionOperation.EQUAL;
+            case "<>":
+                return FunctionOperation.NOTEQUAL;
+            case "&":
+                return FunctionOperation.AND;
+            case "|":
+                return FunctionOperation.OR;
+            case ":":
+                return FunctionOperation.RANGE;
+            default:
+                throw new IllegalArgumentException("Invalid function operation: \'" + s + "\'");
+        }
+    }
 
-    //     int result = 0;
-    //     int length = base26.length();
-
-    //     for (int i = 0; i < length; i++) {
-    //         char c = base26.charAt(i);
-    //         if (c < 'A' || c > 'Z') {
-    //             throw new IllegalArgumentException("Input string must contain only uppercase alphabetic characters (A-Z)");
-    //         }
-    //         int value = c - 'A' + 1;
-    //         result = result * 26 + value;
-    //     }
-
-    //     return result;
-    // }
-    
-
-
-    
-
-    // // TODO: Written by GPT - TEST!!!!!!
-    // private String columnToString() {
-    //     StringBuilder result = new StringBuilder();
-        
-    //     while (column > 0) {
-    //         int remainder = column % 26;
-    //         char digit = (char) ('A' + remainder);
-    //         result.append(digit);
-    //         column /= 26;
-    //     }
-
-    //     return result.reverse().toString();
-    // }
+    /**
+     * Convert a string of the form $A1 to a coordinate object
+     * @param input the string to convert to coordinates
+     * @return the coordinate object at that string location
+     * Jackson Magas
+     */
+    public static Coordinate stringToCoordinate(String input) {
+        return new Coordinate(row(input), column(input));
+    }
 }
