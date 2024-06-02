@@ -18,10 +18,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
@@ -36,7 +34,7 @@ public class Spreadsheet implements ISpreadsheet {
         rowDefaults = new HashMap<>();
         columnDefaults = new HashMap<>();
         // TODO set default formatting options
-        defaultFormat = new CellFormat();
+        defaultFormat = new CellFormat(1, 2, 3, 4, 5, 6, 7, 8);
     }
 
     @Override
@@ -186,6 +184,7 @@ public class Spreadsheet implements ISpreadsheet {
                     }
                 }
                 case TokenType.reference -> {
+                    // TODO implement ranges properly
                     if (tokens.size() == 1) {
                         Coordinate referenced = Conversions.stringToCoordinate(tokens.getFirst().strValue);
                         ICell cell = getCell(referenced);
@@ -198,6 +197,7 @@ public class Spreadsheet implements ISpreadsheet {
                     throw new ParseException("illegal leading comma", 0);
                 }
             }
+            throw new ParseException("Reached the end of parse function without parsing", 0);
         }
 
         private ITerm parseOperator(List<Token> tokens) throws ParseException {
@@ -248,28 +248,15 @@ public class Spreadsheet implements ISpreadsheet {
             throw new ParseException("unclosed parenthesis", 0);
         }
 
-        // TODO fix tokenizing when the tokens are not all separated by a space
         private List<Token> tokenize(String input) throws ParseException {
             List<Token> tokens = new ArrayList<>();
-            // starting = for formula does not need to be followed by a space
-            if (input.charAt(0) == '=') {
-                tokens.add(new Token(TokenType.operator, "="));
-                input = input.substring(1);
+            if (input.chars().allMatch(Character::isAlphabetic)) {
+                tokens.add(new Token(TokenType.string, input));
             }
-            String[] canidates = input.split(" ");
-            // if the only thing in the cell is text then the text needs no quotes
-            if (canidates.length == 1) {
-                try {
-                    double doubleVal = Double.parseDouble(canidates[0]);
-                    tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
-                } catch (NumberFormatException e) {
-                    tokens.add(new Token(TokenType.string, canidates[0]));
-                }
-            }
-            for (String tok : canidates) {
-                if (tok.isEmpty()) {
-                    // ignore double spaces
-                    continue;
+            String tok = "";
+            for (char c : input.toCharArray()) {
+                if (c != ' ' && !tok.startsWith("\"")) {
+                    tok += c;
                 }
                 if (operators.contains(tok)) {
                     tokens.add(new Token(TokenType.operator, tok));
@@ -282,19 +269,19 @@ public class Spreadsheet implements ISpreadsheet {
                 } else if (tok.equals(",")) {
                     tokens.add(new Token(TokenType.comma, tok));
                 } else {
-                        try {
-                            double doubleVal = Double.parseDouble(tok);
-                            tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
-                        } catch (NumberFormatException e) {
-                            if (tok.startsWith("\"") && tok.endsWith("\"")) {
-                                tokens.add(new Token(TokenType.string, tok.substring(1, tok.length() - 1)));
-                            } else {
-                                throw new ParseException("Failed to tokenize", 0);
-                            }
+                    try {
+                        double doubleVal = Double.parseDouble(tok);
+                        tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
+                    } catch (NumberFormatException e) {
+                        if (tok.startsWith("\"") && tok.endsWith("\"")) {
+                            tokens.add(new Token(TokenType.string, tok));
                         }
+                    }
                 }
             }
-
+            if (!tokens.isEmpty()) {
+                throw new ParseException("Failed to parse", 0);
+            }
             return tokens;
         }
     }

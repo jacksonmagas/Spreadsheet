@@ -1,6 +1,8 @@
 package Model.Utils;
 
-import Model.Spreadsheet.FormulaParser.Token;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StringTerm implements ITerm {
     String value;
@@ -11,7 +13,11 @@ public class StringTerm implements ITerm {
 
     @Override
     public String getResult() {
-        return value;
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            return value.substring(1, value.length() - 1);
+        } else {
+            return value;
+        }
     }
     
     public String toString() {
@@ -20,6 +26,16 @@ public class StringTerm implements ITerm {
 
     @Override
     public void recalculate() {
+        // intentionally empty
+    }
 
+    @Override
+    public List<Coordinate> dependencies() {
+        return new ArrayList<Coordinate>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof ITerm && getResult().equals(((StringTerm) o).getResult());
     }
 }
