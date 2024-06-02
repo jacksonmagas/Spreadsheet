@@ -1,20 +1,28 @@
 package Server.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Spreadsheet {
 
+    private final List<User> users;
     private final String spreadsheetName;
     private final int rows;
     private final int cols;
     private final String[][] data;
 
 
-public Spreadsheet(String name, int rows, int cols) {
+public Spreadsheet(List<User> users, String name, int rows, int cols) {
+    if (users.size()> 5) {
+        throw new IllegalArgumentException("Only 5 users allowed at a time!");
+    }
+    this.users = new ArrayList<>(users);
     this.spreadsheetName = name;
     this.rows = rows;
     this.cols = cols;
     this.data = new String[rows][cols];
+    initializeEmptySheet();
 }
 
 
@@ -51,4 +59,9 @@ public void setValue(int row, int col, String input) {
     public String getSpreadsheetName() {
     return this.spreadsheetName;
     }
+
+    public List<User> getUser() {
+    return this.users;
+    }
 }
+

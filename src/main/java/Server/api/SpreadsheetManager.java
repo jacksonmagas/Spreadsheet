@@ -1,9 +1,11 @@
 package Server.api;
 
 import Server.model.Spreadsheet;
+import Server.model.User;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 
@@ -40,5 +42,10 @@ public class SpreadsheetManager {
 
     public void clear() {
         spreadsheetMap.clear();
+    }
+
+    public List<User> getCurrentUsers(String name) {
+        Spreadsheet spreadsheet = spreadsheetMap.get(name);
+        return spreadsheet.getUser();
     }
 }
