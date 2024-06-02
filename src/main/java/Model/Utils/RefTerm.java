@@ -4,7 +4,7 @@ import java.util.List;
 
 public class RefTerm extends FormulaTerm {
 
-    public RefTerm(IRef ref) {
+    public RefTerm(Coordinate ref) {
         // TODO
     }
 

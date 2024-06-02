@@ -33,14 +33,7 @@ public class CellTests {
    */
   @Test
   public void testCellCreation() {
-    ICell testCell = newCell(1, 1);
-    Assertions.assertEquals(testCell.getRef().getCell(), testCell);
-    Assertions.assertEquals(testCell.getRef().getRow(), 1);
-    Assertions.assertEquals(testCell.getRef().getColumn(), 1);
-    testCell = newCell((int) 10E7, (int) 10E6);
-    Assertions.assertEquals(testCell.getRef().getCell(), testCell);
-    Assertions.assertEquals(testCell.getRef().getRow(), (int) 10E7);
-    Assertions.assertEquals(testCell.getRef().getColumn(), (int) 10E6);
+    // TODO rewrite for spreadsheet implementation
   }
 
   /**

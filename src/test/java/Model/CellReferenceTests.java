@@ -1,12 +1,9 @@
 package Model;
 
 import Model.Utils.ErrorTerm;
-import Model.Utils.FormulaTerm;
 import Model.Utils.Ref;
 import Model.Utils.RefTerm;
 import Model.Utils.TermFactory;
-import java.util.List;
-import javafx.scene.control.Cell;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +21,7 @@ public class CellReferenceTests extends CellTests {
   public void TestCellReference() {
     ICell testCell1 = newCell(1, 1);
     ICell testCell2 = newCell(1, 2);
-    testCell1.updateCell(new RefTerm(testCell2.getRef()));
+    testCell1.updateCell(new RefTerm(testCell2.getCoordinate()));
     testCell2.updateCell(TermFactory.parseString("\"hello\""));
     Assertions.assertEquals(testCell1.getData().getResult(), testCell2.getData().getResult());
   }
@@ -37,8 +34,8 @@ public class CellReferenceTests extends CellTests {
   public void TestCircularReference() {
     ICell testCell1 = newCell(1, 1);
     ICell testCell2 = newCell(1, 2);
-    testCell1.updateCell(new RefTerm(testCell2.getRef()));
-    testCell2.updateCell(new RefTerm(testCell1.getRef()));
+    testCell1.updateCell(new RefTerm(testCell2.getCoordinate()));
+    testCell2.updateCell(new RefTerm(testCell1.getCoordinate()));
     Assertions.assertEquals(testCell1.getData().getResult(), "Circular reference detected");
   }
 }

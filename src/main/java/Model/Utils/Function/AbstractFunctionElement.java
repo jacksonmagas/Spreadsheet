@@ -1,6 +1,6 @@
 package Model.Utils.Function;
 
-import Model.Utils.IRef;
+import Model.Utils.Coordinate;
 
 /*
  * By default, operations are unsupported (with exception of 'notEquals(...)'). Only implement relevent functions when extending.
@@ -101,7 +101,7 @@ public abstract class AbstractFunctionElement implements IFunctionElement {
     }
 
     @Override
-    public boolean equalsRef(IRef ref) {
+    public boolean equalsRef(Coordinate ref) {
         throw new UnsupportedOperationException(IllegalOperationMessage("equalsRef"));
     }
     

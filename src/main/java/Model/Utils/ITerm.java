@@ -11,8 +11,8 @@ public interface ITerm {
     String toString();
 
     /**
-     * Get a list of all the references required to calculate this term.
-     * @return A list containing all references in this term
+     * Recalculate the stored value of this term based on
+     * updated values of cells it references
      */
-    List<Ref> dependencies();
+    void recalculate();
 }

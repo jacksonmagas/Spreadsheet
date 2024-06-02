@@ -1,15 +1,15 @@
 package Model.Utils.Function;
 
-import Model.Utils.IRef;
+import Model.Utils.Coordinate;
 
 /*
  * Represents a cell referance element in an IFunction.
  */
 public class RefFunctionElement extends AbstractFunctionElement {
 
-    private IRef value;
+    private Coordinate value;
 
-    public RefFunctionElement(IRef value) {
+    public RefFunctionElement(Coordinate value) {
         this.value = value;
     }
 

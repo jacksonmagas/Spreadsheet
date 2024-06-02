@@ -1,6 +1,6 @@
 package Model.Utils.Function;
 
-import Model.Utils.IRef;
+import Model.Utils.Coordinate;
 
 /*
  * A function element can be a string, integer, or cell referance.
@@ -35,5 +35,5 @@ public interface IFunctionElement {
     boolean orNum(double num);
 
     // ref op
-    boolean equalsRef(IRef ref);
+    boolean equalsRef(Coordinate ref);
 }

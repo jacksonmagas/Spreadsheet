@@ -1,6 +1,6 @@
 package Model;
 
-import Model.Utils.IRef;
+import Model.Utils.Coordinate;
 import Model.Utils.ITerm;
 
 /**
@@ -12,8 +12,8 @@ public interface ICell extends ICellListener {
     // Change the contents of the cell to the given data and call
     void updateCell(ITerm data);
 
-    // get a reference to this cell
-    IRef getRef();
+    // get the coordinates of this cell
+    Coordinate getCoordinate();
 
     // returns the data contained in this cell
     ITerm getData();
@@ -33,4 +33,10 @@ public interface ICell extends ICellListener {
 
     // Notify all references to this cell that the cell has changed
     void notifyListeners();
+
+    /**
+     * Set the formatting of the cell to the new formatting
+     * @param formatting formatting
+     */
+    void setFormatting(CellFormat formatting);
 }
