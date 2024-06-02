@@ -1,5 +1,7 @@
 package Model.Utils;
 
+import java.util.List;
+
 public class EmptyTerm implements ITerm {
     @Override
     public String getResult() {
@@ -9,5 +11,10 @@ public class EmptyTerm implements ITerm {
     @Override
     public void recalculate() {
 
+    }
+
+    @Override
+    public List<Coordinate> dependencies() {
+        return List.of();
     }
 }

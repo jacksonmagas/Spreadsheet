@@ -252,34 +252,42 @@ public class Spreadsheet implements ISpreadsheet {
             List<Token> tokens = new ArrayList<>();
             if (input.chars().allMatch(Character::isAlphabetic)) {
                 tokens.add(new Token(TokenType.string, input));
+                return tokens;
             }
             String tok = "";
             for (char c : input.toCharArray()) {
-                if (c != ' ' && !tok.startsWith("\"")) {
+                if (c != ' ' || tok.startsWith("\"")) {
                     tok += c;
                 }
                 if (operators.contains(tok)) {
                     tokens.add(new Token(TokenType.operator, tok));
+                    tok = "";
                 } else if (functions.contains(tok)) {
                     tokens.add(new Token(TokenType.function, tok));
+                    tok = "";
                 } else if (Conversions.isValidRef(tok)) {
                     tokens.add(new Token(TokenType.reference, tok));
+                    tok = "";
                 } else if ("()".contains(tok))  {
                     tokens.add(new Token(TokenType.parenthesis, tok));
+                    tok = "";
                 } else if (tok.equals(",")) {
                     tokens.add(new Token(TokenType.comma, tok));
+                    tok = "";
                 } else {
                     try {
                         double doubleVal = Double.parseDouble(tok);
                         tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
+                        tok = "";
                     } catch (NumberFormatException e) {
-                        if (tok.startsWith("\"") && tok.endsWith("\"")) {
+                        if (tok.length() > 1 && tok.startsWith("\"") && tok.endsWith("\"")) {
                             tokens.add(new Token(TokenType.string, tok));
+                            tok = "";
                         }
                     }
                 }
             }
-            if (!tokens.isEmpty()) {
+            if (!tok.isEmpty()) {
                 throw new ParseException("Failed to parse", 0);
             }
             return tokens;
@@ -312,7 +320,9 @@ public class Spreadsheet implements ISpreadsheet {
         @Override
         public void updateCell(ITerm data) {
             term = data;
-            term.recalculate();
+            if (term != null) {
+                term.recalculate();
+            }
         }
 
 

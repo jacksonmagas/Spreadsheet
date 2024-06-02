@@ -1,5 +1,7 @@
 package Model.Utils;
 
+import java.util.List;
+
 public class NumberTerm implements ITerm {
     private final double value;
 
@@ -19,6 +21,11 @@ public class NumberTerm implements ITerm {
     @Override
     public void recalculate() {
 
+    }
+
+    @Override
+    public List<Coordinate> dependencies() {
+        return List.of();
     }
 
 }

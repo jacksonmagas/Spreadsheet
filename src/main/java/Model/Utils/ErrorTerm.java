@@ -1,5 +1,8 @@
 package Model.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ErrorTerm implements ITerm {
     private final String plaintext;
 
@@ -20,5 +23,10 @@ public class ErrorTerm implements ITerm {
     @Override
     public void recalculate() {
 
+    }
+
+    @Override
+    public List<Coordinate> dependencies() {
+        return new ArrayList<>();
     }
 }

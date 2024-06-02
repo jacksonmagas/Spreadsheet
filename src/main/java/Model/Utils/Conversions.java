@@ -1,6 +1,5 @@
 package Model.Utils;
 
-import Model.Spreadsheet.FormulaParser.Token;
 import java.util.regex.Pattern;
 
 import Model.Utils.Function.FunctionOperation;
@@ -14,7 +13,7 @@ public final class Conversions {
      * @return True if the string is a reference of the proper form
      */
     public static boolean isValidRef(String ref) {
-        Pattern validRef = Pattern.compile("^\\$\\[a-zA-Z]+\\d+$");
+        Pattern validRef = Pattern.compile("^\\$[a-zA-Z]+\\d+$", Pattern.MULTILINE);
         return validRef.matcher(ref).matches();
     }
 
@@ -29,7 +28,7 @@ public final class Conversions {
         if (!isValidRef(reference)) {
             throw new IllegalArgumentException(reference + " is not a valid Reference.");
         }
-        Pattern p = Pattern.compile("(\\d+)");
+        Pattern p = Pattern.compile("^\\$[a-zA-Z]+(\\d+)$", Pattern.MULTILINE);
         Matcher m = p.matcher(reference);
         if (m.matches()) {
             String rowPart = m.group(1);
@@ -50,7 +49,7 @@ public final class Conversions {
         if (!isValidRef(reference)) {
             throw new IllegalArgumentException(reference + " is not a valid Reference.");
         }
-        Pattern p = Pattern.compile("([a-zA-Z]+)");
+        Pattern p = Pattern.compile("^\\$([a-zA-Z]+)\\d+$");
         Matcher m = p.matcher(reference);
         if (m.matches()) {
             // From $AbC1 gets ['A', 'B', 'C']
@@ -64,7 +63,7 @@ public final class Conversions {
                 column += multiplier * val;
                 multiplier *= 26;
             }
-            return column;
+            return column - 1;
         } else {
             throw new IllegalStateException("How did this happen");
         }
@@ -72,7 +71,7 @@ public final class Conversions {
 
     public static String columnToString(int column) {
         StringBuilder columnString = new StringBuilder();
-        while (column > 0) {
+        while (column >= 0) {
             int remainder = column % 26;
             char digit = (char) (remainder + 'A');
             columnString.insert(0, digit);

@@ -36,6 +36,6 @@ public class StringTerm implements ITerm {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ITerm && getResult().equals(((StringTerm) o).getResult());
+        return o instanceof ITerm && getResult().equals(((ITerm) o).getResult());
     }
 }

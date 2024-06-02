@@ -2,6 +2,7 @@ package Model.Utils;
 
 import Model.ICell;
 import java.util.List;
+import java.util.Objects;
 
 public class ReferenceExpression extends Expression {
     ICell reference;
@@ -18,6 +19,16 @@ public class ReferenceExpression extends Expression {
 
     @Override
     public void recalculate() {
+        value = reference.getData().getResult();
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof ReferenceExpression && ((ReferenceExpression) o).reference.equals(reference);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(reference);
     }
 }
