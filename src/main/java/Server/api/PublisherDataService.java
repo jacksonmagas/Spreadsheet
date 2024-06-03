@@ -36,4 +36,13 @@ public class PublisherDataService {
         }
         return null;
     }
+
+    public Publisher getPublisherByUsername(String username) {
+        for (Publisher publisher : publishedSpreadsheets.keySet()) {
+            if (publisher.getName().equals(username)) {
+                return publisher;
+            }
+        }
+        return null;
+    }
 }
