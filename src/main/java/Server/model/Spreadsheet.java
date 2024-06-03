@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Spreadsheet {
 
+    private final Publisher publisher;
     private final List<User> users;
     private final String spreadsheetName;
     private final int rows;
@@ -18,13 +19,17 @@ public class Spreadsheet {
     private final String[][] data;
     private final int[][] versions; // Add a version array for cells
 
-    public Spreadsheet(List<User> users, String name, int rows, int cols) {
+    public Spreadsheet(Publisher publisher, List<User> users, String name, int rows, int cols) {
         if (users.size() > 5) {
             throw new IllegalArgumentException("Only 5 users allowed at a time!");
         }
         if (rows < 0 || cols < 0) {
             throw new IllegalArgumentException("Rows and columns must be non-negative.");
         }
+        if (publisher == null) {
+            throw new IllegalArgumentException("Spreadsheet must have a Publisher");
+        }
+        this.publisher = publisher;
         this.users = new ArrayList<>(users);
         this.spreadsheetName = name;
         this.rows = rows;

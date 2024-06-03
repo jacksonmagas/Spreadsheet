@@ -2,6 +2,7 @@ package server;
 
 import Server.api.RetrieveSpreadsheet;
 import Server.api.SpreadsheetManager;
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import Server.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +30,9 @@ public class RetrieveSpreadsheetTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
         users.add(new User("user2", "password2", "user2@example.com"));
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
 
-        Spreadsheet spreadsheet = new Spreadsheet(users, "Example", 10, 5);
+        Spreadsheet spreadsheet = new Spreadsheet(publisher, users, "Example", 10, 5);
 
         spreadsheetManager.addSpreadsheet(spreadsheet);
 

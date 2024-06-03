@@ -1,7 +1,9 @@
 package server;
 
 import Server.api.DeleteSpreadsheet;
+import Server.api.PublisherDataService;
 import Server.api.SpreadsheetManager;
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ public class DeleteSpreadsheetTest {
     private DeleteSpreadsheet deleteSpreadsheet;
     private SpreadsheetManager spreadsheetManager;
 
+
     @BeforeEach
     public void setUp() {
         spreadsheetManager = new SpreadsheetManager();
@@ -27,8 +30,9 @@ public class DeleteSpreadsheetTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
         users.add(new User("user2", "password2", "user2@example.com"));
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
 
-        Spreadsheet spreadsheet = new Spreadsheet(users, "DeleteSpreadsheet", 10, 5);
+        Spreadsheet spreadsheet = new Spreadsheet(publisher, users, "DeleteSpreadsheet", 10, 5);
         spreadsheetManager.addSpreadsheet(spreadsheet);
 
         assertNotNull(spreadsheet);

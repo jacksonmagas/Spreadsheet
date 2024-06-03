@@ -1,5 +1,6 @@
 package Server.api;
 
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import Server.model.User;
 

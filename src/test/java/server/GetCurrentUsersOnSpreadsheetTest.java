@@ -2,6 +2,7 @@ package server;
 
 import Server.api.GetCurrentUsersOnSpreadsheet;
 import Server.api.SpreadsheetManager;
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import Server.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +36,8 @@ public class GetCurrentUsersOnSpreadsheetTest {
         users.add(user2);
         users.add(user3);
         users.add(user4);
-
-        Spreadsheet spreadsheet = new Spreadsheet(users, "Example", 20, 30);
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
+        Spreadsheet spreadsheet = new Spreadsheet(publisher, users, "Example", 20, 30);
         spreadsheetManager.addSpreadsheet(spreadsheet);
 
         List<User> retrievedUsers = getCurrentUsersOnSpreadsheet.getUsers("Example");
