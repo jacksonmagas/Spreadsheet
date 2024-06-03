@@ -1,5 +1,5 @@
 package server;
-import Server.api.CreateSpreadsheet;
+
 import Server.api.DeleteSpreadsheet;
 import Server.api.SpreadsheetManager;
 import Server.model.Spreadsheet;
@@ -18,33 +18,30 @@ public class DeleteSpreadsheetTest {
     @BeforeEach
     public void setUp() {
         spreadsheetManager = new SpreadsheetManager();
-
+        deleteSpreadsheet = new DeleteSpreadsheet(spreadsheetManager);
         spreadsheetManager.clear();
     }
 
     @Test
-    public void testCreateSpreadsheetSuccess() {
+    public void testDeleteSpreadsheetSuccess() {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
         users.add(new User("user2", "password2", "user2@example.com"));
 
         Spreadsheet spreadsheet = new Spreadsheet(users, "DeleteSpreadsheet", 10, 5);
+        spreadsheetManager.addSpreadsheet(spreadsheet);
 
         assertNotNull(spreadsheet);
         assertEquals(1, spreadsheetManager.getAllSpreadsheets().size());
 
-        spreadsheetManager.removeSpreadsheet("DeleteSpreadsheet");
+        deleteSpreadsheet.deleteSpreadsheet("DeleteSpreadsheet");
         assertEquals(0, spreadsheetManager.getAllSpreadsheets().size());
     }
 
-
     @Test
     public void testDeleteSpreadsheetThatDoesNotExist() {
-        List<User> users = new ArrayList<>();
-        users.add(new User("user1", "password1", "user1@example.com"));
-
-        Spreadsheet spreadsheet = new Spreadsheet(users, "Example", 10, 20);
-        assertThrows(IllegalArgumentException.class, () ->
-                deleteSpreadsheet.deleteSpreadsheet("Doesn't Exist"));
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+                deleteSpreadsheet.deleteSpreadsheet("DoesNotExist"));
+        assertEquals("Spreadsheet DoesNotExist does not exist in the database.", thrown.getMessage());
     }
 }

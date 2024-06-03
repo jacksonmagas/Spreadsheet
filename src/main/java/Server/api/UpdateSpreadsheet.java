@@ -14,16 +14,13 @@ public class UpdateSpreadsheet {
         this.cellLocks = new HashMap<>();
     }
 
-
-
-    public void editCells(String spreadsheetName, int row, int col, String newValue) {
-
+    public void editCells(String spreadsheetName, int row, int col, String newValue, int version) {
         Spreadsheet spreadsheet = spreadsheetManager.getSpreadsheet(spreadsheetName);
 
         if (spreadsheet != null) {
-            spreadsheet.setValue(row, col, newValue);
+            spreadsheet.setValue(row, col, newValue, version);
             spreadsheetManager.updateSpreadsheet(spreadsheet);
-            System.out.println("Cell (" + row + ", " + col + ") have been updated");
+            System.out.println("Cell (" + row + ", " + col + ") has been updated");
         } else {
             System.out.println("Spreadsheet does not exist!");
         }

@@ -9,12 +9,10 @@ public class DeleteSpreadsheet {
 
     public void deleteSpreadsheet(String uniqueSpreadsheetName) {
         if (!spreadsheetManager.containsSpreadsheet(uniqueSpreadsheetName)) {
-            System.out.println("There is no Spreadsheet named" + uniqueSpreadsheetName +
-                    "in the Database");
-        }
-        else {
+            throw new IllegalArgumentException("Spreadsheet " + uniqueSpreadsheetName + " does not exist in the database.");
+        } else {
             spreadsheetManager.removeSpreadsheet(uniqueSpreadsheetName);
-            System.out.println(uniqueSpreadsheetName + "has been removed from database");
+            System.out.println(uniqueSpreadsheetName + " has been removed from database.");
         }
     }
 }
