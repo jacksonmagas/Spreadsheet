@@ -31,7 +31,9 @@ public class TestParsing {
         Assertions.assertEquals(parser.parse("\"\""), new StringTerm(""));
         Assertions.assertEquals(parser.parse("\"  \""), new StringTerm("  "));
         // test internal quotes
-        Assertions.assertEquals(parser.parse("\"hello\""), new StringTerm("hello"));//TODO
+        Assertions.assertInstanceOf(StringTerm.class, parser.parse(("\"he said \\\"hello\\\"\"")));
+        Assertions.assertEquals(parser.parse("\"he said \\\"hello\\\"\""),
+            new StringTerm("he said \"hello\""));
     }
 
     @Test
@@ -73,7 +75,7 @@ public class TestParsing {
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM(1, 0)"));
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM"));
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM(0)"));
-        Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=AVG(SUM(5, 4, 3), 12, MAX($A1:$B1))"));
+        Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=AVG(SUM(5, 4, 3), 12, MAX(10, 3, 5))"));
     }
 
     @Test

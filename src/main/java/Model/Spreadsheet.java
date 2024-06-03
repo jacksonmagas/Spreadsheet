@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
@@ -61,7 +61,8 @@ public class Spreadsheet implements ISpreadsheet {
     }
 
     /**
-     * Class implementing formula parsing for this spreadsheet including looking up references
+     * Class implementing formula parsing for this spreadsheet including looking up references.
+     * Jackson Magas
      */
      protected class FormulaParser {
         List<String> operators = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
@@ -89,6 +90,11 @@ public class Spreadsheet implements ISpreadsheet {
             Token(TokenType type, String strValue) {
                 this.type = type;
                 this.strValue = strValue;
+            }
+
+            @Override
+            public String toString() {
+                return strValue;
             }
         }
 
@@ -233,8 +239,12 @@ public class Spreadsheet implements ISpreadsheet {
             List<List<Token>> result = new ArrayList<>();
             result.add(new ArrayList<>());
             int i = 0;
+            int parenDepth = 0;
             for (Token token : tokens) {
-                if (token.type == TokenType.comma) {
+                if (token.type == TokenType.parenthesis) {
+                    parenDepth += Objects.equals(token.strValue, "(") ? 1 : -1;
+                }
+                if (token.type == TokenType.comma && parenDepth == 0) {
                     ++i;
                     result.add(new ArrayList<>());
                     continue;
@@ -271,19 +281,29 @@ public class Spreadsheet implements ISpreadsheet {
             }
             String tok = "";
             int idx = 0;
+            boolean escaped = false;
             for (char c : input.toCharArray()) {
                 if (c == ' ' && !tok.startsWith("\"")) {
                     ++idx;
                     continue;
                 }
+                if (c == '\\') {
+                    escaped = true;
+                }
                 tok += c;
                 if (operators.contains(tok)) {
                     // check if + or - is part of a number
-                    if (!("+-".contains(tok) && tokens.isEmpty()
-                        || (!tokens.isEmpty() && tokens.getLast().type != TokenType.number))) {
-                        tokens.add(new Token(TokenType.operator, tok));
-                        tok = "";
+                    if ("+-".contains(tok) && idx < input.length() - 1 && Character.isDigit(input.charAt(idx + 1))) {
+                        ++idx;
+                        continue;
                     }
+                    // check if < is part of <>
+                    if (tok.equals("<") && idx < input.length() - 1 && input.charAt(idx + 1) == '>') {
+                        ++idx;
+                        continue;
+                    }
+                    tokens.add(new Token(TokenType.operator, tok));
+                    tok = "";
                 } else if (functions.contains(tok)) {
                     tokens.add(new Token(TokenType.function, tok));
                     tok = "";
@@ -306,8 +326,12 @@ public class Spreadsheet implements ISpreadsheet {
                         }
                     } catch (NumberFormatException e) {
                         if (tok.length() > 1 && tok.startsWith("\"") && tok.endsWith("\"")) {
-                            tokens.add(new Token(TokenType.string, tok));
-                            tok = "";
+                            if (!escaped) {
+                                tokens.add(new Token(TokenType.string, tok));
+                                tok = "";
+                            } else {
+                                escaped = false;
+                            }
                         }
                     }
                 }
@@ -337,6 +361,12 @@ public class Spreadsheet implements ISpreadsheet {
             this.term = new EmptyTerm();
         }
 
+        /**
+         * Set the format of this cell to the default format.
+         * Prioritizes row format, then column format, then default format.
+         * Jackson Magas
+         * @return The format of the cell
+         */
         private CellFormat initFormat() {
             if (rowDefaults.containsKey(coordinate.getRow())) {
                 return rowDefaults.get(coordinate.getRow());
@@ -344,6 +374,12 @@ public class Spreadsheet implements ISpreadsheet {
                 return columnDefaults.getOrDefault(coordinate.getColumn(), defaultFormat);
         }
 
+        /**
+         * Update this cell with new user input
+         * Parses the input and then recalculates its value
+         * Jackson Magas
+         * @param data the user input to parse
+         */
         @Override
         public void updateCell(String data) {
             term = parser.parse(data);
@@ -351,26 +387,51 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
 
+        /**
+         * Get the location of this cell.
+         * Jackson Magas
+         * @return the location of this cell
+         */
         @Override
         public Coordinate getCoordinate() {
             return coordinate;
         }
 
+        /**
+         * Get the result of evaluating this cell.
+         * Jackson Magas
+         * @return the result of evaluating this cell as a string
+         */
         @Override
         public String getData() {
             return term.getResult();
         }
 
+        /**
+         * Get the exact input from the user in this cell
+         * Jackson Magas
+         * @return the user input to this cell
+         */
         @Override
         public String getPlaintext() {
             return term.toString();
         }
 
+        /**
+         * Get the format object with details about this cell's formatting
+         * Jackson Magas
+         * @return the format object
+         */
         @Override
         public CellFormat getFormatting() {
             return format;
         }
 
+        /**
+         * Does this cell have data
+         * Jackson Magas
+         * @return true if this cell is empty
+         */
         @Override
         public boolean isEmpty() {
             return term instanceof EmptyTerm;
@@ -406,6 +467,7 @@ public class Spreadsheet implements ISpreadsheet {
 
             return false;
         }
+
 
         @Override
         public void registerListener(ICellListener listener) {

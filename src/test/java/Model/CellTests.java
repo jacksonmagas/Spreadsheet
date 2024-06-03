@@ -1,6 +1,7 @@
 package Model;
 
 import Model.Utils.Coordinate;
+import Model.Utils.EmptyTerm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ public class CellTests {
     ICell testCell = sheet.getCell(new Coordinate(0, 0));
 
     Assertions.assertTrue(testCell.isEmpty());
-    Assertions.assertNull(testCell.getData());
+    Assertions.assertEquals(new EmptyTerm().getResult(), testCell.getData());
     testCell.updateCell("\"hello\"");
     Assertions.assertEquals(testCell.getData(), "hello");
     testCell.updateCell("=$A1");

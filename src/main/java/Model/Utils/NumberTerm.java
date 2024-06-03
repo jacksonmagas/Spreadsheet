@@ -38,7 +38,7 @@ public class NumberTerm implements ITerm {
             return false;
         }
         NumberTerm that = (NumberTerm) o;
-        return Math.abs(this.value - that.value) < 1e-9;
+        return Math.abs(this.value - that.value) < 0.000001;
     }
 
     @Override

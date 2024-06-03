@@ -19,11 +19,24 @@ public class StringTerm implements ITerm {
      */
     @Override
     public String getResult() {
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            return value.substring(1, value.length() - 1);
+        String result = withoutEscapes(value);
+        if (result.startsWith("\"") && result.endsWith("\"")) {
+            return result.substring(1, result.length() - 1);
         } else {
-            return value;
+            return result;
         }
+    }
+
+    // remove escaped slashes from escapes entered by the user
+    // Jackson Magas
+    private String withoutEscapes(String value) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            if (value.charAt(i) != '\\') {
+                result.append(value.charAt(i));
+            }
+        }
+        return result.toString();
     }
 
     // Jackson Magas
