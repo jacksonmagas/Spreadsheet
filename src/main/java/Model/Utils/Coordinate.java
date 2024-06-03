@@ -1,5 +1,7 @@
 package Model.Utils;
 
+import java.util.Objects;
+
 public class Coordinate {
     private int column;
     private int row;
@@ -19,5 +21,17 @@ public class Coordinate {
 
     public String toString() {
         return "$" + Conversions.columnToString(column) + row;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       return obj instanceof Coordinate
+           && ((Coordinate) obj).row == row
+           && ((Coordinate) obj).column == column;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column);
     }
 }

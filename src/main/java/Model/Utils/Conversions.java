@@ -63,7 +63,7 @@ public final class Conversions {
                 column += multiplier * val;
                 multiplier *= 26;
             }
-            return column - 1;
+            return column;
         } else {
             throw new IllegalStateException("How did this happen");
         }
@@ -71,11 +71,11 @@ public final class Conversions {
 
     public static String columnToString(int column) {
         StringBuilder columnString = new StringBuilder();
-        while (column >= 0) {
-            int remainder = column % 26;
+        while (column > 0) {
+            int remainder = (column - 1) % 26;
             char digit = (char) (remainder + 'A');
             columnString.insert(0, digit);
-            column = column / 26;
+            column = (column - 1) / 26;
         }
         return columnString.toString();
     }

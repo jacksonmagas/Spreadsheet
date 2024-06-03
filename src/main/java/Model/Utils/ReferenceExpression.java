@@ -9,6 +9,7 @@ public class ReferenceExpression extends Expression {
 
     public ReferenceExpression(ICell cell) {
         reference = cell;
+        plaintext = cell.getCoordinate().toString();
     }
 
     @Override
@@ -19,7 +20,11 @@ public class ReferenceExpression extends Expression {
 
     @Override
     public void recalculate() {
-        value = reference.getData().getResult();
+        if (reference.getData() != null) {
+            value = reference.getData().getResult();
+        } else {
+            value = null;
+        }
     }
 
     @Override

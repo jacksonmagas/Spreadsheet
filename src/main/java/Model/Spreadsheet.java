@@ -144,7 +144,7 @@ public class Spreadsheet implements ISpreadsheet {
                         && tokens.get(parenIdx).type == TokenType.parenthesis
                         && tokens.get(parenIdx).strValue.equals("(")) {
                         if(closeParenIndex(tokens, parenIdx) == tokens.size() - 1){
-                            List<List<Token>> args = splitByCommas(tokens.subList(parenIdx + 1, tokens.size()));
+                            List<List<Token>> args = splitByCommas(tokens.subList(parenIdx + 1, tokens.size() - 1));
                             List<ITerm> parsedArgs = new ArrayList<>();
                             for (List<Token> arg : args) {
                                 ITerm parse = parse(arg);
@@ -223,6 +223,8 @@ public class Spreadsheet implements ISpreadsheet {
             for (Token token : tokens) {
                 if (token.type == TokenType.comma) {
                     ++i;
+                    result.add(new ArrayList<>());
+                    continue;
                 }
                 result.get(i).add(token);
             }
@@ -255,13 +257,20 @@ public class Spreadsheet implements ISpreadsheet {
                 return tokens;
             }
             String tok = "";
+            int idx = 0;
             for (char c : input.toCharArray()) {
-                if (c != ' ' || tok.startsWith("\"")) {
-                    tok += c;
+                if (c == ' ' && !tok.startsWith("\"")) {
+                    ++idx;
+                    continue;
                 }
+                tok += c;
                 if (operators.contains(tok)) {
-                    tokens.add(new Token(TokenType.operator, tok));
-                    tok = "";
+                    // check if + or - is part of a number
+                    if (!("+-".contains(tok) && tokens.isEmpty()
+                        || (!tokens.isEmpty() && tokens.getLast().type != TokenType.number))) {
+                        tokens.add(new Token(TokenType.operator, tok));
+                        tok = "";
+                    }
                 } else if (functions.contains(tok)) {
                     tokens.add(new Token(TokenType.function, tok));
                     tok = "";
@@ -277,8 +286,11 @@ public class Spreadsheet implements ISpreadsheet {
                 } else {
                     try {
                         double doubleVal = Double.parseDouble(tok);
-                        tokens.add(new Token(TokenType.number, Double.toString(doubleVal)));
-                        tok = "";
+                        if (idx == input.length() - 1
+                            || !(Character.isDigit(input.charAt(idx + 1)) || input.charAt(idx + 1) == '.')) {
+                            tokens.add(new Token(TokenType.number, tok));
+                            tok = "";
+                        }
                     } catch (NumberFormatException e) {
                         if (tok.length() > 1 && tok.startsWith("\"") && tok.endsWith("\"")) {
                             tokens.add(new Token(TokenType.string, tok));
@@ -286,6 +298,7 @@ public class Spreadsheet implements ISpreadsheet {
                         }
                     }
                 }
+                ++idx;
             }
             if (!tok.isEmpty()) {
                 throw new ParseException("Failed to parse", 0);
