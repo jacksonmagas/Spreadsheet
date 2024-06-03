@@ -2,7 +2,9 @@ package server;
 
 import Server.api.CreateSpreadsheet;
 import Server.api.DeleteSpreadsheet;
+import Server.api.PublisherDataService;
 import Server.api.SpreadsheetManager;
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import Server.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +20,12 @@ public class ErrorHandlingTest {
     private CreateSpreadsheet createSpreadsheet;
     private DeleteSpreadsheet deleteSpreadsheet;
     private SpreadsheetManager spreadsheetManager;
+    private PublisherDataService dataService;
 
     @BeforeEach
     public void setUp() {
         spreadsheetManager = new SpreadsheetManager();
-        createSpreadsheet = new CreateSpreadsheet(spreadsheetManager);
+        createSpreadsheet = new CreateSpreadsheet(spreadsheetManager, dataService);
         deleteSpreadsheet = new DeleteSpreadsheet(spreadsheetManager);
         spreadsheetManager.clear();
     }
@@ -32,11 +35,13 @@ public class ErrorHandlingTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
 
-        assertThrows(IllegalArgumentException.class, () ->
-                createSpreadsheet.createSpreadsheet(users, "", 10, 10));
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
 
         assertThrows(IllegalArgumentException.class, () ->
-                createSpreadsheet.createSpreadsheet(users, null, 10, 10));
+                createSpreadsheet.createSpreadsheet(publisher, users, "", 10, 10));
+
+        assertThrows(IllegalArgumentException.class, () ->
+                createSpreadsheet.createSpreadsheet(publisher, users, null, 10, 10));
     }
 
     @Test
@@ -44,8 +49,11 @@ public class ErrorHandlingTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
 
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
+
         final String spreadsheetName = "TestInvalidCoordinates";
-        Spreadsheet spreadsheet = createSpreadsheet.createSpreadsheet(users, spreadsheetName, 5, 5);
+        Spreadsheet spreadsheet = createSpreadsheet.createSpreadsheet(
+                publisher, users, spreadsheetName, 5, 5);
 
         assertThrows(IllegalArgumentException.class, () ->
                 spreadsheet.setValue(-1, 0, "Invalid", 0));
@@ -65,8 +73,11 @@ public class ErrorHandlingTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
 
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
+
         final String spreadsheetName = "TestOutdatedVersion";
-        Spreadsheet spreadsheet = createSpreadsheet.createSpreadsheet(users, spreadsheetName, 5, 5);
+        Spreadsheet spreadsheet = createSpreadsheet.createSpreadsheet(
+                publisher, users, spreadsheetName, 5, 5);
 
         spreadsheet.setValue(0, 0, "Initial", 0);
         assertThrows(IllegalStateException.class, () ->
@@ -78,8 +89,11 @@ public class ErrorHandlingTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
 
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
+
         final String spreadsheetName = "TestInvalidFormula";
-        Spreadsheet spreadsheet = createSpreadsheet.createSpreadsheet(users, spreadsheetName, 5, 5);
+        Spreadsheet spreadsheet = createSpreadsheet.createSpreadsheet(
+                publisher, users, spreadsheetName, 5, 5);
 
         assertThrows(IllegalArgumentException.class, () ->
                 spreadsheet.setValue(0, 0, "=INVALID_FORMULA()", 0));

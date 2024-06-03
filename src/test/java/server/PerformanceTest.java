@@ -1,7 +1,9 @@
 package server;
 
 import Server.api.CreateSpreadsheet;
+import Server.api.PublisherDataService;
 import Server.api.SpreadsheetManager;
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import Server.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +18,12 @@ public class PerformanceTest {
 
     private CreateSpreadsheet createSpreadsheet;
     private SpreadsheetManager spreadsheetManager;
+    private PublisherDataService dataService;
 
     @BeforeEach
     public void setUp() {
         spreadsheetManager = new SpreadsheetManager();
-        createSpreadsheet = new CreateSpreadsheet(spreadsheetManager);
+        createSpreadsheet = new CreateSpreadsheet(spreadsheetManager, dataService);
         spreadsheetManager.clear();
     }
 
@@ -29,6 +32,7 @@ public class PerformanceTest {
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
         users.add(new User("user2", "password2", "user2@example.com"));
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
 
         final String spreadsheetName = "PerformanceTestSpreadsheet";
         final int rows = 10;
@@ -38,7 +42,8 @@ public class PerformanceTest {
         long startTime = System.currentTimeMillis();
 
         // Perform the server action
-        Spreadsheet createdSpreadsheet = createSpreadsheet.createSpreadsheet(users, spreadsheetName, rows, cols);
+        Spreadsheet createdSpreadsheet = createSpreadsheet.createSpreadsheet(
+                publisher, users, spreadsheetName, rows, cols);
 
         // Stop the timer
         long endTime = System.currentTimeMillis();

@@ -2,6 +2,7 @@ package server;
 
 import Server.api.SpreadsheetManager;
 import Server.api.UpdateSpreadsheet;
+import Server.model.Publisher;
 import Server.model.Spreadsheet;
 import Server.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +23,13 @@ public class ConcurrentEditingTest {
     public void setUp() {
         spreadsheetManager = new SpreadsheetManager();
         updateSpreadsheet = new UpdateSpreadsheet(spreadsheetManager);
+        Publisher publisher = new Publisher("Katie", "mock@gmail");
 
         List<User> users = new ArrayList<>();
         users.add(new User("user1", "password1", "user1@example.com"));
         users.add(new User("user2", "password2", "user2@example.com"));
 
-        spreadsheet = new Spreadsheet(users, "ConcurrentSheet", 10, 10);
+        spreadsheet = new Spreadsheet(publisher, users, "ConcurrentSheet", 10, 10);
         spreadsheetManager.addSpreadsheet(spreadsheet);
     }
 
