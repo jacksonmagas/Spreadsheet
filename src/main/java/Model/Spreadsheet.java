@@ -219,7 +219,7 @@ public class Spreadsheet implements ISpreadsheet {
                             && right.type == TokenType.reference
                             && Conversions.stringToCoordinate(left.strValue)
                                 .compareTo(Conversions
-                                    .stringToCoordinate(right.strValue)) == 1) {
+                                    .stringToCoordinate(right.strValue)) == -1) {
                             return new RangeExpression(Conversions.stringToCoordinate(left.strValue)
                                 .getRange(Conversions.stringToCoordinate((right.strValue))).stream()
                                 .map(Spreadsheet.this::getCell).toList());
@@ -308,6 +308,10 @@ public class Spreadsheet implements ISpreadsheet {
                     tokens.add(new Token(TokenType.function, tok));
                     tok = "";
                 } else if (Conversions.isValidRef(tok)) {
+                    if (idx < input.length() - 1 && Character.isDigit(input.charAt(idx + 1))) {
+                        idx++;
+                        continue;
+                    }
                     tokens.add(new Token(TokenType.reference, tok));
                     tok = "";
                 } else if ("()".contains(tok))  {

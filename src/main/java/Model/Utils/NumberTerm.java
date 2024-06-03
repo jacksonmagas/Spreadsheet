@@ -1,5 +1,6 @@
 package Model.Utils;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class NumberTerm implements ITerm {
 
     @Override
     public String getResult() {
-        return Double.toString(value);
+        return new DecimalFormat("#.################").format(value);
     }
 
     public String toString() {

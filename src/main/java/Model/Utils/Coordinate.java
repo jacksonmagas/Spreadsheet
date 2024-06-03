@@ -21,7 +21,7 @@ public class Coordinate {
      * Jackson Magas
      */
     public List<Coordinate> getRange(Coordinate target) throws IllegalArgumentException {
-        if (this.compareTo(target) != 1) {
+        if (this.compareTo(target) != -1) {
             throw new IllegalArgumentException("Target less than this coordinate");
         }
 
