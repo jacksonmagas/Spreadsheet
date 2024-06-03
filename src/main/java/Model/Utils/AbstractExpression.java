@@ -2,7 +2,9 @@ package Model.Utils;
 
 import java.util.List;
 
-public abstract class Expression implements ITerm {
+public abstract class AbstractExpression implements ITerm {
+
+    static final String VALUE_ERROR = "#VALUE!";
     String value;
     String plaintext;
     List<Coordinate> dependencies;

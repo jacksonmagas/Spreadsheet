@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * Jackson Magas
  * //TODO This class violates the Liskov substitution principle but I don't have time to fix it
  */
-public class RangeExpression extends Expression {
+public class RangeExpression extends AbstractExpression {
     List<ICell> cells;
 
     public RangeExpression(List<ICell> cells) {
@@ -17,6 +17,7 @@ public class RangeExpression extends Expression {
         this.plaintext = cells.getFirst().getCoordinate().toString()
             + ":"
             + cells.getLast().getCoordinate().toString();
+        value = VALUE_ERROR;
     }
 
     /**

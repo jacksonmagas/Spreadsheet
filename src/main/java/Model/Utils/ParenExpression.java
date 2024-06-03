@@ -2,7 +2,7 @@ package Model.Utils;
 
 import java.util.Objects;
 
-public class ParenExpression extends Expression {
+public class ParenExpression extends AbstractExpression {
 
     ITerm enclosed;
 

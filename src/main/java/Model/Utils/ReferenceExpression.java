@@ -4,7 +4,7 @@ import Model.ICell;
 import java.util.List;
 import java.util.Objects;
 
-public class ReferenceExpression extends Expression {
+public class ReferenceExpression extends AbstractExpression {
     ICell reference;
 
     public ReferenceExpression(ICell cell) {

@@ -3,7 +3,7 @@ package Model.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FunctionExpression extends Expression {
+public class FunctionExpression extends AbstractExpression {
     @Override
     public void recalculate() {
         //TODO implement

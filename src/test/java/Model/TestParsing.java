@@ -127,12 +127,13 @@ public class TestParsing {
         Assertions.assertEquals(valueError, parser.parse("= 1 = \"hello\"").getResult());
         Assertions.assertEquals("0", parser.parse("= \"a\" = \"b\"").getResult());
         Assertions.assertEquals("1", parser.parse("= \"a\" = \"a\"").getResult());
+        // test <>
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 <> 2"));
         Assertions.assertEquals("0", parser.parse("= 1 <> 1").getResult());
         Assertions.assertEquals("1", parser.parse("= 1 <> 2").getResult());
         Assertions.assertEquals(valueError, parser.parse("=\"hello\"<>1").getResult());
-        Assertions.assertEquals("1", parser.parse("= \"a\" < \"b\"").getResult());
-        Assertions.assertEquals("0", parser.parse("= \"a\" < \"a\"").getResult());
+        Assertions.assertEquals("1", parser.parse("= \"a\" <> \"b\"").getResult());
+        Assertions.assertEquals("0", parser.parse("= \"a\" <> \"a\"").getResult());
         // test &
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 & 2"));
         Assertions.assertEquals("1", parser.parse("= 1 & 2").getResult());
@@ -140,9 +141,10 @@ public class TestParsing {
         Assertions.assertEquals(valueError, parser.parse("= 1 & \"hello\"").getResult());
         // test |
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 | 2"));
-        Assertions.assertEquals("0", parser.parse("= 1 & 2").getResult());
-        Assertions.assertEquals("1", parser.parse("= 1 & 0").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 & \"hello\"").getResult());
+        Assertions.assertEquals("1", parser.parse("= 1 | 2").getResult());
+        Assertions.assertEquals("1", parser.parse("= 1 | 0").getResult());
+        Assertions.assertEquals("0", parser.parse("= 0 | 0").getResult());
+        Assertions.assertEquals(valueError, parser.parse("= 1 | \"hello\"").getResult());
         // assure : must be a range and check that outside a function it gives value error
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("= 1:2"));
         Assertions.assertEquals(valueError, parser.parse("= $a1:$b2").getResult());
