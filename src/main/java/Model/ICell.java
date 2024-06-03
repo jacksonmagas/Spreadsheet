@@ -9,14 +9,23 @@ import Model.Utils.ITerm;
  * Jackson Magas
  */
 public interface ICell extends ICellListener {
-    // Change the contents of the cell to the given data and call
-    void updateCell(ITerm data);
+    // Set the contents of this cell to the given data
+    void updateCell(String data);
 
     // get the coordinates of this cell
     Coordinate getCoordinate();
 
-    // returns the data contained in this cell
-    ITerm getData();
+    /**
+     * Get the value of the user input in this cell once parsed and evaluated
+     * @return The value of the user input as a string
+     */
+    String getData();
+
+    /**
+     * Get the verbatim text the user entered into this cell
+     * @return The user entered text as a string
+     */
+    String getPlaintext();
 
     // returns an object containing details about the formatting of the cell
     CellFormat getFormatting();

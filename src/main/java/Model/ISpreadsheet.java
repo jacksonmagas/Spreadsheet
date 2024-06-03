@@ -11,12 +11,8 @@ public interface ISpreadsheet {
     // Return the cell at the given coordinates, creating a new cell object if the cell is empty.
     ICell getCell(Coordinate coordinate);
 
-    // Return the ID of this spreadsheet
-    UUID getId();
-
-    // Update the cell pointed to by each reference 
-    
-    void updateSheet(List<Pair<Coordinate, ITerm>> update);
+    // Update the cell at each coordinate to the given string
+    void updateSheet(List<Pair<Coordinate, String>> update);
 
 
     /**

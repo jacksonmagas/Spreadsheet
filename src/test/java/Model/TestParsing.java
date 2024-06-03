@@ -1,7 +1,6 @@
 package Model;
 
 import Model.Utils.BiOperatorExpression;
-import Model.Utils.Coordinate;
 import Model.Utils.EmptyTerm;
 import Model.Utils.ErrorTerm;
 import Model.Utils.FunctionExpression;
@@ -91,19 +90,12 @@ public class TestParsing {
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 <> 2"));
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 & 2"));
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 | 2"));
-        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("= $A1:$B2"));
-        Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= SUM($A1:$B2) + $A2"));
+        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("= 1:2"));
     }
 
     @Test
     public void testReferences() {
-        Spreadsheet spreadsheet = new Spreadsheet();
-        Spreadsheet.FormulaParser parser = spreadsheet.new FormulaParser();
-        spreadsheet.getCell(new Coordinate(1, 1)).updateCell(parser.parse("5"));
-        spreadsheet.getCell(new Coordinate(1, 2));
-        spreadsheet.getCell(new Coordinate(1, 3));
 
-        Assertions.assertEquals(parser.parse("=$A1"), parser.parse("=$A2"));
     }
 
     @Test

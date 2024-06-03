@@ -21,7 +21,7 @@ public class ReferenceExpression extends Expression {
     @Override
     public void recalculate() {
         if (reference.getData() != null) {
-            value = reference.getData().getResult();
+            value = reference.getData();
         } else {
             value = null;
         }

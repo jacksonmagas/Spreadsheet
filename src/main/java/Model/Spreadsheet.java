@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
@@ -29,6 +28,7 @@ public class Spreadsheet implements ISpreadsheet {
     private final CellFormat defaultFormat;
     private final HashMap<Integer, CellFormat> rowDefaults;
     private final HashMap<Integer, CellFormat> columnDefaults;
+    private final FormulaParser parser;
 
     public Spreadsheet() {
         this.cells = new HashMap<>();
@@ -37,6 +37,7 @@ public class Spreadsheet implements ISpreadsheet {
         columnDefaults = new HashMap<>();
         // TODO set default formatting options
         defaultFormat = new CellFormat(1, 2, 3, 4, 5, 6, 7, 8);
+        this.parser = new FormulaParser();
     }
 
     @Override
@@ -47,20 +48,14 @@ public class Spreadsheet implements ISpreadsheet {
         return cells.get(coordinate);
     }
 
-    // TODO is this used anywhere?
-    @Override
-    public UUID getId() {
-        return null;
-    }
-
     /**
      * Update the sheet based on a list of cells and new data for those cells
-     * @param updates A list of coordinate, term pairs to update the sheet with
+     * @param updates A list of coordinate, text pairs to update the sheet with
      * Jackson Magas
      */
     @Override
-    public void updateSheet(List<Pair<Coordinate, ITerm>> updates) {
-        for (Pair<Coordinate, ITerm> pair : updates) {
+    public void updateSheet(List<Pair<Coordinate, String>> updates) {
+        for (Pair<Coordinate, String> pair : updates) {
             getCell(pair.getKey()).updateCell(pair.getValue());
         }
     }
@@ -68,7 +63,7 @@ public class Spreadsheet implements ISpreadsheet {
     /**
      * Class implementing formula parsing for this spreadsheet including looking up references
      */
-    class FormulaParser {
+     protected class FormulaParser {
         List<String> operators = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
         List<String> functions = Arrays.asList("IF", "SUM", "MAX", "MIN", "AVG", "CONCAT", "DEBUG");
 
@@ -339,6 +334,7 @@ public class Spreadsheet implements ISpreadsheet {
             this.coordinate = coordinate;
             this.listeners = new HashSet<>();
             this.format = initFormat();
+            this.term = new EmptyTerm();
         }
 
         private CellFormat initFormat() {
@@ -349,11 +345,9 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         @Override
-        public void updateCell(ITerm data) {
-            term = data;
-            if (term != null) {
-                term.recalculate();
-            }
+        public void updateCell(String data) {
+            term = parser.parse(data);
+            term.recalculate();
         }
 
 
@@ -363,8 +357,13 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         @Override
-        public ITerm getData() {
-            return term;
+        public String getData() {
+            return term.getResult();
+        }
+
+        @Override
+        public String getPlaintext() {
+            return term.toString();
         }
 
         @Override
@@ -374,7 +373,7 @@ public class Spreadsheet implements ISpreadsheet {
 
         @Override
         public boolean isEmpty() {
-            return term == null;
+            return term instanceof EmptyTerm;
         }
 
         /**

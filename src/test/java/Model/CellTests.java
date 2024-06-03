@@ -16,13 +16,12 @@ public class CellTests {
   public void testValueChanges() {
     Spreadsheet sheet = new Spreadsheet();
     ICell testCell = sheet.getCell(new Coordinate(0, 0));
-    Spreadsheet.FormulaParser parser = sheet.new FormulaParser();
 
     Assertions.assertTrue(testCell.isEmpty());
     Assertions.assertNull(testCell.getData());
-    testCell.updateCell(parser.parse("\"hello\""));
-    Assertions.assertEquals(testCell.getData(), parser.parse("hello"));
-    testCell.updateCell(parser.parse("=$A1"));
-    Assertions.assertEquals(testCell.getData(), parser.parse("=$A1"));
+    testCell.updateCell("\"hello\"");
+    Assertions.assertEquals(testCell.getData(), "hello");
+    testCell.updateCell("=$A1");
+    Assertions.assertEquals(testCell.getData(), "");
   }
 }
