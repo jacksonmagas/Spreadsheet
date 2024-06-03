@@ -11,6 +11,12 @@ public class StringTerm implements ITerm {
         this.value = value;
     }
 
+    /**
+     * The result of a string term is what to display for this term.
+     * Outer quotes are removed for the display.
+     * Jackson Magas
+     * @return the value of this term with outer quotes removed
+     */
     @Override
     public String getResult() {
         if (value.startsWith("\"") && value.endsWith("\"")) {
@@ -19,18 +25,22 @@ public class StringTerm implements ITerm {
             return value;
         }
     }
-    
+
+    // Jackson Magas
     public String toString() {
         return value;
     }
 
+    // Jackson Magas
     @Override
     public void recalculate() {
-        // intentionally empty
+        // intentionally empty value terms do not need to recalculate
     }
 
+    // Jackson Magas
     @Override
     public List<Coordinate> dependencies() {
+        // value terms have no dependencies
         return new ArrayList<Coordinate>();
     }
 

@@ -10,6 +10,7 @@ import Model.Utils.FunctionExpression.FunctionType;
 import Model.Utils.ITerm;
 import Model.Utils.NumberTerm;
 import Model.Utils.ParenExpression;
+import Model.Utils.RangeExpression;
 import Model.Utils.ReferenceExpression;
 import Model.Utils.StringTerm;
 import java.text.ParseException;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
@@ -206,10 +208,26 @@ public class Spreadsheet implements ISpreadsheet {
                 if (token.type == TokenType.operator) {
                     if (operatorIndex == tokens.size() - 1) {
                         throw new ParseException("Nothing after operator", 0);
-                    }
-                    return new BiOperatorExpression(token.strValue,
-                        parse(tokens.subList(0, operatorIndex)),
+                    } else if (token.strValue.equals(":")) {
+                        if (tokens.size() != 3) {
+                            throw new ParseException("Invalid range", 0);
+                        }
+                        Token left = tokens.get(operatorIndex - 1);
+                        Token right = tokens.get(operatorIndex + 1);
+                        if (left.type == TokenType.reference
+                            && right.type == TokenType.reference
+                            && Conversions.stringToCoordinate(left.strValue)
+                                .compareTo(Conversions
+                                    .stringToCoordinate(right.strValue)) == 1) {
+                            return new RangeExpression(Conversions.stringToCoordinate(left.strValue)
+                                .getRange(Conversions.stringToCoordinate((right.strValue))).stream()
+                                .map(Spreadsheet.this::getCell).toList());
+                        }
+                    } else {
+                        return new BiOperatorExpression(token.strValue,
+                            parse(tokens.subList(0, operatorIndex)),
                             parse(tokens.subList(operatorIndex + 1, tokens.size())));
+                    }
                 }
                 ++operatorIndex;
             }
