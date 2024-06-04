@@ -1,8 +1,7 @@
-package Model.Utils;
+package Model.Expressions;
 
+import Model.Utils.Coordinate;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractExpression implements ITerm {
@@ -21,11 +20,6 @@ public abstract class AbstractExpression implements ITerm {
     @Override
     public String toString() {
         return plaintext;
-    }
-
-    @Override
-    public List<Coordinate> dependencies() {
-        return dependencies;
     }
 
     protected String format(double value) {

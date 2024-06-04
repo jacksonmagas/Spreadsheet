@@ -1,8 +1,6 @@
-package Model.Utils;
+package Model.Expressions;
 
-import java.util.List;
-
-public class EmptyTerm implements ITerm {
+public class EmptyTerm extends AbstractValueTerm {
     @Override
     public String getResult() {
         return "";
@@ -19,12 +17,12 @@ public class EmptyTerm implements ITerm {
     }
 
     @Override
-    public void recalculate() {
-
+    public boolean equals(Object o) {
+        return o instanceof EmptyTerm;
     }
 
     @Override
-    public List<Coordinate> dependencies() {
-        return List.of();
+    public int hashCode() {
+        return 0;
     }
 }

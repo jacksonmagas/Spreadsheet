@@ -1,19 +1,19 @@
 package Model;
 
-import Model.Utils.BiOperatorExpression;
+import Model.Expressions.BiOperatorExpression;
 import Model.Utils.Conversions;
 import Model.Utils.Coordinate;
-import Model.Utils.EmptyTerm;
-import Model.Utils.ErrorTerm;
-import Model.Utils.FunctionExpression;
-import Model.Utils.FunctionExpression.FunctionType;
-import Model.Utils.ITerm;
-import Model.Utils.ITerm.ResultType;
-import Model.Utils.NumberTerm;
-import Model.Utils.ParenExpression;
-import Model.Utils.RangeExpression;
-import Model.Utils.ReferenceExpression;
-import Model.Utils.StringTerm;
+import Model.Expressions.EmptyTerm;
+import Model.Expressions.ErrorTerm;
+import Model.Expressions.FunctionExpression;
+import Model.Expressions.FunctionExpression.FunctionType;
+import Model.Expressions.ITerm;
+import Model.Expressions.ITerm.ResultType;
+import Model.Expressions.NumberTerm;
+import Model.Expressions.ParenExpression;
+import Model.Expressions.RangeExpression;
+import Model.Expressions.ReferenceExpression;
+import Model.Expressions.StringTerm;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -380,15 +380,23 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         /**
-         * Update this cell with new user input
-         * Parses the input and then recalculates its value
+         * Update this cell with new user input.
+         * Parses the input and then recalculates its value.
          * Jackson Magas
          * @param data the user input to parse
          */
         @Override
         public void updateCell(String data) {
+            /* TODO currently this registers as a listener to more cells than strictly necessary
+            $A1 <- $A2 and $A2 <- $A3 and $A3 <- $A4 and the value of $A4 changes then the calls:
+            $A4 updates $A3, $A2, $A1
+            $A3 updates $A2, $A1
+            $A2 updates $A1
+            This means that for a chain of n references there are O(n^2) calls instead of O(n)
+             */
             term = parser.parse(data);
             term.recalculate();
+            //TODO
         }
 
 
@@ -454,37 +462,23 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         /**
-         * Check if this cell appears in its dependency tree
-         * @param source the Coordinate of the source cell
-         * @return true if this cell depends on itself
-         * Jackson Magas
+         * Register the given listener as a listener for updates to this cell.
+         * @throws IllegalStateException if this depends on the given listener
+         * @param listener the listener to register
          */
         @Override
-        public boolean circularReference(ICell source) {
-            for (ICellListener listener : listeners) {
-                if (listener == source) {
-                    return true;
-                }
-                if (listener.circularReference(source)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-
-        @Override
         public void registerListener(ICellListener listener) {
-            this.listeners.add(listener);
+            if (listener instanceof ICell && this.dependsOn(((ICell) listener).getCoordinate())) {
+                throw new IllegalStateException("Circular reference detected");
+            } else {
+                listeners.add(listener);
+            }
         }
 
         @Override
         public void notifyListeners() {
-            if (!circularReference(this)) {
-                for (ICellListener listener : listeners) {
-                    listener.handleUpdate();
-                }
+            for (ICellListener listener : listeners) {
+                listener.handleUpdate();
             }
         }
 
@@ -496,6 +490,16 @@ public class Spreadsheet implements ISpreadsheet {
         @Override
         public ResultType dataType() {
             return term.resultType();
+        }
+
+        /**
+         * Every cell depends on itself
+         * @param cellLoc the cell to search the dependency tree for
+         * @return true if this cell depends on the given cell
+         */
+        @Override
+        public boolean dependsOn(Coordinate cellLoc) {
+            return getCoordinate().equals(cellLoc) || term.dependsOn(cellLoc);
         }
     }
 }

@@ -1,8 +1,7 @@
 package Model;
 
 import Model.Utils.Coordinate;
-import Model.Utils.ITerm;
-import Model.Utils.ITerm.ResultType;
+import Model.Expressions.ITerm.ResultType;
 
 /**
  * An ICell is a rectangular cell in a spreadsheet with a term of data
@@ -55,4 +54,5 @@ public interface ICell extends ICellListener {
      * @return the data type
      */
     ResultType dataType();
+
 }

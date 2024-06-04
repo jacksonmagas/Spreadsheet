@@ -1,10 +1,10 @@
-package Model.Utils;
+package Model.Expressions;
 
-import java.util.ArrayList;
+import Model.Utils.Coordinate;
 import java.util.List;
 import java.util.Objects;
 
-public class ErrorTerm implements ITerm {
+public class ErrorTerm extends AbstractValueTerm {
     private final String plaintext;
 
     public ErrorTerm(String plaintext) {
@@ -22,24 +22,13 @@ public class ErrorTerm implements ITerm {
     }
 
     @Override
+    public List<Coordinate> references() {
+        return super.references();
+    }
+
+    @Override
     public ResultType resultType() {
         return ResultType.error;
-    }
-
-    // an error term is considered not empty, though it shouldn't come up
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public void recalculate() {
-
-    }
-
-    @Override
-    public List<Coordinate> dependencies() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -48,7 +37,7 @@ public class ErrorTerm implements ITerm {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
-            return false;
+            return this.isEmpty();
         }
         ErrorTerm errorTerm = (ErrorTerm) o;
         return Objects.equals(plaintext, errorTerm.plaintext);

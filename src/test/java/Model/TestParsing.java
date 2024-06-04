@@ -1,15 +1,15 @@
 package Model;
 
-import Model.Utils.BiOperatorExpression;
+import Model.Expressions.BiOperatorExpression;
 import Model.Utils.Coordinate;
-import Model.Utils.EmptyTerm;
-import Model.Utils.ErrorTerm;
-import Model.Utils.FunctionExpression;
-import Model.Utils.ITerm;
-import Model.Utils.NumberTerm;
-import Model.Utils.ParenExpression;
-import Model.Utils.ReferenceExpression;
-import Model.Utils.StringTerm;
+import Model.Expressions.EmptyTerm;
+import Model.Expressions.ErrorTerm;
+import Model.Expressions.FunctionExpression;
+import Model.Expressions.ITerm;
+import Model.Expressions.NumberTerm;
+import Model.Expressions.ParenExpression;
+import Model.Expressions.ReferenceExpression;
+import Model.Expressions.StringTerm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

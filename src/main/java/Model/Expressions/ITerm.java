@@ -1,5 +1,6 @@
-package Model.Utils;
+package Model.Expressions;
 
+import Model.Utils.Coordinate;
 import java.util.List;
 
 public interface ITerm {
@@ -9,6 +10,14 @@ public interface ITerm {
     // get raw text entered into the formula
     @Override
     String toString();
+
+
+    /**
+     * Gets a list of all cells referenced directly by this term.
+     * For example =SUM($A1, $A2, $A3) would return List.of($A1, $A2, $A3)
+     * @return the list of references
+     */
+    List<Coordinate> references();
 
     enum ResultType {
         string, number, empty, error
@@ -33,8 +42,9 @@ public interface ITerm {
     void recalculate();
 
     /**
-     * Return the coordinates of all cells who's value this formula depends on
-     * @return A list of dependency coordinates
+     * Determine if this term depends on the value of the cell at cellLoc
+     * @param cellLoc the location of the cell to check for
+     * @return true if this cell depends on the given cell
      */
-    List<Coordinate> dependencies();
+    boolean dependsOn(Coordinate cellLoc);
 }

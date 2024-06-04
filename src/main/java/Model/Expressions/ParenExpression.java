@@ -1,5 +1,7 @@
-package Model.Utils;
+package Model.Expressions;
 
+import Model.Utils.Coordinate;
+import java.util.List;
 import java.util.Objects;
 
 public class ParenExpression extends AbstractExpression {
@@ -10,6 +12,11 @@ public class ParenExpression extends AbstractExpression {
         this.enclosed = enclosed;
         this.plaintext = "(" + enclosed.toString() + ")";
         this.value = enclosed.getResult();
+    }
+
+    @Override
+    public List<Coordinate> references() {
+        return enclosed.references();
     }
 
     @Override
@@ -25,6 +32,11 @@ public class ParenExpression extends AbstractExpression {
     @Override
     public void recalculate() {
         value = enclosed.getResult();
+    }
+
+    @Override
+    public boolean dependsOn(Coordinate cellLoc) {
+        return enclosed.dependsOn(cellLoc);
     }
 
     @Override
