@@ -1,6 +1,7 @@
-package Model.Utils;
+package Model.Expressions;
 
 import Model.ICell;
+import Model.Utils.Coordinate;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,9 +15,8 @@ public class ReferenceExpression extends AbstractExpression {
     }
 
     @Override
-    public List<Coordinate> dependencies() {
-        // TODO
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<Coordinate> references() {
+        return List.of(reference.getCoordinate());
     }
 
     @Override
@@ -32,6 +32,11 @@ public class ReferenceExpression extends AbstractExpression {
     @Override
     public void recalculate() {
         value = reference.getData();
+    }
+
+    @Override
+    public boolean dependsOn(Coordinate cellLoc) {
+        return cellLoc.equals(reference.getCoordinate()) || reference.dependsOn(cellLoc);
     }
 
     @Override

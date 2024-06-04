@@ -1,5 +1,6 @@
-package Model.Utils;
+package Model.Expressions;
 
+import Model.Utils.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -36,6 +37,11 @@ public class FunctionExpression extends AbstractExpression {
         }
         this.plaintext = plaintext.append(")").toString();
         recalculate();
+    }
+
+    @Override
+    public List<Coordinate> references() {
+        return args.stream().map(ITerm::references).flatMap(List::stream).toList();
     }
 
     @Override
@@ -91,6 +97,11 @@ public class FunctionExpression extends AbstractExpression {
                 value = calculateDebug();
             }
         }
+    }
+
+    @Override
+    public boolean dependsOn(Coordinate cellLoc) {
+        return args.stream().anyMatch(arg -> arg.dependsOn(cellLoc));
     }
 
     /**

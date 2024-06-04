@@ -1,6 +1,7 @@
-package Model.Utils;
+package Model.Expressions;
 
 import Model.ICell;
+import Model.Utils.Coordinate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,11 @@ public class RangeExpression extends AbstractExpression {
         return cells.stream().map(ReferenceExpression::new).collect(Collectors.toUnmodifiableList());
     }
 
+    @Override
+    public List<Coordinate> references() {
+        return getReferenceExpressions().stream().map(ITerm::references).flatMap(List::stream).toList();
+    }
+
     // getting the result of a range directly is an error
     @Override
     public ResultType resultType() {
@@ -43,5 +49,10 @@ public class RangeExpression extends AbstractExpression {
     @Override
     public void recalculate() {
 
+    }
+
+    @Override
+    public boolean dependsOn(Coordinate cellLoc) {
+        return cells.stream().anyMatch((ICell c) -> c.dependsOn(cellLoc));
     }
 }

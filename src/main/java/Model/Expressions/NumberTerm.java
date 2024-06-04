@@ -1,10 +1,11 @@
-package Model.Utils;
+package Model.Expressions;
 
+import Model.Utils.Coordinate;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
-public class NumberTerm implements ITerm {
+public class NumberTerm extends AbstractValueTerm {
     private final double value;
 
     public NumberTerm(double value) {
@@ -21,23 +22,13 @@ public class NumberTerm implements ITerm {
     }
 
     @Override
+    public List<Coordinate> references() {
+        return super.references();
+    }
+
+    @Override
     public ResultType resultType() {
         return ResultType.number;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public void recalculate() {
-        // a number term doesn't change when recalculated
-    }
-
-    @Override
-    public List<Coordinate> dependencies() {
-        return List.of();
     }
 
     @Override

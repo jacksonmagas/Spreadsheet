@@ -1,4 +1,4 @@
-package Model.Utils;
+package Model.Expressions;
 
 public class CircularErrorTerm extends ErrorTerm {
     public CircularErrorTerm(String plaintext) {

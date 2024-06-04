@@ -1,5 +1,6 @@
-package Model.Utils;
+package Model.Expressions;
 
+import Model.Utils.Coordinate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +20,13 @@ public class BiOperatorExpression extends AbstractExpression {
         this.left = left;
         this.right = right;
         recalculate();
+    }
+
+    @Override
+    public List<Coordinate> references() {
+         List<Coordinate> refs = left.references();
+         refs.addAll(right.references());
+         return refs;
     }
 
     @Override
@@ -97,6 +105,11 @@ public class BiOperatorExpression extends AbstractExpression {
                 value = VALUE_ERROR;
             }
         }
+    }
+
+    @Override
+    public boolean dependsOn(Coordinate cellLoc) {
+        return left.dependsOn(cellLoc) || right.dependsOn(cellLoc);
     }
 
     private void calculateAddition(boolean bothNumbers, double leftValue, double rightValue) {

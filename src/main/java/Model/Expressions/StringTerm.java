@@ -1,10 +1,7 @@
-package Model.Utils;
+package Model.Expressions;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class StringTerm implements ITerm {
+public class StringTerm extends AbstractValueTerm {
     String value;
 
     public StringTerm(String value) {
@@ -47,24 +44,6 @@ public class StringTerm implements ITerm {
     @Override
     public ResultType resultType() {
         return ResultType.string;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    // Jackson Magas
-    @Override
-    public void recalculate() {
-        // intentionally empty value terms do not need to recalculate
-    }
-
-    // Jackson Magas
-    @Override
-    public List<Coordinate> dependencies() {
-        // value terms have no dependencies
-        return new ArrayList<Coordinate>();
     }
 
     @Override

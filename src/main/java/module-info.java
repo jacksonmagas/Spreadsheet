@@ -17,4 +17,6 @@ module com.example.huskysheet {
     opens Model.Utils to javafx.fxml;
     opens Server.api to org.mockito;
     opens Server.model to org.mockito;
+    exports Model.Expressions;
+    opens Model.Expressions to javafx.fxml;
 }
