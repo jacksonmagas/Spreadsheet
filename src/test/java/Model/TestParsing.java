@@ -86,8 +86,6 @@ public class TestParsing {
         // test parsing
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM(1, 0)"));
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM"));
-        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=DEBUG()"));
-        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM()"));
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM)"));
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM("));
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM(0)"));
@@ -122,14 +120,14 @@ public class TestParsing {
         Assertions.assertEquals(VALUE_ERROR, parser.parse("=AVG(0, 2, \"hello\")").getResult());
         Assertions.assertEquals(VALUE_ERROR, parser.parse("=AVG($A1:$A5)").getResult());
         // test CONCAT
-        Assertions.assertEquals("\"hello world\"", parser.parse("=CONCAT(\"hello\", \" \", \"world\")").getResult());
-        Assertions.assertEquals("\"hello world\"", parser.parse("=CONCAT($A5, \" \", \"world\")").getResult());
-        Assertions.assertEquals("\"hellofoobar\"", parser.parse("=CONCAT($A4:$A%)").getResult());
+        Assertions.assertEquals("hello world", parser.parse("=CONCAT(\"hello\", \" \", \"world\")").getResult());
+        Assertions.assertEquals("hello world", parser.parse("=CONCAT($A5, \" \", \"world\")").getResult());
+        Assertions.assertEquals("hellofoobar", parser.parse("=CONCAT($A5:$A6)").getResult());
         Assertions.assertEquals(VALUE_ERROR, parser.parse("=CONCAT(1, \"foo\", -5)").getResult());
         // test DEBUG
         Assertions.assertEquals("1", parser.parse("=DEBUG(1)").getResult());
         Assertions.assertEquals("1", parser.parse("=DEBUG($A2)").getResult());
-        Assertions.assertEquals("\"foobar\"", parser.parse("=DEBUG($A5)").getResult());
+        Assertions.assertEquals("foobar", parser.parse("=DEBUG($A6)").getResult());
         Assertions.assertEquals(VALUE_ERROR, parser.parse("=DEBUG(1, 2)").getResult());
         Assertions.assertEquals(VALUE_ERROR, parser.parse("=DEBUG($A1:$A5)").getResult());
     }

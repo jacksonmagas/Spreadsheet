@@ -21,12 +21,20 @@ public class FunctionExpression extends AbstractExpression {
      */
     public FunctionExpression(FunctionType type, List<ITerm> parameters) {
         this.type = type;
+        StringBuilder plaintext = new StringBuilder().append(type).append("(");
         for (ITerm arg : parameters) {
+            plaintext.append(arg.toString()).append(", ");
             // Coupling is annoying but would need a major refactor to fix
             if (arg instanceof RangeExpression) {
                 args.addAll(((RangeExpression) arg).getReferenceExpressions());
+            } else {
+                args.add(arg);
             }
         }
+        if (!args.isEmpty()) {
+            plaintext.setLength(plaintext.length() - 1);
+        }
+        this.plaintext = plaintext.append(")").toString();
         recalculate();
     }
 
@@ -231,7 +239,7 @@ public class FunctionExpression extends AbstractExpression {
      * @return the value of IF(arg[1], arg[2], arg[3])
      */
     private String calculateIf() {
-        if (args.size() == 3 || isNumber(args.getFirst().getResult())) {
+        if (args.size() == 3 && isNumber(args.getFirst().getResult())) {
             if (args.getFirst().getResult().equals("0")) {
                 resultType = args.get(2).resultType();
                 return args.get(2).getResult();
