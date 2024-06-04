@@ -13,8 +13,18 @@ public class ParenExpression extends AbstractExpression {
     }
 
     @Override
-    public void recalculate() {
+    public ResultType resultType() {
+        return enclosed.resultType();
+    }
 
+    @Override
+    public boolean isEmpty() {
+        return enclosed.isEmpty();
+    }
+
+    @Override
+    public void recalculate() {
+        value = enclosed.getResult();
     }
 
     @Override

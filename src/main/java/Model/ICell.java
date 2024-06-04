@@ -2,6 +2,7 @@ package Model;
 
 import Model.Utils.Coordinate;
 import Model.Utils.ITerm;
+import Model.Utils.ITerm.ResultType;
 
 /**
  * An ICell is a rectangular cell in a spreadsheet with a term of data
@@ -48,4 +49,10 @@ public interface ICell extends ICellListener {
      * @param formatting formatting
      */
     void setFormatting(CellFormat formatting);
+
+    /**
+     * Get the type of data held by this cell either string, number, or empty
+     * @return the data type
+     */
+    ResultType dataType();
 }

@@ -21,8 +21,18 @@ public class NumberTerm implements ITerm {
     }
 
     @Override
-    public void recalculate() {
+    public ResultType resultType() {
+        return ResultType.number;
+    }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public void recalculate() {
+        // a number term doesn't change when recalculated
     }
 
     @Override

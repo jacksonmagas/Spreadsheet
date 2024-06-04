@@ -9,6 +9,16 @@ public class EmptyTerm implements ITerm {
     }
 
     @Override
+    public ResultType resultType() {
+        return ResultType.empty;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
     public void recalculate() {
 
     }

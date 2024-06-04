@@ -1,15 +1,14 @@
 package Model.Utils;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
 public class BiOperatorExpression extends AbstractExpression {
     private static final List<String> OPERATORS = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
-    private static final String DIV_ZERO = "#DIV/0!";
     String operator;
     ITerm left;
     ITerm right;
+    ResultType resultType;
 
     public BiOperatorExpression(String operator, ITerm left, ITerm right) {
         if (OPERATORS.contains(operator)) {
@@ -23,7 +22,30 @@ public class BiOperatorExpression extends AbstractExpression {
     }
 
     @Override
+    public ResultType resultType() {
+        return resultType;
+    }
+
+    /**
+     * An operator expression is never considered empty
+     */
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public void recalculate() {
+        // if either side is an error this should mimic that error
+        if (left.resultType() == ResultType.error) {
+            resultType = ResultType.error;
+            value = left.getResult();
+            return;
+        } else if (right.resultType() == ResultType.error) {
+            resultType = ResultType.error;
+            value = right.getResult();
+            return;
+        }
         boolean leftNumber = false;
         boolean rightNumber = false;
         double leftValue = 0;
@@ -41,90 +63,152 @@ public class BiOperatorExpression extends AbstractExpression {
 
         switch (operator) {
             case "+" -> {
-               if (bothNumbers) {
-                   value = format(leftValue + rightValue);
-               } else {
-                   value = VALUE_ERROR;
-               }
+                calculateAddition(bothNumbers, leftValue, rightValue);
             }
             case "-" -> {
-                if (bothNumbers) {
-                    value = format(leftValue - rightValue);
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateMinus(bothNumbers, leftValue, rightValue);
             }
             case "*" -> {
-                if (bothNumbers) {
-                    value = format(leftValue * rightValue);
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateTimes(bothNumbers, leftValue, rightValue);
             }
             case "/" -> {
-                if (bothNumbers) {
-                    if (rightValue != 0) {
-                        value = format(leftValue / rightValue);
-                    } else {
-                        value = DIV_ZERO;
-                    }
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateDivision(bothNumbers, rightValue, leftValue);
             }
             case "<" -> {
-                if (bothNumbers) {
-                   value = leftValue < rightValue ? "1" : "0";
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateLess(bothNumbers, leftValue, rightValue);
             }
             case ">" -> {
-                if (bothNumbers) {
-                    value = leftValue > rightValue ? "1" : "0";
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateGreater(bothNumbers, leftValue, rightValue);
             }
             case "=" -> {
-                if (bothNumbers) {
-                    value = leftValue == rightValue ? "1" : "0";
-                } else if (bothStrings) {
-                    value = left.getResult().equals(right.getResult()) ? "1" : "0";
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateEquals(bothNumbers, leftValue, rightValue, bothStrings);
             }
             case "<>" -> {
-               if (bothNumbers) {
-                   value = leftValue != rightValue ? "1" : "0";
-               } else if (bothStrings) {
-                   value = !left.getResult().equals(right.getResult()) ? "1" : "0";
-               } else {
-                   value = VALUE_ERROR;
-               }
+                calculateNeq(bothNumbers, leftValue, rightValue, bothStrings);
             }
             case "&" -> {
-                if (bothNumbers) {
-                    value = Math.abs(leftValue - 0) > 1e-9 && Math.abs(rightValue - 0) > 1e-9 ? "1" : "0";
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateAnd(bothNumbers, leftValue, rightValue);
             }
             case "|" -> {
-                if (bothNumbers) {
-                    value = Math.abs(leftValue - 0) > 1e-9 || Math.abs(rightValue - 0) > 1e-9 ? "1" : "0";
-                } else {
-                    value = VALUE_ERROR;
-                }
+                calculateOr(bothNumbers, leftValue, rightValue);
             }
             case ":" -> {
+                resultType = ResultType.error;
                 value = VALUE_ERROR;
             }
         }
     }
 
-    private String format(double value) {
-        return new DecimalFormat("#.################").format(value);
+    private void calculateAddition(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = format(leftValue + rightValue);
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateMinus(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = format(leftValue - rightValue);
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateTimes(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = format(leftValue * rightValue);
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateDivision(boolean bothNumbers, double rightValue, double leftValue) {
+        if (bothNumbers) {
+            if (rightValue != 0) {
+                resultType = ResultType.number;
+                value = format(leftValue / rightValue);
+            } else {
+                resultType = ResultType.error;
+                value = DIV_ZERO;
+            }
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateLess(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = leftValue < rightValue ? "1" : "0";
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateGreater(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = leftValue > rightValue ? "1" : "0";
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateEquals(boolean bothNumbers, double leftValue, double rightValue,
+        boolean bothStrings) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = leftValue == rightValue ? "1" : "0";
+        } else if (bothStrings) {
+            resultType = ResultType.number;
+            value = left.getResult().equals(right.getResult()) ? "1" : "0";
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateNeq(boolean bothNumbers, double leftValue, double rightValue,
+        boolean bothStrings) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = leftValue != rightValue ? "1" : "0";
+        } else if (bothStrings) {
+            resultType = ResultType.number;
+            value = !left.getResult().equals(right.getResult()) ? "1" : "0";
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateAnd(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = Math.abs(leftValue - 0) > 1e-9 && Math.abs(rightValue - 0) > 1e-9 ? "1" : "0";
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
+    }
+
+    private void calculateOr(boolean bothNumbers, double leftValue, double rightValue) {
+        if (bothNumbers) {
+            resultType = ResultType.number;
+            value = Math.abs(leftValue - 0) > 1e-9 || Math.abs(rightValue - 0) > 1e-9 ? "1" : "0";
+        } else {
+            resultType = ResultType.error;
+            value = VALUE_ERROR;
+        }
     }
 }

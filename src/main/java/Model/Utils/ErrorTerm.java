@@ -22,6 +22,17 @@ public class ErrorTerm implements ITerm {
     }
 
     @Override
+    public ResultType resultType() {
+        return ResultType.error;
+    }
+
+    // an error term is considered not empty, though it shouldn't come up
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public void recalculate() {
 
     }

@@ -8,7 +8,6 @@ import Model.Utils.FunctionExpression;
 import Model.Utils.ITerm;
 import Model.Utils.NumberTerm;
 import Model.Utils.ParenExpression;
-import Model.Utils.RangeExpression;
 import Model.Utils.ReferenceExpression;
 import Model.Utils.StringTerm;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +18,9 @@ import org.junit.jupiter.api.Test;
  * Jackson Magas
  */
 public class TestParsing {
+
+    private static final String VALUE_ERROR = "#VALUE!";
+
     @Test
     public void testString() {
         Spreadsheet spreadsheet = new Spreadsheet();
@@ -74,80 +76,130 @@ public class TestParsing {
     public void testFunctions() {
         Spreadsheet spreadsheet = new Spreadsheet();
         Spreadsheet.FormulaParser parser = spreadsheet.new FormulaParser();
+        spreadsheet.getCell(new Coordinate("$A1")).updateCell("0");
+        spreadsheet.getCell(new Coordinate("$A2")).updateCell("1");
+        spreadsheet.getCell(new Coordinate("$A3")).updateCell("2");
+        spreadsheet.getCell(new Coordinate("$A4")).updateCell("3");
+        spreadsheet.getCell(new Coordinate("$A5")).updateCell("\"hello\"");
+        spreadsheet.getCell(new Coordinate("$A6")).updateCell("\"foobar\"");
 
+        // test parsing
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM(1, 0)"));
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM"));
+        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=DEBUG()"));
+        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM()"));
+        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM)"));
+        Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("=SUM("));
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM(0)"));
+        Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM($A1:$A5)"));
+        Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=SUM($A1:$A4, $A5)"));
         Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=AVG(SUM(5, 4, 3), 12, MAX(10, 3, 5))"));
+        // test IF
+        Assertions.assertInstanceOf(FunctionExpression.class, parser.parse("=IF(1, 2, 3)"));
+        Assertions.assertEquals("2", parser.parse("=IF(1, 2, 3)").getResult());
+        Assertions.assertEquals("3", parser.parse("=IF(0, 2, 3)").getResult());
+        Assertions.assertEquals("hello", parser.parse("=IF(0, 2, \"hello\")").getResult());
+        Assertions.assertEquals("2", parser.parse("=IF($A1:$A3)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=IF(\"test\", 2, 3)").getResult());
+        // test SUM
+        Assertions.assertEquals("3", parser.parse("=SUM(0, 1, 2)").getResult());
+        Assertions.assertEquals("6", parser.parse("=SUM($A1:$A4)").getResult());
+        Assertions.assertEquals("6", parser.parse("=SUM($A2, $A3, $A4)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=SUM(0, 2, \"hello\")").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=SUM($A1:$A5)").getResult());
+        // test MAX
+        Assertions.assertEquals("3.5", parser.parse("=MAX(0, -1, 2, 3.5, 3.5)").getResult());
+        Assertions.assertEquals("2", parser.parse("=MAX($A1:$A3)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=MAX($A2, $A3, $A4, $A5)").getResult());
+        // test MIN
+        Assertions.assertEquals("-1", parser.parse("=MIN(0, -1, 2, 3.5, 3.5)").getResult());
+        Assertions.assertEquals("0", parser.parse("=MIN($A1:$A3)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=MIN($A2, $A3, $A4, $A5)").getResult());
+        // test AVG
+        Assertions.assertEquals("1", parser.parse("=AVG(0, 1, 2)").getResult());
+        Assertions.assertEquals("1.5", parser.parse("=AVG($A1:$A4)").getResult());
+        Assertions.assertEquals("2", parser.parse("=AVG($A2, $A3, $A4)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=AVG(0, 2, \"hello\")").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=AVG($A1:$A5)").getResult());
+        // test CONCAT
+        Assertions.assertEquals("\"hello world\"", parser.parse("=CONCAT(\"hello\", \" \", \"world\")").getResult());
+        Assertions.assertEquals("\"hello world\"", parser.parse("=CONCAT($A5, \" \", \"world\")").getResult());
+        Assertions.assertEquals("\"hellofoobar\"", parser.parse("=CONCAT($A4:$A%)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=CONCAT(1, \"foo\", -5)").getResult());
+        // test DEBUG
+        Assertions.assertEquals("1", parser.parse("=DEBUG(1)").getResult());
+        Assertions.assertEquals("1", parser.parse("=DEBUG($A2)").getResult());
+        Assertions.assertEquals("\"foobar\"", parser.parse("=DEBUG($A5)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=DEBUG(1, 2)").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=DEBUG($A1:$A5)").getResult());
     }
 
     @Test
     public void testOperators() {
         Spreadsheet spreadsheet = new Spreadsheet();
         Spreadsheet.FormulaParser parser = spreadsheet.new FormulaParser();
-        String valueError = "#VALUE!";
 
         // test +
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 + 2"));
         Assertions.assertEquals("3", parser.parse("= 1 + 2").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 + \"hello\"").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= \"a\" + \"b\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 + \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= \"a\" + \"b\"").getResult());
         // test -
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 - 2"));
         Assertions.assertEquals("-1", parser.parse("= 1 - 2").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 - \"hello\"").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= \"a\" - \"b\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 - \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= \"a\" - \"b\"").getResult());
         // test *
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 * 2"));
         Assertions.assertEquals("2", parser.parse("= 1 * 2").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 * \"hello\"").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= \"a\" * \"b\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 * \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= \"a\" * \"b\"").getResult());
         // test /
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 / 2"));
         Assertions.assertEquals("0.5", parser.parse("= 1 / 2").getResult());
         Assertions.assertEquals("#DIV/0!", parser.parse("= 1 / 0").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 / \"hello\"").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= \"a\" / \"b\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 / \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= \"a\" / \"b\"").getResult());
         // test <
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 < 2"));
         Assertions.assertEquals("1", parser.parse("= 1 < 2").getResult());
         Assertions.assertEquals("0", parser.parse("= 2 < 1").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 < \"hello\"").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= \"a\" < \"b\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 < \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= \"a\" < \"b\"").getResult());
         // test >
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 > 2"));
         Assertions.assertEquals("0", parser.parse("= 1 > 2").getResult());
         Assertions.assertEquals("1", parser.parse("= 2 > 1").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 > \"hello\"").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= \"a\" > \"b\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 > \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= \"a\" > \"b\"").getResult());
         // test =
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 = 2"));
         Assertions.assertEquals("0", parser.parse("= 1 = 2").getResult());
         Assertions.assertEquals("1", parser.parse("= 1 = 1").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 = \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 = \"hello\"").getResult());
         Assertions.assertEquals("0", parser.parse("= \"a\" = \"b\"").getResult());
         Assertions.assertEquals("1", parser.parse("= \"a\" = \"a\"").getResult());
         // test <>
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 <> 2"));
         Assertions.assertEquals("0", parser.parse("= 1 <> 1").getResult());
         Assertions.assertEquals("1", parser.parse("= 1 <> 2").getResult());
-        Assertions.assertEquals(valueError, parser.parse("=\"hello\"<>1").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("=\"hello\"<>1").getResult());
         Assertions.assertEquals("1", parser.parse("= \"a\" <> \"b\"").getResult());
         Assertions.assertEquals("0", parser.parse("= \"a\" <> \"a\"").getResult());
         // test &
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 & 2"));
         Assertions.assertEquals("1", parser.parse("= 1 & 2").getResult());
         Assertions.assertEquals("0", parser.parse("= 1 & 0").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 & \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 & \"hello\"").getResult());
         // test |
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 | 2"));
         Assertions.assertEquals("1", parser.parse("= 1 | 2").getResult());
         Assertions.assertEquals("1", parser.parse("= 1 | 0").getResult());
         Assertions.assertEquals("0", parser.parse("= 0 | 0").getResult());
-        Assertions.assertEquals(valueError, parser.parse("= 1 | \"hello\"").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= 1 | \"hello\"").getResult());
         // assure : must be a range and check that outside a function it gives value error
         Assertions.assertInstanceOf(ErrorTerm.class, parser.parse("= 1:2"));
-        Assertions.assertEquals(valueError, parser.parse("= $a1:$b2").getResult());
+        Assertions.assertEquals(VALUE_ERROR, parser.parse("= $a1:$b2").getResult());
     }
 
     /**

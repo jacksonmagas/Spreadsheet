@@ -8,6 +8,7 @@ import Model.Utils.ErrorTerm;
 import Model.Utils.FunctionExpression;
 import Model.Utils.FunctionExpression.FunctionType;
 import Model.Utils.ITerm;
+import Model.Utils.ITerm.ResultType;
 import Model.Utils.NumberTerm;
 import Model.Utils.ParenExpression;
 import Model.Utils.RangeExpression;
@@ -438,7 +439,7 @@ public class Spreadsheet implements ISpreadsheet {
          */
         @Override
         public boolean isEmpty() {
-            return term instanceof EmptyTerm;
+            return term.isEmpty();
         }
 
         /**
@@ -490,6 +491,11 @@ public class Spreadsheet implements ISpreadsheet {
         @Override
         public void setFormatting(CellFormat formatting) {
             this.format = formatting;
+        }
+
+        @Override
+        public ResultType dataType() {
+            return term.resultType();
         }
     }
 }
