@@ -14,6 +14,16 @@ public class Coordinate {
     }
 
     /**
+     * Alternative coordinate constructor from string representation $AA12
+     * @param coordinate the string representation of the coordinate
+     */
+    public Coordinate(String coordinate) throws IllegalArgumentException {
+        Coordinate temp = Conversions.stringToCoordinate(coordinate);
+        this.row = temp.getRow();
+        this.column = temp.getColumn();
+    }
+
+    /**
      * Get a list of all coordinates from this to the target coordinate.
      * @param target the end coordinate for the range inclusive
      * @return A list of coordinates in the range

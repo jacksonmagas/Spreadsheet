@@ -20,6 +20,16 @@ public class ReferenceExpression extends AbstractExpression {
     }
 
     @Override
+    public ResultType resultType() {
+        return reference.dataType();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return reference.isEmpty();
+    }
+
+    @Override
     public void recalculate() {
         value = reference.getData();
     }

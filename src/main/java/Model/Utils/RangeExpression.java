@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 /**
  * Represents a range of cells.
+ * Trying to get the value of a range is a value error, ranges are instead used for functions
  * Jackson Magas
- * //TODO This class violates the Liskov substitution principle but I don't have time to fix it
  */
 public class RangeExpression extends AbstractExpression {
     List<ICell> cells;
@@ -27,6 +27,17 @@ public class RangeExpression extends AbstractExpression {
      */
     public List<ITerm> getReferenceExpressions() {
         return cells.stream().map(ReferenceExpression::new).collect(Collectors.toUnmodifiableList());
+    }
+
+    // getting the result of a range directly is an error
+    @Override
+    public ResultType resultType() {
+        return ResultType.error;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return cells.stream().allMatch(ICell::isEmpty);
     }
 
     @Override

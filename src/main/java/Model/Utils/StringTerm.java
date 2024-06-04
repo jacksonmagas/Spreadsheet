@@ -44,6 +44,16 @@ public class StringTerm implements ITerm {
         return value;
     }
 
+    @Override
+    public ResultType resultType() {
+        return ResultType.string;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
     // Jackson Magas
     @Override
     public void recalculate() {
