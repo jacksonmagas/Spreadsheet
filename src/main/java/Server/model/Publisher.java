@@ -1,19 +1,31 @@
 package Server.model;
 
+import java.util.List;
+
 public class Publisher {
     private String name;
-    private String email;
+    private List<Spreadsheet> spreadsheets;
 
-    public Publisher(String name, String email) {
+    public Publisher(String name, List<Spreadsheet> spreadsheets) {
         this.name = name;
-        this.email = email;
+        this.spreadsheets = spreadsheets;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getEmail() {
-        return email;
+    public void addSpreadsheet(Spreadsheet spreadsheet) {
+        this.spreadsheets.add(spreadsheet);
+    }
+
+    public void removeSpreadsheet(Spreadsheet spreadsheet) {
+        if (spreadsheets.contains(spreadsheet)) {
+            this.spreadsheets.remove(spreadsheet);
+        }
+    }
+
+    public List<Spreadsheet> getSpreadsheets() {
+        return this.spreadsheets;
     }
 }

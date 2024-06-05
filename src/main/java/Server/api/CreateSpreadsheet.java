@@ -1,42 +1,21 @@
 package Server.api;
 
 import Server.model.Publisher;
-import Server.model.Spreadsheet;
-import Server.model.User;
-
-import java.util.List;
 
 public class CreateSpreadsheet {
-    private final SpreadsheetManager spreadsheetManager;
-    private final PublisherDataService publisherDataService;
-    private final UserRegistrationService userRegistrationService;
+    private String sheet;
+    private Publisher publisher;
 
-    public CreateSpreadsheet(SpreadsheetManager spreadsheetManager, PublisherDataService publisherManager, UserRegistrationService userRegistrationService) {
-        this.spreadsheetManager = spreadsheetManager;
-        this.publisherDataService = publisherManager;
-        this.userRegistrationService = userRegistrationService;
+    public CreateSpreadsheet(String sheet, Publisher publisher) {
+        this.sheet = sheet;
+        this.publisher = publisher;
     }
 
-    public Spreadsheet createSpreadsheet(String username, List<User> users, String name, int rows, int cols) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Spreadsheet name cannot be null or empty.");
-        }
-        if (rows < 0 || cols < 0) {
-            throw new IllegalArgumentException("Rows and columns must be non-negative.");
-        }
+    public String getSheet() {
+        return sheet;
+    }
 
-        Publisher publisher = userRegistrationService.getPublisher(username);
-        if (publisher == null) {
-            throw new IllegalArgumentException("Only registered publishers can create spreadsheets.");
-        }
-
-        if (spreadsheetManager.containsSpreadsheet(name)) {
-            throw new IllegalArgumentException("Spreadsheet Name Already Exists");
-        } else {
-            Spreadsheet newSpreadsheet = new Spreadsheet(publisher, users, name, rows, cols);
-            spreadsheetManager.addSpreadsheet(newSpreadsheet);
-            publisherDataService.addPublishedSpreadsheet(publisher, newSpreadsheet);
-            return newSpreadsheet;
-        }
+    public Publisher getPublisher() {
+        return publisher;
     }
 }
