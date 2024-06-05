@@ -63,11 +63,14 @@ public final class Conversions {
             }
             return column;
         } else {
-            throw new IllegalStateException("How did this happen");
+            throw new IllegalStateException("How did this happen"); // Unreachable
         }
     }
 
     public static String columnToString(int column) {
+        if (column <= 0) {
+            throw new IllegalArgumentException("Column must be greater than zero");
+        }
         StringBuilder columnString = new StringBuilder();
         while (column > 0) {
             int remainder = (column - 1) % 26;
