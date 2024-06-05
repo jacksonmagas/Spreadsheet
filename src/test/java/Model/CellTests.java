@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Expressions.ErrorTerm;
+import Model.Expressions.ITerm.ResultType;
 import Model.Utils.Coordinate;
 import Model.Expressions.EmptyTerm;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +24,7 @@ public class CellTests {
     Assertions.assertEquals(new EmptyTerm().getResult(), testCell.getData());
     testCell.updateCell("\"hello\"");
     Assertions.assertEquals(testCell.getData(), "hello");
-    testCell.updateCell("=$A1");
+    testCell.updateCell("=$A2");
     Assertions.assertEquals(testCell.getData(), "");
   }
 
@@ -50,15 +52,33 @@ public class CellTests {
     Assertions.assertEquals("bar", a1.getData());
 
     a3.updateCell("=$A2");
-    b1.updateCell("=($A3)");
-    b2.updateCell("=$B1");
-    b3.updateCell("=$B2");
-    c1.updateCell("=($B3)");
-    c2.updateCell("=$C1");
+    b1.updateCell("=$A3");
+    b2.updateCell("=DEBUG($B1)");
+    b3.updateCell("=($B2)");
+    c1.updateCell("=$B3");
+    c2.updateCell("=(($C1))");
     c3.updateCell("=$C2");
 
     Assertions.assertEquals("bar", c3.getData());
     a1.updateCell("=-5.23");
-    Assertions.assertEquals("=-5.23", c3.getData());
+    Assertions.assertEquals("-5.23", c3.getData());
+  }
+
+  @Test
+  public void testCircularReference() {
+    Spreadsheet sheet = new Spreadsheet();
+    sheet.getCell(new Coordinate(1, 1)).updateCell("=$A2");
+    sheet.getCell(new Coordinate(2, 1)).updateCell("=$A1");
+
+    Assertions.assertEquals(ResultType.error, sheet.getCell(new Coordinate(2, 1)).dataType());
+    Assertions.assertEquals(ResultType.error, sheet.getCell(new Coordinate(1, 1)).dataType());
+
+    sheet.getCell(new Coordinate(1, 2)).updateCell("=AVG($B2+5, 6, 3 * ($B2 > 7))");
+    sheet.getCell(new Coordinate(2, 2)).updateCell("=$B1");
+    Assertions.assertEquals(ResultType.error, sheet.getCell(new Coordinate(1, 2)).dataType());
+    Assertions.assertEquals(ResultType.error, sheet.getCell(new Coordinate(2, 2)).dataType());
+    sheet.getCell(new Coordinate(2, 2)).updateCell("3");
+    Assertions.assertEquals(ResultType.number, sheet.getCell(new Coordinate(1, 2)).dataType());
+    Assertions.assertEquals("4.666666666666667", sheet.getCell(new Coordinate(1, 2)).getData());
   }
 }

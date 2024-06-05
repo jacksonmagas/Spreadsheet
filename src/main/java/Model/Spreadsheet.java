@@ -1,6 +1,7 @@
 package Model;
 
 import Model.Expressions.BiOperatorExpression;
+import Model.Expressions.CircularErrorTerm;
 import Model.Utils.Conversions;
 import Model.Utils.Coordinate;
 import Model.Expressions.EmptyTerm;
@@ -294,7 +295,14 @@ public class Spreadsheet implements ISpreadsheet {
                 tok += c;
                 if (operators.contains(tok)) {
                     // check if + or - is part of a number
-                    if ("+-".contains(tok) && idx < input.length() - 1 && Character.isDigit(input.charAt(idx + 1))) {
+                    // it is part of a number when it is followed by a number and preceded by
+                    // nothing, an operator, a comma, or an open paren
+                    if ("+-".contains(tok)
+                        && idx < input.length() - 1 && Character.isDigit(input.charAt(idx + 1))
+                        && (tokens.isEmpty() || tokens.getLast().type == TokenType.operator
+                            || tokens.getLast().type == TokenType.comma
+                            || (tokens.getLast().type == TokenType.parenthesis
+                                && tokens.getLast().strValue.equals("(")))) {
                         ++idx;
                         continue;
                     }
@@ -381,22 +389,21 @@ public class Spreadsheet implements ISpreadsheet {
 
         /**
          * Update this cell with new user input.
-         * Parses the input and then recalculates its value.
+         * Registers as a listener to all direct dependencies and
          * Jackson Magas
          * @param data the user input to parse
          */
         @Override
         public void updateCell(String data) {
-            /* TODO currently this registers as a listener to more cells than strictly necessary
-            $A1 <- $A2 and $A2 <- $A3 and $A3 <- $A4 and the value of $A4 changes then the calls:
-            $A4 updates $A3, $A2, $A1
-            $A3 updates $A2, $A1
-            $A2 updates $A1
-            This means that for a chain of n references there are O(n^2) calls instead of O(n)
-             */
             term = parser.parse(data);
-            term.recalculate();
-            //TODO
+            try {
+                for (Coordinate refLoc : term.references()) {
+                    getCell(refLoc).registerListener(this);
+                }
+            } catch (IllegalStateException e) {
+                term = new CircularErrorTerm(this.getPlaintext());
+            }
+            handleUpdate();
         }
 
 
