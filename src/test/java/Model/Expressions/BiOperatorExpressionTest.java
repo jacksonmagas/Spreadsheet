@@ -266,6 +266,7 @@ public class BiOperatorExpressionTest {
         ITerm term7 = new RangeExpression(testCells); // TODO: Constructor may throw out of bounds exception. Add checks to constructor
         ITerm term8 = new ReferenceExpression(new testCell(new Coordinate(1, 1)));
         ITerm term9 = new StringTerm("null");
+        ITerm term10 = new ErrorTerm(VALUE_ERROR);
 
         ITerm op1 = new BiOperatorExpression("+", term1, term3);
         assertEquals(op1.resultType(), ResultType.error);
@@ -294,5 +295,9 @@ public class BiOperatorExpressionTest {
         ITerm op7 = new BiOperatorExpression("+", term1, term9);
         assertEquals(op7.resultType(), ResultType.error);
         assertEquals(op7.getResult(), VALUE_ERROR);
+
+        ITerm op8 = new BiOperatorExpression("+", term1, term10);
+        assertEquals(op8.resultType(), ResultType.error);
+        assertEquals(op8.getResult(), VALUE_ERROR);
     }
 }
