@@ -62,7 +62,8 @@ public class FunctionExpression extends AbstractExpression {
     public void recalculate() {
         List<String> emptyRemoved = new ArrayList<>();
         for (ITerm arg : args) {
-            if (!arg.getResult().isEmpty()) {
+            arg.recalculate();
+            if (arg.resultType() != ResultType.empty) {
                 emptyRemoved.add(arg.getResult());
             }
             // if an argument is an error this is that error too

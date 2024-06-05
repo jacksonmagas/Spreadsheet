@@ -31,6 +31,7 @@ public class ParenExpression extends AbstractExpression {
 
     @Override
     public void recalculate() {
+        enclosed.recalculate();
         value = enclosed.getResult();
     }
 

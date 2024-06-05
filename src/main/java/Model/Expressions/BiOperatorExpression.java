@@ -1,6 +1,7 @@
 package Model.Expressions;
 
 import Model.Utils.Coordinate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class BiOperatorExpression extends AbstractExpression {
 
     @Override
     public List<Coordinate> references() {
-         List<Coordinate> refs = left.references();
+         List<Coordinate> refs = new ArrayList<>(left.references());
          refs.addAll(right.references());
          return refs;
     }
@@ -44,6 +45,8 @@ public class BiOperatorExpression extends AbstractExpression {
 
     @Override
     public void recalculate() {
+        left.recalculate();
+        right.recalculate();
         // if either side is an error this should mimic that error
         if (left.resultType() == ResultType.error) {
             resultType = ResultType.error;
