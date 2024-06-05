@@ -1,12 +1,14 @@
 package Model.Expressions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.junit.MockitoJUnit;
+
 import java.util.ArrayList;
 
 import Model.CellFormat;
@@ -23,92 +25,6 @@ import Model.Utils.Coordinate;
 public class BiOperatorExpressionTest {
 
     private static final String VALUE_ERROR = "#VALUE!";
-
-    /*
-     * ICell Implementation for testing. Can lift if other classes want to use. (replace with mock?)
-     */
-    private class testCell implements ICell {
-
-        private Coordinate coordinate;
-
-        private testCell(){}
-
-        private testCell(Coordinate coord) {
-            this.coordinate = coord;
-        }
-
-        @Override
-        public boolean dependsOn(Coordinate cellLoc) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'dependsOn'");
-        }
-
-        @Override
-        public void updateCell(String data) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'updateCell'");
-        }
-
-        @Override
-        public Coordinate getCoordinate() {
-            return this.coordinate;
-        }
-
-        @Override
-        public String getData() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getData'");
-        }
-
-        @Override
-        public String getPlaintext() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getPlaintext'");
-        }
-
-        @Override
-        public CellFormat getFormatting() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getFormatting'");
-        }
-
-        @Override
-        public boolean isEmpty() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
-        }
-
-        @Override
-        public void handleUpdate() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'handleUpdate'");
-        }
-
-        @Override
-        public void registerListener(ICellListener listener) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'registerListener'");
-        }
-
-        @Override
-        public void notifyListeners() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'notifyListeners'");
-        }
-
-        @Override
-        public void setFormatting(CellFormat formatting) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'setFormatting'");
-        }
-
-        @Override
-        public ResultType dataType() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'dataType'");
-        }
-
-    }
     
     @Test
     public void BiOpExpressionInvalidConstructionTest() {
@@ -261,10 +177,12 @@ public class BiOperatorExpressionTest {
         ITerm term5 = new FunctionExpression(FunctionType.MIN, funcList);
         ITerm term6 = new ParenExpression(term1);
         List<ICell> testCells = new ArrayList<ICell>();
-        testCells.add(new testCell(new Coordinate(1, 1)));
-        testCells.add(new testCell(new Coordinate(2, 2)));
+        ICell mockCell = mock(ICell.class);
+        when(mockCell.getCoordinate()).thenReturn(new Coordinate(1, 1));
+        testCells.add(mockCell);
+        testCells.add(mockCell);
         ITerm term7 = new RangeExpression(testCells); // TODO: Constructor may throw out of bounds exception. Add checks to constructor
-        ITerm term8 = new ReferenceExpression(new testCell(new Coordinate(1, 1)));
+        ITerm term8 = new ReferenceExpression(mockCell);
         ITerm term9 = new StringTerm("null");
         ITerm term10 = new ErrorTerm(VALUE_ERROR);
 
