@@ -45,7 +45,7 @@ public class TestParsing {
     public void testEmpty() {
         Spreadsheet spreadsheet = new Spreadsheet();
         Spreadsheet.FormulaParser parser = spreadsheet.new FormulaParser();
-        Assertions.assertEquals(parser.parse(""), new EmptyTerm());
+        Assertions.assertInstanceOf(EmptyTerm.class, parser.parse(""));
     }
 
     @Test

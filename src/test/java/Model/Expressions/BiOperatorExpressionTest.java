@@ -7,13 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.MockitoJUnit;
 
 import java.util.ArrayList;
 
-import Model.CellFormat;
 import Model.ICell;
-import Model.ICellListener;
 import Model.Expressions.FunctionExpression.FunctionType;
 import Model.Expressions.ITerm.ResultType;
 import Model.Utils.Coordinate;

@@ -101,15 +101,15 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         public ITerm parse(String formula) {
+            if (formula.isEmpty()) {
+                return new EmptyTerm();
+            }
+
             List<Token> tokens;
             try {
                 tokens = tokenize(formula);
             } catch (ParseException e) {
                 return new ErrorTerm(formula);
-            }
-
-            if (tokens.isEmpty()) {
-                return new EmptyTerm();
             }
 
             // special case of just text or a number
@@ -363,13 +363,15 @@ public class Spreadsheet implements ISpreadsheet {
      */
     private class SpreadsheetCell implements ICell {
         private final Coordinate coordinate;
-        private final Set<ICellListener> listeners;
+        private final Set<ICellValueListener> valueListeners;
+        private final Set<ICellUpdateListener> updateListeners;
         private ITerm term;
         private CellFormat format;
 
         SpreadsheetCell(Coordinate coordinate) {
             this.coordinate = coordinate;
-            this.listeners = new HashSet<>();
+            this.valueListeners = new HashSet<>();
+            this.updateListeners = new HashSet<>();
             this.format = initFormat();
             this.term = new EmptyTerm();
         }
@@ -398,12 +400,12 @@ public class Spreadsheet implements ISpreadsheet {
             term = parser.parse(data);
             try {
                 for (Coordinate refLoc : term.references()) {
-                    getCell(refLoc).registerListener(this);
+                    getCell(refLoc).registerValueListener(this);
                 }
             } catch (IllegalStateException e) {
                 term = new CircularErrorTerm(this.getPlaintext());
             }
-            handleUpdate();
+            handleValueChange();
         }
 
 
@@ -463,9 +465,9 @@ public class Spreadsheet implements ISpreadsheet {
          * Jackson Magas
          */
         @Override
-        public void handleUpdate() {
+        public void handleValueChange() {
             term.recalculate();
-            notifyListeners();
+            notifyValueListeners();
         }
 
         /**
@@ -474,17 +476,29 @@ public class Spreadsheet implements ISpreadsheet {
          * @param listener the listener to register
          */
         @Override
-        public void registerListener(ICellListener listener) {
+        public void registerValueListener(ICellValueListener listener) {
             if (listener instanceof ICell && this.dependsOn(((ICell) listener).getCoordinate())) {
                 throw new IllegalStateException("Circular reference detected");
             } else {
-                listeners.add(listener);
+                valueListeners.add(listener);
             }
         }
 
         @Override
-        public void notifyListeners() {
-            for (ICellListener listener : listeners) {
+        public void registerUpdateListener(ICellUpdateListener listener) {
+            updateListeners.add(listener);
+        }
+
+        @Override
+        public void notifyValueListeners() {
+            for (ICellValueListener listener : valueListeners) {
+                listener.handleValueChange();
+            }
+        }
+
+        @Override
+        public void notifyUpdateListeners() {
+            for (ICellUpdateListener listener : updateListeners) {
                 listener.handleUpdate();
             }
         }
