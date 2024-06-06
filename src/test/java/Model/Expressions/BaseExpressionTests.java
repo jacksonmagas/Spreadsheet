@@ -10,6 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/*
+ * Test class for basic expression and ITerm operations
+ * - Ezra
+ */
 public class BaseExpressionTests {
 
     @Test
@@ -67,19 +71,25 @@ public class BaseExpressionTests {
     public void referenceExpressionEqualsTest() {
         ICell c1 = mock(ICell.class);
         ICell c2 = mock(ICell.class);
+        ICell c3 = mock(ICell.class);
         when(c1.getCoordinate()).thenReturn(new Coordinate(1, 1));
         when(c2.getCoordinate()).thenReturn(new Coordinate(2, 2));
+        when(c3.getCoordinate()).thenReturn(new Coordinate(3, 3));
+        when(c3.isEmpty()).thenReturn(true);
 
         ITerm ref1 = new ReferenceExpression(c1);
         ITerm ref2 = new ReferenceExpression(c2);
         ITerm ref3 = new ReferenceExpression(c2);
         ITerm ref4 = new NumberTerm(5);
+        ITerm ref5 = new ReferenceExpression(c3);
 
         assertTrue(ref3.equals(ref2));
         assertFalse(ref1.equals(ref3));
 
         assertFalse(ref1.equals(ref4));
         assertTrue(ref1.equals(ref1));
+
+        assertTrue(ref5.isEmpty());
     }
 
     @Test
