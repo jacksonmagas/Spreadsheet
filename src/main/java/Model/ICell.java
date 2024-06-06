@@ -8,7 +8,7 @@ import Model.Expressions.ITerm.ResultType;
  * and formatting details
  * Jackson Magas
  */
-public interface ICell extends ICellValueListener {
+public interface ICell extends ICellListener {
     // Set the contents of this cell to the given data
     void updateCell(String data);
 
@@ -39,16 +39,10 @@ public interface ICell extends ICellValueListener {
 
     // Register as a listener for changes to the value of this cell including changes to underlying
     // referenced cells
-    void registerValueListener(ICellValueListener listener);
-
-    // Register as a listener for direct changes to the contents of this cell
-    void registerUpdateListener(ICellUpdateListener listener);
+    void registerListener(ICellListener listener);
 
     // Notify all references to this cell that the cell has changed
-    void notifyValueListeners();
-
-    // Notify listeners that this cell has been directly changed
-    void notifyUpdateListeners();
+    void notifyListeners();
 
     /**
      * Set the formatting of the cell to the new formatting

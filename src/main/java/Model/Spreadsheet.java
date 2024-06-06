@@ -27,19 +27,23 @@ import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
     private final HashMap<Coordinate, SpreadsheetCell> cells;
+    private final Set<ISpreadsheetListener> listeners;
     private final CellFormat defaultFormat;
     private final HashMap<Integer, CellFormat> rowDefaults;
     private final HashMap<Integer, CellFormat> columnDefaults;
     private final FormulaParser parser;
+    private boolean updatingFromServer;
 
     public Spreadsheet() {
         this.cells = new HashMap<>();
         // TODO implement methods for setting default color/font/etc for a row/col
         rowDefaults = new HashMap<>();
         columnDefaults = new HashMap<>();
+        this.listeners = new HashSet<>();
         // TODO set default formatting options
         defaultFormat = new CellFormat(1, 2, 3, 4, 5, 6, 7, 8);
         this.parser = new FormulaParser();
+        this.updatingFromServer = false;
     }
 
     @Override
@@ -57,8 +61,24 @@ public class Spreadsheet implements ISpreadsheet {
      */
     @Override
     public void updateSheet(List<Pair<Coordinate, String>> updates) {
+        updatingFromServer = true;
         for (Pair<Coordinate, String> pair : updates) {
             getCell(pair.getKey()).updateCell(pair.getValue());
+        }
+        updatingFromServer = false;
+    }
+
+    @Override
+    public void registerListener(ISpreadsheetListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void notifyListeners(String update) {
+        if (!updatingFromServer) {
+            for (ISpreadsheetListener listener : listeners) {
+                listener.handleUpdate(update);
+            }
         }
     }
 
@@ -363,15 +383,13 @@ public class Spreadsheet implements ISpreadsheet {
      */
     private class SpreadsheetCell implements ICell {
         private final Coordinate coordinate;
-        private final Set<ICellValueListener> valueListeners;
-        private final Set<ICellUpdateListener> updateListeners;
+        private final Set<ICellListener> valueListeners;
         private ITerm term;
         private CellFormat format;
 
         SpreadsheetCell(Coordinate coordinate) {
             this.coordinate = coordinate;
             this.valueListeners = new HashSet<>();
-            this.updateListeners = new HashSet<>();
             this.format = initFormat();
             this.term = new EmptyTerm();
         }
@@ -400,11 +418,12 @@ public class Spreadsheet implements ISpreadsheet {
             term = parser.parse(data);
             try {
                 for (Coordinate refLoc : term.references()) {
-                    getCell(refLoc).registerValueListener(this);
+                    getCell(refLoc).registerListener(this);
                 }
             } catch (IllegalStateException e) {
                 term = new CircularErrorTerm(this.getPlaintext());
             }
+            Spreadsheet.this.notifyListeners(data);
             handleValueChange();
         }
 
@@ -467,7 +486,7 @@ public class Spreadsheet implements ISpreadsheet {
         @Override
         public void handleValueChange() {
             term.recalculate();
-            notifyValueListeners();
+            notifyListeners();
         }
 
         /**
@@ -476,7 +495,7 @@ public class Spreadsheet implements ISpreadsheet {
          * @param listener the listener to register
          */
         @Override
-        public void registerValueListener(ICellValueListener listener) {
+        public void registerListener(ICellListener listener) {
             if (listener instanceof ICell && this.dependsOn(((ICell) listener).getCoordinate())) {
                 throw new IllegalStateException("Circular reference detected");
             } else {
@@ -485,21 +504,9 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         @Override
-        public void registerUpdateListener(ICellUpdateListener listener) {
-            updateListeners.add(listener);
-        }
-
-        @Override
-        public void notifyValueListeners() {
-            for (ICellValueListener listener : valueListeners) {
+        public void notifyListeners() {
+            for (ICellListener listener : valueListeners) {
                 listener.handleValueChange();
-            }
-        }
-
-        @Override
-        public void notifyUpdateListeners() {
-            for (ICellUpdateListener listener : updateListeners) {
-                listener.handleUpdate();
             }
         }
 

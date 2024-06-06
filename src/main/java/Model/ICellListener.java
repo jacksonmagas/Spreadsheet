@@ -2,7 +2,7 @@ package Model;
 
 import Model.Utils.Coordinate;
 
-public interface ICellValueListener {
+public interface ICellListener {
 
     /**
      * Update the listener based on the new value of a referenced cell
