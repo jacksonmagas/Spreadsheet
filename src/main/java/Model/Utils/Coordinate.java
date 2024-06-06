@@ -67,7 +67,9 @@ public class Coordinate {
      * Jackson Magas
      */
     public int compareTo(Coordinate o) {
-        if (this.row >= o.row && this.column >= o.column) {
+        if (this.row == o.row && this.column == o.column) {
+            return 0;
+        } else if (this.row >= o.row && this.column >= o.column) {
             return 1;
         } else if (this.row <= o.row && this.column <= o.column) {
             return -1;
