@@ -13,11 +13,15 @@ import java.util.stream.Collectors;
 public class RangeExpression extends AbstractExpression {
     List<ICell> cells;
 
-    public RangeExpression(List<ICell> cells) {
+    public RangeExpression(List<ICell> cells) throws IllegalArgumentException {
         this.cells = cells;
-        this.plaintext = cells.getFirst().getCoordinate().toString()
-            + ":"
-            + cells.getLast().getCoordinate().toString();
+        try {
+            this.plaintext = cells.getFirst().getCoordinate().toString()
+                + ":"
+                + cells.getLast().getCoordinate().toString();
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException();
+        }
         value = VALUE_ERROR;
     }
 

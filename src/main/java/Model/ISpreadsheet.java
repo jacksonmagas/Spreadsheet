@@ -12,6 +12,11 @@ public interface ISpreadsheet {
     // Update the cell at each coordinate to the given string
     void updateSheet(List<Pair<Coordinate, String>> update);
 
+    // register a new listener for changes to this spreadsheet
+    void registerListener(ISpreadsheetListener listener);
+
+    // notify listeners of a change to the spreadsheet
+    void notifyListeners(String update);
 
     /**
      * Set a format option for a row or column

@@ -35,9 +35,10 @@ public interface ICell extends ICellListener {
 
     // Recalculates the value of the cell in response to a cell
     // this depends on changes
-    void handleUpdate();
+    void handleValueChange();
 
-    // Register as a listener for changes to this cell
+    // Register as a listener for changes to the value of this cell including changes to underlying
+    // referenced cells
     void registerListener(ICellListener listener);
 
     // Notify all references to this cell that the cell has changed

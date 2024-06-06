@@ -54,14 +54,14 @@ public class CellTests {
     a3.updateCell("=$A2");
     b1.updateCell("=$A3");
     b2.updateCell("=DEBUG($B1)");
-    b3.updateCell("=($B2)");
+    b3.updateCell("=CONCAT($B1:$B2)");
     c1.updateCell("=$B3");
     c2.updateCell("=(($C1))");
     c3.updateCell("=$C2");
 
-    Assertions.assertEquals("bar", c3.getData());
-    a1.updateCell("=-5.23");
-    Assertions.assertEquals("-5.23", c3.getData());
+    Assertions.assertEquals("barbar", c3.getData());
+    a1.updateCell("foo");
+    Assertions.assertEquals("foofoo", c3.getData());
   }
 
   @Test
