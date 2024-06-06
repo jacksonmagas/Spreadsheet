@@ -74,6 +74,7 @@ public class HelloController implements Initializable {
         makeAllCellsEditable();
     }
 
+
     private void setupColumn(TableColumn<CellFormat, String> column) {
         column.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
         column.setOnEditCommit(event -> {
