@@ -38,7 +38,8 @@ public class Spreadsheet implements ISpreadsheet {
         rowDefaults = new HashMap<>();
         columnDefaults = new HashMap<>();
         // TODO set default formatting options
-        defaultFormat = new CellFormat(1, 2, 3, 4, 5, 6, 7, 8);
+        defaultFormat = new CellFormat("t", new Coordinate(1, 1));
+
         this.parser = new FormulaParser();
     }
 
