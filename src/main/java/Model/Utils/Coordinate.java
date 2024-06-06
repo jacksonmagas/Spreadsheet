@@ -9,6 +9,9 @@ public class Coordinate {
     private int row;
 
     public Coordinate(int row, int column) {
+        if (row <= 0 || column <= 0) {
+            throw new IllegalArgumentException("Invalid coordinate");
+        }
         this.row = row;
         this.column = column;
     }
@@ -64,9 +67,9 @@ public class Coordinate {
      * Jackson Magas
      */
     public int compareTo(Coordinate o) {
-        if (o.equals(this)) {
+        if (this.row == o.row && this.column == o.column) {
             return 0;
-        } if (this.row >= o.row && this.column >= o.column) {
+        } else if (this.row >= o.row && this.column >= o.column) {
             return 1;
         } else if (this.row <= o.row && this.column <= o.column) {
             return -1;

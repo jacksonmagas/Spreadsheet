@@ -9,6 +9,7 @@ public class ReferenceExpression extends AbstractExpression {
     ICell reference;
 
     public ReferenceExpression(ICell cell) {
+        value = VALUE_ERROR; // Default value overridden when recalculated
         reference = cell;
         plaintext = cell.getCoordinate().toString();
         recalculate();

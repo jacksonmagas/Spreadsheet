@@ -3,6 +3,7 @@ package Model.Expressions;
 import Model.ICell;
 import Model.Utils.Coordinate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +20,7 @@ public class RangeExpression extends AbstractExpression {
             this.plaintext = cells.getFirst().getCoordinate().toString()
                 + ":"
                 + cells.getLast().getCoordinate().toString();
-        } catch (IndexOutOfBoundsException e) {
+        } catch (NoSuchElementException e) {
             throw new IllegalArgumentException();
         }
         value = VALUE_ERROR;

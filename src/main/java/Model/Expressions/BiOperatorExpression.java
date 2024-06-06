@@ -72,8 +72,6 @@ public class BiOperatorExpression extends AbstractExpression {
         boolean bothNumbers = leftNumber && rightNumber;
         boolean bothStrings = !leftNumber && !rightNumber;
 
-        // TODO: lift error default
-
         switch (operator) {
             case "+" -> {
                 calculateAddition(bothNumbers, leftValue, rightValue);
