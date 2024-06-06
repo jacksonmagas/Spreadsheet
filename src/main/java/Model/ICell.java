@@ -1,5 +1,6 @@
 package Model;
 
+import Model.Utils.CellFormatDetails;
 import Model.Utils.Coordinate;
 import Model.Expressions.ITerm.ResultType;
 
@@ -28,7 +29,7 @@ public interface ICell extends ICellListener {
     String getPlaintext();
 
     // returns an object containing details about the formatting of the cell
-    CellFormat getFormatting();
+    CellFormatDetails getFormatting();
 
     // returns true if the cell is empty
     boolean isEmpty();
@@ -48,7 +49,7 @@ public interface ICell extends ICellListener {
      * Set the formatting of the cell to the new formatting
      * @param formatting formatting
      */
-    void setFormatting(CellFormat formatting);
+    void setFormatting(CellFormatDetails formatting);
 
     /**
      * Get the type of data held by this cell either string, number, or empty

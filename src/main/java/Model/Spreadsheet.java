@@ -2,6 +2,7 @@ package Model;
 
 import Model.Expressions.BiOperatorExpression;
 import Model.Expressions.CircularErrorTerm;
+import Model.Utils.CellFormatDetails;
 import Model.Utils.Conversions;
 import Model.Utils.Coordinate;
 import Model.Expressions.EmptyTerm;
@@ -15,6 +16,8 @@ import Model.Expressions.ParenExpression;
 import Model.Expressions.RangeExpression;
 import Model.Expressions.ReferenceExpression;
 import Model.Expressions.StringTerm;
+import Model.Utils.SpreadsheetSliceView;
+import Model.Utils.SpreadsheetSliceView.Direction;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +31,13 @@ import javafx.util.Pair;
 public class Spreadsheet implements ISpreadsheet {
     private final HashMap<Coordinate, SpreadsheetCell> cells;
     private final Set<ISpreadsheetListener> listeners;
-    private final CellFormat defaultFormat;
-    private final HashMap<Integer, CellFormat> rowDefaults;
-    private final HashMap<Integer, CellFormat> columnDefaults;
+    private final CellFormatDetails defaultFormat;
+    private final HashMap<Integer, CellFormatDetails> rowDefaults;
+    private final HashMap<Integer, CellFormatDetails> columnDefaults;
     private final FormulaParser parser;
     private boolean updatingFromServer;
+    int numRows;
+    int numColumns;
 
     public Spreadsheet() {
         this.cells = new HashMap<>();
@@ -41,10 +46,12 @@ public class Spreadsheet implements ISpreadsheet {
         columnDefaults = new HashMap<>();
         this.listeners = new HashSet<>();
         // TODO set default formatting options
-        defaultFormat = new CellFormat("t", new Coordinate(1, 1));
+        defaultFormat = new CellFormatDetails();
 
         this.parser = new FormulaParser();
         this.updatingFromServer = false;
+        numRows = 0;
+        numColumns = 0;
     }
 
     @Override
@@ -52,7 +59,29 @@ public class Spreadsheet implements ISpreadsheet {
         if (!cells.containsKey(coordinate)) {
             cells.put(coordinate, new SpreadsheetCell(coordinate));
         }
+        numRows = Math.max(numRows, coordinate.getRow());
+        numColumns = Math.max(numColumns, coordinate.getColumn());
         return cells.get(coordinate);
+    }
+
+    @Override
+    public int numRows() {
+        return numRows;
+    }
+
+    @Override
+    public int numColumns() {
+        return numColumns;
+    }
+
+    @Override
+    public List<ICell> getRow(int rowNum) {
+        return new SpreadsheetSliceView(this, Direction.row, rowNum);
+    }
+
+    @Override
+    public List<ICell> getColumn(int colNum) {
+        return new SpreadsheetSliceView(this, Direction.column, colNum);
     }
 
     /**
@@ -386,7 +415,7 @@ public class Spreadsheet implements ISpreadsheet {
         private final Coordinate coordinate;
         private final Set<ICellListener> valueListeners;
         private ITerm term;
-        private CellFormat format;
+        private CellFormatDetails format;
 
         SpreadsheetCell(Coordinate coordinate) {
             this.coordinate = coordinate;
@@ -401,7 +430,7 @@ public class Spreadsheet implements ISpreadsheet {
          * Jackson Magas
          * @return The format of the cell
          */
-        private CellFormat initFormat() {
+        private CellFormatDetails initFormat() {
             if (rowDefaults.containsKey(coordinate.getRow())) {
                 return rowDefaults.get(coordinate.getRow());
             } else
@@ -465,7 +494,7 @@ public class Spreadsheet implements ISpreadsheet {
          * @return the format object
          */
         @Override
-        public CellFormat getFormatting() {
+        public CellFormatDetails getFormatting() {
             return format;
         }
 
@@ -512,7 +541,7 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         @Override
-        public void setFormatting(CellFormat formatting) {
+        public void setFormatting(CellFormatDetails formatting) {
             this.format = formatting;
         }
 
