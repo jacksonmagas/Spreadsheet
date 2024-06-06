@@ -4,10 +4,6 @@ module com.example.huskysheet {
     requires java.sql;
     requires java.datatransfer;
     requires java.desktop;
-    requires java.ws.rs;
-    requires jersey.server;
-    requires jersey.container.servlet.core;
-    requires javax.servlet.api;
 
     opens com.example.huskysheet to javafx.fxml;
     exports com.example.huskysheet;

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
 
+/**
+ * Represents an expression that is a function of some list of arguments, including range args.
+ */
 public class FunctionExpression extends AbstractExpression {
     private final List<ITerm> args = new ArrayList<>();
     private final FunctionType type;
@@ -16,6 +19,7 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * Create a new function object from a function and its arguments
+     * Jackson Magas
      * @param type the enum type of the function
      * @param parameters The terms to use as arguments for the function
      *                   RangeExpressions can be provided as a parameter
@@ -58,6 +62,10 @@ public class FunctionExpression extends AbstractExpression {
         return false;
     }
 
+    /**
+     * Recalculate the value of this function based on its dependencies and function type
+     * Jackson Magas
+     */
     @Override
     public void recalculate() {
         List<String> emptyRemoved = new ArrayList<>();
@@ -106,8 +114,9 @@ public class FunctionExpression extends AbstractExpression {
     }
 
     /**
-     * Causes this expression to mirror its argumen
+     * Causes this expression to mirror its argument and print it to stdout
      * errors if there is not exactly one argument
+     * Jackson Magas
      * @return the result of the argument
      */
     private String calculateDebug() {
@@ -124,6 +133,7 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * Concatenate string arguments
+     * Jackson Magas
      * @param args
      * @return
      */
