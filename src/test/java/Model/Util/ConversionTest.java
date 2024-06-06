@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import Model.Utils.Conversions;
-import Model.Utils.Coordinate;
+import com.example.huskysheet.utils.Conversions;
+import com.example.huskysheet.utils.Coordinate;
 
 /*
  * Test class for conversion functions

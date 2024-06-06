@@ -7,16 +7,24 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.MockitoJUnit;
 
 import java.util.ArrayList;
 
-import Model.CellFormat;
-import Model.ICell;
-import Model.ICellListener;
-import Model.Expressions.FunctionExpression.FunctionType;
-import Model.Expressions.ITerm.ResultType;
-import Model.Utils.Coordinate;
+import com.example.huskysheet.model.Expressions.BiOperatorExpression;
+import com.example.huskysheet.model.Expressions.CircularErrorTerm;
+import com.example.huskysheet.model.Expressions.EmptyTerm;
+import com.example.huskysheet.model.Expressions.ErrorTerm;
+import com.example.huskysheet.model.Expressions.FunctionExpression;
+import com.example.huskysheet.model.Expressions.ITerm;
+import com.example.huskysheet.model.Expressions.NumberTerm;
+import com.example.huskysheet.model.Expressions.ParenExpression;
+import com.example.huskysheet.model.Expressions.RangeExpression;
+import com.example.huskysheet.model.Expressions.ReferenceExpression;
+import com.example.huskysheet.model.Expressions.StringTerm;
+import com.example.huskysheet.service.ICell;
+import com.example.huskysheet.model.Expressions.FunctionExpression.FunctionType;
+import com.example.huskysheet.model.Expressions.ITerm.ResultType;
+import com.example.huskysheet.utils.Coordinate;
 
 /*
  * Tests for binary operations.
@@ -25,7 +33,7 @@ import Model.Utils.Coordinate;
 public class BiOperatorExpressionTest {
 
     private static final String VALUE_ERROR = "#VALUE!";
-    
+
     @Test
     public void BiOpExpressionInvalidConstructionTest() {
         ITerm term1 = new NumberTerm(1.0);

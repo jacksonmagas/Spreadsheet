@@ -1,9 +1,10 @@
 package Model;
 
-import Model.Expressions.ErrorTerm;
-import Model.Expressions.ITerm.ResultType;
-import Model.Utils.Coordinate;
-import Model.Expressions.EmptyTerm;
+import com.example.huskysheet.model.Expressions.ITerm.ResultType;
+import com.example.huskysheet.service.ICell;
+import com.example.huskysheet.service.Spreadsheet;
+import com.example.huskysheet.utils.Coordinate;
+import com.example.huskysheet.model.Expressions.EmptyTerm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
