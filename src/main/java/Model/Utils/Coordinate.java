@@ -9,6 +9,9 @@ public class Coordinate {
     private int row;
 
     public Coordinate(int row, int column) {
+        if (row <= 0 || column <= 0) {
+            throw new IllegalArgumentException("Invalid coordinate");
+        }
         this.row = row;
         this.column = column;
     }

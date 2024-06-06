@@ -103,4 +103,7 @@ public class CoordinateTest {
             Assertions.fail("Constructing Coordinate from Invalid ref does not throw error.");
         } catch (IllegalArgumentException e) {}
     }
+
+    // TODO: neg vals
+
 }
