@@ -24,7 +24,7 @@ public class RegisterController {
   public Response register(@RequestParam String clientName) {
     publishers.registerNewPublisher(clientName);
 
-    return Response.status(Response.Status.OK).entity("Registration successful").build();
+  return Response.status(Response.Status.OK).entity("Registration successful").build();
   }
 
   @GetMapping("api/v1/getPublishers")

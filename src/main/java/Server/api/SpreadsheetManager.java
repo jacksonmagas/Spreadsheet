@@ -1,3 +1,4 @@
+/*
 package Server.api;
 
 import Server.model.Publisher;
@@ -83,3 +84,4 @@ public class SpreadsheetManager {
         return editSessionManager.getEditor(spreadsheetName);
     }
 }
+*/

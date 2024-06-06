@@ -13,8 +13,12 @@ module com.example.huskysheet {
     requires jdk.jdi;
     requires spring.boot;
     requires spring.boot.autoconfigure;
+    requires spring.core;
+  requires spring.context;
+  requires spring.security.config;
 
-    opens com.example.huskysheet to javafx.fxml;
+
+  opens com.example.huskysheet to javafx.fxml, spring.core;
     exports com.example.huskysheet;
     exports Model;
     opens Model to javafx.fxml;
@@ -22,4 +26,7 @@ module com.example.huskysheet {
     opens Model.Utils to javafx.fxml;
     opens Server.api to org.mockito;
     opens Server.model to org.mockito;
+
+
+
 }

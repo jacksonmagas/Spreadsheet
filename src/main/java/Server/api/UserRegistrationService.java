@@ -1,3 +1,4 @@
+/*
 package Server.api;
 
 import Server.model.Publisher;
@@ -47,3 +48,4 @@ public class UserRegistrationService {
     return users.get(username);
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package Server.api;
 
 import Server.model.Spreadsheet;
@@ -18,3 +19,4 @@ public class RetrieveSpreadsheetsController {
         return Response.status(Response.Status.OK).entity(spreadsheets).build();
     }
 }
+*/

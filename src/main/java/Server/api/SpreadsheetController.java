@@ -26,29 +26,6 @@ public class SpreadsheetController {
     this.publishers = Publishers.getInstance();
   }
 
-  @PostMapping("api/v1/createSheet")
-  public Response createSheet(@RequestBody CreateSpreadsheet request) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = authentication.getName();
-    Publisher publisher = publishers.getPublisherByUsername(username);
-
-    if (username.equals(request.getPublisher()) || publisher != null) {
-      // Sender is the owner, proceed to check existing sheets
-      for (Spreadsheet spreadsheet : publisher.getSpreadsheets()) {
-        if (spreadsheet.getSheet().equals(request.getSheet())) {
-          return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized: Sheet already exists").build();
-        }
-      }
-
-      // Sheet doesn't exist, create it
-      Spreadsheet spreadsheet = new Spreadsheet(request.getPublisher(), request.getSheet());
-      publisher.addSpreadsheet(spreadsheet);
-
-      return Response.status(Response.Status.OK).entity("Sheet created succesfully").build();
-    } else {
-      return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized: Sender is not the owner of the sheet").build();
-    }
-  }
 
   @GetMapping("api/v1/getSheets")
   public Response getSheets(@RequestParam String publisherName) {

@@ -1,5 +1,5 @@
+/*
 package Server.api;
-
 import Server.model.User;
 
 import java.util.List;
@@ -23,3 +23,4 @@ public class GetCurrentUsersOnSpreadsheet {
         return users.contains(user);
     }
 }
+*/

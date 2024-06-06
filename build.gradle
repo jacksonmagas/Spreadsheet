@@ -10,7 +10,12 @@ group 'com.example'
 version '1.0-SNAPSHOT'
 
 repositories {
-  mavenCentral()
+  mavenCentral {
+    metadataSources {
+      mavenPom()
+      artifact()
+    }
+  }
 }
 
 ext {
@@ -35,6 +40,16 @@ javafx {
 }
 
 dependencies {
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+  implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+  implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+
+  implementation 'org.springframework.boot:spring-boot-starter:3.3.0'
+  implementation 'org.springframework.boot:spring-boot-starter-web:3.3.0'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.0'
+  implementation 'org.springframework.boot:spring-boot-starter-security:3.3.0'
+
+
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
   testImplementation 'org.mockito:mockito-core:4.8.0'
@@ -46,10 +61,11 @@ dependencies {
   implementation 'org.glassfish.jersey.containers:jersey-container-servlet:2.34'
   implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.34'
   implementation 'javax.servlet:javax.servlet-api:4.0.1'
-  implementation platform('org.springframework.security:spring-security-bom:5.3.0.RELEASE')
-  implementation 'org.springframework.security:spring-security-web'
-  implementation 'org.springframework.security:spring-security-config'
-  implementation 'org.springframework.boot:spring-boot-starter:3.0.0'
+  implementation 'mysql:mysql-connector-java:8.0.28'
+
+
+
+
 }
 
 test {
@@ -78,4 +94,8 @@ run {
           '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.datatransfer,java.desktop,java.ws.rs,jersey.server,jersey.container.servlet.core,javax.servlet.api',
           '--module-path', sourceSets.main.runtimeClasspath.asPath
   ]
+}
+
+tasks.withType(JavaExec) {
+  jvmArgs += '--add-opens=java.base/java.lang=ALL-UNNAMED'
 }

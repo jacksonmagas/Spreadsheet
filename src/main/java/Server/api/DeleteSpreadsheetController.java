@@ -1,3 +1,4 @@
+/*
 package Server.api;
 
 import javax.ws.rs.*;
@@ -25,3 +26,4 @@ public class DeleteSpreadsheetController {
         }
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package Server.api;
 
 import Server.model.User;
@@ -48,3 +49,4 @@ public class UserRegistrationController {
         }
     }
 }
+*/
