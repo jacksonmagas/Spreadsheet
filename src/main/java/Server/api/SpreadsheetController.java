@@ -5,18 +5,18 @@ import Server.model.Publishers;
 import Server.model.Spreadsheet;
 import Server.model.UpdatePayload;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
+import javax.swing.text.html.parser.Entity;
 
 @RestController
 public class SpreadsheetController {
@@ -26,27 +26,45 @@ public class SpreadsheetController {
     this.publishers = Publishers.getInstance();
   }
 
+  @GetMapping("api/v1/register")
+  public ResponseEntity<String> register() {
+    // Get the authenticated client name from the security context
+    String clientName = SecurityContextHolder.getContext().getAuthentication().getName();
+    publishers.registerNewPublisher(clientName);
+
+    return new ResponseEntity<>("Registration successful", HttpStatus.OK);
+  }
+
+  @GetMapping("api/v1/getPublishers")
+  public ResponseEntity<List<String>> getPublisher() {
+    List<Publisher> allPublishers = publishers.getAllPublishers();
+    List<String> publisherNames = new ArrayList<>();
+
+    for (Publisher publisher : allPublishers) {
+      publisherNames.add(publisher.getName());
+    }
+
+    return new ResponseEntity<>(publisherNames, HttpStatus.OK);
+  }
 
   @GetMapping("api/v1/getSheets")
-  public Response getSheets(@RequestParam String publisherName) {
+  public ResponseEntity<?> getSheets(@RequestParam String publisherName) {
     Publisher publisher = publishers.getPublisherByUsername(publisherName);
 
     if (publisher != null) {
       List<Spreadsheet> spreadsheets = publisher.getSpreadsheets();
-
       List<String> sheetNames = new ArrayList<>();
       for (Spreadsheet spreadsheet : spreadsheets) {
         sheetNames.add(spreadsheet.getSheetName());
       }
-
-      return Response.status(Response.Status.OK).entity("Sheets retrieved successfully: " + sheetNames).build();
+      return new ResponseEntity<>(sheetNames, HttpStatus.OK);
     } else {
-      return Response.status(Response.Status.NOT_FOUND).entity("Publisher not found").build();
+      return new ResponseEntity<>("Publisher not found", HttpStatus.NOT_FOUND);
     }
   }
 
   @PostMapping("api/v1/deleteSheet")
-  public Response deleteSheet(@RequestParam String publisher, @RequestParam String sheet) {
+  public ResponseEntity<String> deleteSheet(@RequestParam String publisher, @RequestParam String sheet) {
     // Fetch publisher by name
     Publisher publisherObj = publishers.getPublisherByUsername(publisher);
 
@@ -62,18 +80,18 @@ public class SpreadsheetController {
 
       if (sheetToRemove != null) {
         publisherObj.removeSpreadsheet(sheetToRemove);
-        return Response.status(Response.Status.OK).entity("Sheet deleted successfully").build();
+        return new ResponseEntity<>("Sheet deleted successfully", HttpStatus.OK);
       } else {
-        return Response.status(Response.Status.NOT_FOUND).entity("Sheet not found").build();
+        return new ResponseEntity<>("Sheet not found", HttpStatus.NOT_FOUND);
       }
     } else {
-      return Response.status(Response.Status.NOT_FOUND).entity("Publisher not found").build();
+      return new ResponseEntity<>("Publisher not found", HttpStatus.NOT_FOUND);
     }
   }
 
 
   @GetMapping("api/v1/getUpdatesForSubscription")
-  public Response getUpdatesForSubscription(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String id) {
+  public ResponseEntity<?> getUpdatesForSubscription(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String id) {
     // Fetch publisher by name
     Publisher publisherObj = publishers.getPublisherByUsername(publisher);
 
@@ -90,21 +108,19 @@ public class SpreadsheetController {
       if (sheetToUpdate != null) {
         // Get updates after the given ID
         List<String> updates = sheetToUpdate.getUpdatesAfterId(id);
-
         // Prepare response
         UpdatePayload payload = new UpdatePayload(updates);
-
-        return Response.status(Response.Status.OK).entity("Updates retrieved successfully" + payload).build();
+        return new ResponseEntity<>(payload, HttpStatus.OK);
       } else {
-        return Response.status(Response.Status.NOT_FOUND).entity("Sheet not found").build();
+        return new ResponseEntity<>("Sheet not found", HttpStatus.NOT_FOUND);
       }
     } else {
-      return Response.status(Response.Status.NOT_FOUND).entity("Publisher not found").build();
+      return new ResponseEntity<>("Publisher not found", HttpStatus.NOT_FOUND);
     }
   }
 
   @GetMapping("api/v1/getUpdatesForPublished")
-  public Response getUpdatesForPublished(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String id) {
+  public ResponseEntity<?> getUpdatesForPublished(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String id) {
     // Fetch publisher by name
     Publisher publisherObj = publishers.getPublisherByUsername(publisher);
 
@@ -121,21 +137,19 @@ public class SpreadsheetController {
       if (sheetToUpdate != null) {
         // Get update requests after the given ID
         List<String> updateRequests = sheetToUpdate.getUpdateRequestsAfterId(id);
-
         // Prepare response
         UpdatePayload payload = new UpdatePayload(updateRequests);
-
-        return Response.status(Response.Status.OK).entity("Update requests retrieved successfully" + payload).build();
+        return new ResponseEntity<>(payload, HttpStatus.OK);
       } else {
-        return Response.status(Response.Status.NOT_FOUND).entity("Sheet not found").build();
+        return new ResponseEntity<>("Sheet not found", HttpStatus.NOT_FOUND);
       }
     } else {
-      return Response.status(Response.Status.NOT_FOUND).entity("Publisher not found").build();
+      return new ResponseEntity<>("Publisher not found", HttpStatus.OK);
     }
   }
 
   @PostMapping("api/v1/updatePublished")
-  public Response updatePublished(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String payload) {
+  public ResponseEntity<String> updatePublished(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String payload) {
     // Fetch publisher by name
     Publisher publisherObj = publishers.getPublisherByUsername(publisher);
 
@@ -152,18 +166,17 @@ public class SpreadsheetController {
       if (sheetToUpdate != null) {
         // Update the sheet with the provided payload
         sheetToUpdate.setPayload(payload);
-
-        return Response.status(Response.Status.OK).entity("Sheet updated successfully").build();
+        return new ResponseEntity<>("Sheet updated successfully", HttpStatus.OK);
       } else {
-        return Response.status(Response.Status.NOT_FOUND).entity("Sheet not found").build();
+        return new ResponseEntity<>("Sheet not found", HttpStatus.NOT_FOUND);
       }
     } else {
-      return Response.status(Response.Status.NOT_FOUND).entity("Publisher not found").build();
+      return new ResponseEntity<>("Publisher not found", HttpStatus.NOT_FOUND);
     }
   }
 
   @PostMapping("api/v1/updateSubscription")
-  public Response updateSubscription(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String payload) {
+  public ResponseEntity<String> updateSubscription(@RequestParam String publisher, @RequestParam String sheet, @RequestParam String payload) {
     // Fetch publisher by name
     Publisher publisherObj = publishers.getPublisherByUsername(publisher);
 
@@ -180,13 +193,12 @@ public class SpreadsheetController {
       if (sheetToUpdate != null) {
         // Update the sheet with the provided payload
         sheetToUpdate.setPayload(payload);
-
-        return Response.status(Response.Status.OK).entity("Subscription updated successfully").build();
+        return new ResponseEntity<>("Subscription updated successfully", HttpStatus.OK);
       } else {
-        return Response.status(Response.Status.NOT_FOUND).entity("Sheet not found").build();
+        return new ResponseEntity<>("Sheet not found", HttpStatus.NOT_FOUND);
       }
     } else {
-      return Response.status(Response.Status.NOT_FOUND).entity("Publisher not found").build();
+      return new ResponseEntity<>("Publisher not found", HttpStatus.NOT_FOUND);
     }
   }
 }
