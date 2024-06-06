@@ -14,6 +14,8 @@ import Model.Utils.Coordinate;
  * - Ezra
  */
 public class ConversionTest {
+
+    private static final String INVALID_NULL_REF = "null is not a valid Reference.";
     
     @Test
     public void testValidRef() {
@@ -42,7 +44,7 @@ public class ConversionTest {
         try {
             Conversions.row("null");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getMessage(), "null is not a valid ref");
+            assertEquals(e.getMessage(), INVALID_NULL_REF);
         }
     }
 
@@ -51,7 +53,7 @@ public class ConversionTest {
         try {
             Conversions.column("null");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getMessage(), "null is not a valid ref");
+            assertEquals(e.getMessage(), INVALID_NULL_REF);
         }
     }
 

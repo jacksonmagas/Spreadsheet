@@ -1,6 +1,7 @@
 package Model.Expressions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import Model.Utils.Coordinate;
 public class BiOperatorExpressionTest {
 
     private static final String VALUE_ERROR = "#VALUE!";
+    private static final String CIRCULAR_ERROR = "Circular reference detected";
     
     @Test
     public void BiOpExpressionInvalidConstructionTest() {
@@ -40,7 +42,8 @@ public class BiOperatorExpressionTest {
         ITerm term1 = new NumberTerm(1.0);
         ITerm term2 = new NumberTerm(2.0);
         ITerm op = new BiOperatorExpression("+", term1, term2);
-        assertEquals(op.toString(), "1.0 + 2.0"); // Believe this is unimplemented TODO
+        assertFalse(op.isEmpty());
+        assertEquals(op.resultType(), ResultType.number);
     }
 
     @Test
@@ -48,7 +51,7 @@ public class BiOperatorExpressionTest {
         ITerm term1 = new NumberTerm(1.0);
         ITerm term2 = new NumberTerm(2.0);
         ITerm op = new BiOperatorExpression("+", term1, term2);
-        assertEquals(op.getResult(), "3.0");
+        assertEquals(op.getResult(), "3");
     }
 
     @Test
@@ -56,7 +59,7 @@ public class BiOperatorExpressionTest {
         ITerm term1 = new NumberTerm(1.0);
         ITerm term2 = new NumberTerm(2.0);
         ITerm op = new BiOperatorExpression("-", term1, term2);
-        assertEquals(op.getResult(), "-1.0");
+        assertEquals(op.getResult(), "-1");
     }
 
     @Test
@@ -64,7 +67,7 @@ public class BiOperatorExpressionTest {
         ITerm term1 = new NumberTerm(3.0);
         ITerm term2 = new NumberTerm(2.0);
         ITerm op = new BiOperatorExpression("*", term1, term2);
-        assertEquals(op.getResult(), "6.0");
+        assertEquals(op.getResult(), "6");
     }
 
     @Test
@@ -81,8 +84,8 @@ public class BiOperatorExpressionTest {
         ITerm term2 = new NumberTerm(2.0);
         ITerm op1 = new BiOperatorExpression("<", term1, term2);
         ITerm op2 = new BiOperatorExpression("<", term2, term1);
-        assertEquals(op1.getResult(), "1.0");
-        assertEquals(op2.getResult(), "0.0");
+        assertEquals(op1.getResult(), "1");
+        assertEquals(op2.getResult(), "0");
     }
 
     @Test
@@ -91,8 +94,8 @@ public class BiOperatorExpressionTest {
         ITerm term2 = new NumberTerm(2.0);
         ITerm op1 = new BiOperatorExpression(">", term1, term2);
         ITerm op2 = new BiOperatorExpression(">", term2, term1);
-        assertEquals(op1.getResult(), "0.0");
-        assertEquals(op2.getResult(), "1.0");
+        assertEquals(op1.getResult(), "0");
+        assertEquals(op2.getResult(), "1");
     }
 
     @Test
@@ -103,9 +106,9 @@ public class BiOperatorExpressionTest {
         ITerm op1 = new BiOperatorExpression("=", term1, term2);
         ITerm op2 = new BiOperatorExpression("=", term1, term3);
         ITerm op3 = new BiOperatorExpression("=", term3, term1);
-        assertEquals(op1.getResult(), "0.0");
-        assertEquals(op2.getResult(), "1.0");
-        assertEquals(op3.getResult(), "1.0");
+        assertEquals(op1.getResult(), "0");
+        assertEquals(op2.getResult(), "1");
+        assertEquals(op3.getResult(), "1");
     }
 
     @Test
@@ -116,9 +119,9 @@ public class BiOperatorExpressionTest {
         ITerm op1 = new BiOperatorExpression("<>", term1, term2);
         ITerm op2 = new BiOperatorExpression("<>", term2, term1);
         ITerm op3 = new BiOperatorExpression("<>", term3, term1);
-        assertEquals(op1.getResult(), "1.0");
-        assertEquals(op2.getResult(), "1.0");
-        assertEquals(op3.getResult(), "0.0");
+        assertEquals(op1.getResult(), "1");
+        assertEquals(op2.getResult(), "1");
+        assertEquals(op3.getResult(), "0");
     }
 
     @Test
@@ -129,9 +132,9 @@ public class BiOperatorExpressionTest {
         ITerm op1 = new BiOperatorExpression("&", term1, term2);
         ITerm op2 = new BiOperatorExpression("&", term1, term3);
         ITerm op3 = new BiOperatorExpression("&", term3, term1);
-        assertEquals(op1.getResult(), "1.0");
-        assertEquals(op2.getResult(), "0.0");
-        assertEquals(op3.getResult(), "0.0");
+        assertEquals(op1.getResult(), "1");
+        assertEquals(op2.getResult(), "0");
+        assertEquals(op3.getResult(), "0");
     }
 
     @Test
@@ -144,10 +147,10 @@ public class BiOperatorExpressionTest {
         ITerm op2 = new BiOperatorExpression("|", term1, term3);
         ITerm op3 = new BiOperatorExpression("|", term3, term1);
         ITerm op4 = new BiOperatorExpression("|", term3, term4);
-        assertEquals(op1.getResult(), "1.0");
-        assertEquals(op2.getResult(), "1.0");
-        assertEquals(op3.getResult(), "1.0");
-        assertEquals(op4.getResult(), "0.0");
+        assertEquals(op1.getResult(), "1");
+        assertEquals(op2.getResult(), "1");
+        assertEquals(op3.getResult(), "1");
+        assertEquals(op4.getResult(), "0");
     }
 
     @Test
@@ -185,7 +188,7 @@ public class BiOperatorExpressionTest {
 
         ITerm op1 = new BiOperatorExpression("+", term1, term3);
         assertEquals(op1.resultType(), ResultType.error);
-        assertEquals(op1.getResult(), VALUE_ERROR);
+        assertEquals(op1.getResult(), CIRCULAR_ERROR);
 
         ITerm op2 = new BiOperatorExpression("+", term1, term4);
         assertEquals(op2.resultType(), ResultType.error);
