@@ -1,8 +1,12 @@
 package com.example.huskysheet;
 
 import Model.CellFormat;
-import Model.Utils.Coordinate;
+import Model.ICell;
+import Model.Spreadsheet;
 
+import Model.Utils.SpreadsheetSliceView;
+import Model.Utils.SpreadsheetSliceView.Direction;
+import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,86 +22,54 @@ import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
     @FXML
-    private TableView<CellFormat> table;
-    @FXML
-    private TableColumn<CellFormat, String> c1;
-    @FXML
-    private TableColumn<CellFormat, String> c2;
-    @FXML
-    private TableColumn<CellFormat, String> c3;
-    @FXML
-    private TableColumn<CellFormat, String> c4;
-    @FXML
-    private TableColumn<CellFormat, String> c5;
-    @FXML
-    private TableColumn<CellFormat, String> c6;
-    @FXML
-    private TableColumn<CellFormat, String> c7;
-    @FXML
-    private TableColumn<CellFormat, String> c8;
+    private TableView<List<ICell>> table;
 
     // Define the number of rows and columns
     private static final int ROWS = 8;
     private static final int COLUMNS = 8;
+    private Spreadsheet spreadsheet;
 
-    ObservableList<CellFormat> list = FXCollections.observableArrayList();
+    ObservableList<List<ICell>> list = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //TODO spreadsheet selection
+        spreadsheet = new Spreadsheet();
+
         table.setEditable(true);
 
         table.getSelectionModel().setCellSelectionEnabled(true);
 
         // Create the table columns dynamically
-        for (int i = 0; i < COLUMNS; i++) {
-            TableColumn<CellFormat, String> column = new TableColumn<>("Column " + (i + 1));
-            int columnIndex = i;
-            column.setCellValueFactory(cellData -> {
-                Coordinate coordinate = cellData.getValue().getCoordinate();
-                return new SimpleStringProperty(cellData.getValue().getValue());
-            });
-            setupColumn(column);
+        for (int i = 1; i <= COLUMNS; i++) {
+            TableColumn<List<ICell>, String> column = new TableColumn<>("Column " + i);
+            setupColumn(column, i);
             table.getColumns().add(column);
         }
 
         // Populate the table with CellFormat objects
-        int cellValue = 1;
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
-                list.add(new CellFormat(String.valueOf(cellValue++), new Coordinate(row, col)));
-            }
+        for (int row = 1; row <= ROWS; row++) {
+            list.add(new SpreadsheetSliceView(spreadsheet, Direction.row, row));
         }
 
         table.setItems(list);
-
-        // Make all columns editable
-        makeAllCellsEditable();
     }
 
-
-    private void setupColumn(TableColumn<CellFormat, String> column) {
+    /**
+     * Set up a column of the spreadsheet.
+     * Create a cell value factory which gets the data from the cell at that row/column.
+     * Create a cell factory which sets each cell as an editable cell/
+     * Set the callback for edits in this column to edit the cell
+     * @param column the column to set up
+     * @param columnNumber the column number
+     */
+    private void setupColumn(TableColumn<List<ICell>, String> column, int columnNumber) {
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().get(columnNumber).getData()));
+        column.setEditable(true);
         column.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
         column.setOnEditCommit(event -> {
-            CellFormat cell = event.getRowValue();
-            cell.setValue(event.getNewValue());
+            event.getRowValue().get(columnNumber).updateCell(event.getNewValue());
             table.refresh();
         });
     }
-
-    private void makeAllCellsEditable() {
-        for (TableColumn<CellFormat, ?> column : table.getColumns()) {
-            makeCellsEditable((TableColumn<CellFormat, String>) column);
-        }
-    }
-
-    private void makeCellsEditable(TableColumn<CellFormat, String> column) {
-        column.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
-        column.setOnEditCommit(event -> {
-            CellFormat cell = event.getRowValue();
-            cell.setValue(event.getNewValue());
-            // Update the cell value in the TableView
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setValue(event.getNewValue());
-        });
-    }
-
 }

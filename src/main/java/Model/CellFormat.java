@@ -2,13 +2,13 @@ package Model;
 
 import Model.Utils.Coordinate;
 
-public class CellWrapper {
+public class CellFormat {
     private String value; // Change the type to String
     private Coordinate coordinate;
     private String plaintext;
     private final ICell cell;
 
-    public CellWrapper(ICell cell) {
+    public CellFormat(ICell cell) {
         this.cell = cell;
         this.value = cell.getData();
         this.coordinate = cell.getCoordinate();

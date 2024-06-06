@@ -16,16 +16,16 @@ import java.util.NoSuchElementException;
 public class SpreadsheetSliceView implements List<ICell> {
     ISpreadsheet spreadsheet;
     Direction direction;
-    int number;
+    int rowColNumber;
 
     public enum Direction {
         row, column
     }
 
-    public SpreadsheetSliceView(ISpreadsheet spreadsheet, Direction direction, int number) {
+    public SpreadsheetSliceView(ISpreadsheet spreadsheet, Direction direction, int rowColNumber) {
         this.spreadsheet = spreadsheet;
         this.direction = direction;
-        this.number = number;
+        this.rowColNumber = rowColNumber;
     }
 
     /**
@@ -108,9 +108,9 @@ public class SpreadsheetSliceView implements List<ICell> {
                 }
                 Coordinate nextCoordinate;
                 if (direction == Direction.row) {
-                    nextCoordinate = new Coordinate(number, idx++);
+                    nextCoordinate = new Coordinate(rowColNumber, idx++);
                 } else {
-                    nextCoordinate = new Coordinate(idx++, number);
+                    nextCoordinate = new Coordinate(idx++, rowColNumber);
                 }
                 return spreadsheet.getCell(nextCoordinate);
             }
@@ -183,7 +183,7 @@ public class SpreadsheetSliceView implements List<ICell> {
             throw new ArrayStoreException();
         }
         if (a.length < size()) {
-            ICell[] cell = (ICell[]) a;
+            ICell[] cell;
             cell = toArray();
             return (T[]) cell;
         } else {
@@ -281,7 +281,6 @@ public class SpreadsheetSliceView implements List<ICell> {
      *                                       or if the specified collection is null
      * @throws IllegalArgumentException      if some property of an element of the specified
      *                                       collection prevents it from being added to this list
-     * @see #add(Object)
      */
     @Override
     public boolean addAll(Collection<? extends ICell> c) {
@@ -387,7 +386,7 @@ public class SpreadsheetSliceView implements List<ICell> {
      */
     @Override
     public ICell get(int index) {
-        return null;
+        return spreadsheet.getCell(direction == Direction.row ? new Coordinate(rowColNumber, index) : new Coordinate(index, rowColNumber));
     }
 
     /**
@@ -550,8 +549,9 @@ public class SpreadsheetSliceView implements List<ICell> {
         if (index > size()) {
             throw new IndexOutOfBoundsException();
         }
-        return new ListIterator<ICell>() {
+        return new ListIterator<>() {
             int position = index;
+
             @Override
             public boolean hasNext() {
                 return position < size();
