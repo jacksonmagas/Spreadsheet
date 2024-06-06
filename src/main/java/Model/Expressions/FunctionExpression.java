@@ -117,7 +117,9 @@ public class FunctionExpression extends AbstractExpression {
         }
 
         resultType = args.getFirst().resultType();
-        return args.getFirst().getResult();
+        String result = args.getFirst().getResult();
+        System.out.println(result);
+        return result;
     }
 
     /**
