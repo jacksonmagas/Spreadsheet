@@ -24,8 +24,11 @@ public interface ISpreadsheet {
     // register a new listener for changes to this spreadsheet
     void registerListener(ISpreadsheetListener listener);
 
+    // unregister a given listener if it is registered
+    void unregisterListener(ISpreadsheetListener listener);
+
     // notify listeners of a change to the spreadsheet
-    void notifyListeners(String update);
+    void notifyListeners(Coordinate coordinate, String update);
 
     /**
      * Set a format option for a row or column

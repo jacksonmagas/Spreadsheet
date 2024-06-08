@@ -104,10 +104,15 @@ public class Spreadsheet implements ISpreadsheet {
     }
 
     @Override
-    public void notifyListeners(String update) {
+    public void unregisterListener(ISpreadsheetListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public void notifyListeners(Coordinate coordinate, String update) {
         if (!updatingFromServer) {
             for (ISpreadsheetListener listener : listeners) {
-                listener.handleUpdate(update);
+                listener.handleUpdate(coordinate, update);
             }
         }
     }
@@ -453,7 +458,7 @@ public class Spreadsheet implements ISpreadsheet {
             } catch (IllegalStateException e) {
                 term = new CircularErrorTerm(this.getPlaintext());
             }
-            Spreadsheet.this.notifyListeners(data);
+            Spreadsheet.this.notifyListeners(getCoordinate(), data);
             handleValueChange();
         }
 
