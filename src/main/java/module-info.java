@@ -4,6 +4,8 @@ module com.example.huskysheet {
     requires java.sql;
     requires java.datatransfer;
     requires java.desktop;
+    requires java.net.http;
+    requires com.google.gson;
 
     opens com.example.huskysheet to javafx.fxml;
     exports com.example.huskysheet;

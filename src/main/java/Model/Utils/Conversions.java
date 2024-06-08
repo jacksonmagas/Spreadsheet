@@ -85,9 +85,10 @@ public final class Conversions {
      * Convert a string of the form $A1 to a coordinate object
      * @param input the string to convert to coordinates
      * @return the coordinate object at that string location
+     * @throws IllegalArgumentException if the string is not of the proper form
      * Jackson Magas
      */
-    public static Coordinate stringToCoordinate(String input) {
+    public static Coordinate stringToCoordinate(String input) throws IllegalArgumentException {
         return new Coordinate(row(input), column(input));
     }
 }

@@ -2,99 +2,331 @@ package Client;
 
 import Model.ISpreadsheet;
 import Model.ISpreadsheetListener;
+import Model.Spreadsheet;
+import Model.Utils.Conversions;
 import Model.Utils.Coordinate;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import javafx.util.Pair;
 
 /**
  * Class to produce spreadsheets from the remote database and ensure the remote is properly updated.
- * TODO implement
- * TODO add caching where possible
+ * TODO add caching where possible, make methods unblocking where possible, possibly by
+ * TODO using futures and returning cached values for now
  */
 public class SpreadsheetManager implements ISpreadsheetListener {
+    private final HttpClient client;
     private final String authHeader;
     private final String serverUrl;
+    private final String userName;
     private int currentID;
     private ISpreadsheet currentSpreadsheet;
+    private String currentSheetPublisher;
     private String currentSheetName;
 
-    public SpreadsheetManager(String serverUrl, String userName, String password) {
+    /**
+     * Create a new spreadsheet manager.
+     * Jackson Magas
+     * @param serverUrl the URL that the server is hosted at, not including the /api/v1
+     * @param userName the username to contact the server with
+     * @param password the password to contact the server with (username/password are immediately encoded)
+     */
+    public SpreadsheetManager(String serverUrl, String userName, String password)
+        throws URISyntaxException {
+        this.client = HttpClient.newHttpClient();
+        this.userName = userName;
         this.serverUrl = serverUrl;
+        new URI(serverUrl); // test that serverURL is well formed
         authHeader = "Basic " + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
     }
 
     /**
+     * Represents all available API endpoints from the server
+     */
+    private enum Endpoint {
+        register, getPublishers, createSheet, getSheets, deleteSheet,
+        getUpdatesForSubscription, getUpdatesForPublished, updatePublished, updateSubscription
+    }
+
+    /**
+     * Represents a result object from an API call
+     * @param success if the call was a success
+     * @param message failure message if the call failed
+     * @param value A list of arguments containing relevant information to answer a request
+     */
+    private record Result(boolean success, String message, List<Argument> value) {};
+
+    /**
+     * Represents an argument to an API call
+     * @param publisher the publisher of the relevant sheet
+     * @param sheet the name of the relevant sheet
+     * @param id the id of the sheet
+     * @param payload the list of updates to the sheet
+     */
+    private record Argument(String publisher, String sheet, String id, String payload) {};
+
+    /**
+     * Call the specified endpoint with no argument
+     * Jackson Magas
+     * @param target the endpoint to call
+     * @return The result of the API call as a result record
+     * @throws JsonSyntaxException if the response is not the correct format
+     * @throws IOException if an IO error occurs
+     * @throws InterruptedException if the API call is interrupted
+     */
+    private Result callAPI(Endpoint target)
+        throws JsonSyntaxException, IOException, InterruptedException {
+        return callAPI(target, null);
+    }
+
+    /**
+     * Call the specified endpoint with the given argument, or null if no argument is needed
+     * Jackson Magas
+     * @param target the endpoint to call
+     * @param arg the argument to call the endpoint with
+     * @return The result of the API call as a result record
+     * @throws JsonSyntaxException if the response is not the correct format
+     * @throws IOException if an IO error occurs
+     * @throws InterruptedException if the API call is interrupted
+     */
+    private Result callAPI(Endpoint target, Argument arg)
+        throws JsonSyntaxException, IOException, InterruptedException {
+        var requestBuilder = HttpRequest.newBuilder()
+            .header("Authorization", authHeader);
+        try {
+            requestBuilder.uri(new URI(serverUrl + "/api/v1/" + target.name()));
+        } catch(URISyntaxException ignored) {
+            // the uri syntax can't error because serverUrl is checked in the compiler
+        }
+        switch (target) {
+            case register, getPublishers -> {
+                requestBuilder.GET();
+            }
+            case createSheet, getSheets, deleteSheet, getUpdatesForSubscription,
+                 getUpdatesForPublished, updatePublished, updateSubscription -> {
+                requestBuilder.POST(BodyPublishers.ofString(new Gson().toJson(arg)));
+            }
+        }
+        var request = requestBuilder.build();
+        var response = client.send(request, BodyHandlers.ofString());
+        switch(response.statusCode()) {
+            case 200, 201 -> {
+                return new Gson().fromJson(response.body(), Result.class);
+            }
+            case 401 -> {
+                throw new IOException("Request error: " + response.statusCode());
+            }
+            case 500 -> {
+                throw new IOException("Internal server error: " + response.statusCode());
+            }
+            default -> {
+                throw new IOException("Unexpected status code: " + response.statusCode());
+            }
+        }
+    }
+
+    /**
      * Register with the server using the username and password
+     * Jackson Magas
      * @return true if the request is successful
      */
     public boolean register() {
-        return false;//todo
+        try {
+            return callAPI(Endpoint.register).success();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get a list of publishers on this server.
+     * Jackson Magas
+     * @return A list of all publisher names, or an empty optional if the request fails
+     */
+    public List<String> getPublishers() throws APICallException {
+        try {
+            Result result = callAPI(Endpoint.getPublishers);
+            if (result.success) {
+                return result.value().stream()
+                    .map(Argument::publisher)
+                    .toList();
+            } else {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
     }
 
     /**
      * Get a list of available spreadsheets from the server.
+     * Jackson Magas
      * @return An optional containing the list of sheets if the request was successful, otherwise an
      * empty optional
      */
-    public Optional<List<String>> getAvailableSheets() {
-        return Optional.empty();//todo
+    public List<String> getAvailableSheets(String publisher) throws APICallException {
+        try {
+            Result result = callAPI(Endpoint.getSheets, new Argument(publisher, "", "", ""));
+            if (result.success()) {
+                return result
+                    .value().stream()
+                    .map(Argument::sheet)
+                    .toList();
+            } else {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
     }
 
     /**
-     * Gets a specific spreadsheet from the server
+     * Gets a specific spreadsheet from the server and set it as the current spreadsheet.
+     * Jackson Magas
      * @param sheetName the sheet to get
      * @return An optional containing the spreadsheet if the request was successful, and an
      * empty optional otherwise
      */
-    public Optional<ISpreadsheet> getSpreadsheet(String sheetName) {
-        // TODO
-        // make api call to getUpdates
-        // handle error returns
-        // parse valid return into spreadsheet
-        Optional<ISpreadsheet> sheet = Optional.empty();
-        sheet.ifPresent(s -> {
-            currentSpreadsheet.unregisterListener(this);
-            currentSpreadsheet = s;
-            currentSpreadsheet.registerListener(this);
-            currentSheetName = sheetName;});
-        return sheet;
+    public ISpreadsheet getSpreadsheet(String publisher, String sheetName) throws APICallException {
+        try {
+            Result result;
+            if (publisher.equals(userName)) {
+                result = callAPI(Endpoint.getUpdatesForPublished);
+            } else {
+                result = callAPI(Endpoint.getUpdatesForSubscription);
+            }
+            if (result.success) {
+                currentSpreadsheet.unregisterListener(this);
+                currentSpreadsheet = new Spreadsheet();
+                currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
+                currentSpreadsheet.registerListener(this);
+                currentSheetName = sheetName;
+                currentID = Integer.parseInt(result.value.getFirst().id());
+                return currentSpreadsheet;
+            } else {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
+    }
+
+    /**
+     * Parse the string into a list of coordinate update pairs.
+     * Jackson Magas
+     * @param payload the string to parse
+     * @return A list of updates to make to a spreadsheet
+     * @throws IllegalArgumentException if each line of the string does not start with a reference
+     *                                  such as $A1 or $b2
+     */
+    private List<Pair<Coordinate, String>> parsePayload(String payload) throws IllegalArgumentException {
+        return Arrays.stream(payload.split("\n"))
+            .map(s -> s.split(" ", 2))
+            .map(s -> new Pair<>(Conversions.stringToCoordinate(s[0]), s[1]))
+            .toList();
     }
 
     /**
      * Get all updates for the current sheet from the server and apply them to the current spreadsheet.
-     * @return true if the request was successful,
-     * false if the request was unsuccessful or the current spreadsheet isn't set.
+     * Jackson Magas
+     * @throws APICallException if the API call fails
      */
-    public boolean getUpdates() {
-        return false;//todo
+    public void getUpdates() throws APICallException {
+        try {
+            Result result;
+            if (currentSheetPublisher.equals(userName)) {
+                result = callAPI(Endpoint.getUpdatesForPublished,
+                    new Argument(userName, currentSheetName, Integer.toString(currentID), ""));
+            } else {
+                result = callAPI(Endpoint.getUpdatesForSubscription,
+                    new Argument(currentSheetPublisher, currentSheetName, Integer.toString(currentID), ""));
+            }
+            if (result.success) {
+                currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
+                currentID = Integer.parseInt(result.value.getFirst().id());
+            } else {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
     }
 
     /**
      * Publish a new spreadsheet with the given name on the server
+     * Jackson Magas
      * @param sheetName the name of the new sheet to create
-     * @return true of the request is successful, false otherwise
+     * @throws APICallException if the API call fails
      */
-    public boolean createSpreadsheet(String sheetName) {
-        return false;//TODO
+    public void createSpreadsheet(String sheetName) throws APICallException {
+        try {
+            Result result = callAPI(Endpoint.createSheet, new Argument(userName, sheetName, "", ""));
+            if (!result.success) {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
     }
 
     /**
-     * Delete the spreadsheet with the given name from the server
+     * Delete the spreadsheet with the given name from the server.
+     * Jackson Magas
      * @param sheetName the name of the sheet to delete
-     * @return true if the request is successful, false otherwise
+     * @throws APICallException if the API call fails
      */
-    public boolean deleteSpreadsheet(String sheetName) {
-        return false;//TODO
+    public void deleteSpreadsheet(String publisher, String sheetName) throws APICallException {
+        try {
+            Result result = callAPI(Endpoint.deleteSheet, new Argument(publisher, sheetName, "", ""));
+            if (!result.success) {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
     }
 
     /**
-     * Update the server based on the new spreadsheet update
-     *
+     * Update the current sheet on the server based on the new spreadsheet update.
+     * Jackson Magas
+     * @param coordinate the coordinate of the cell to update
      * @param update the string entered by the user in the cell
+     *
+     * @throws APICallException if the API call to update the sheet fails
      */
     @Override
-    public void handleUpdate(Coordinate coordinate, String update) {
-
+    public void handleUpdate(Coordinate coordinate, String update) throws Exception {
+        try {
+            Result result;
+            if (currentSheetPublisher.equals(userName)) {
+                result = callAPI(Endpoint.updatePublished,
+                    new Argument(currentSheetPublisher,
+                        currentSheetName,
+                        Integer.toString(currentID),
+                        coordinate.toString() + " " + update));
+            } else {
+                result = callAPI(Endpoint.updateSubscription,
+                    new Argument(currentSheetPublisher,
+                        currentSheetName,
+                        Integer.toString(currentID),
+                        coordinate.toString() + " " + update));
+            }
+            if (!result.success) {
+                throw new APICallException(result.message);
+            }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
     }
 }
