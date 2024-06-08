@@ -108,11 +108,19 @@ public class Spreadsheet implements ISpreadsheet {
         listeners.remove(listener);
     }
 
+    private String cachedUpdate = "";
+
     @Override
     public void notifyListeners(Coordinate coordinate, String update) {
         if (!updatingFromServer) {
+            cachedUpdate += update + "\n";
             for (ISpreadsheetListener listener : listeners) {
-                listener.handleUpdate(coordinate, update);
+                try {
+                    listener.handleUpdate(coordinate, cachedUpdate);
+                    cachedUpdate = "";
+                } catch (Exception e) {
+                    // when handleUpdate fails the current update is kept in the cache
+                }
             }
         }
     }
