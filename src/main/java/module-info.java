@@ -9,12 +9,12 @@ module com.example.huskysheet {
 
     opens com.example.huskysheet to javafx.fxml;
     exports com.example.huskysheet;
-    exports Model;
-    opens Model to javafx.fxml;
-    exports Model.Utils;
-    opens Model.Utils to javafx.fxml;
+    exports Client.Model;
+    opens Client.Model to javafx.fxml;
+    exports Client.Model.Utils;
+    opens Client.Model.Utils to javafx.fxml;
     opens Server.api to org.mockito;
     opens Server.model to org.mockito;
-    exports Model.Expressions;
-    opens Model.Expressions to javafx.fxml;
+    exports Client.Model.Expressions;
+    opens Client.Model.Expressions to javafx.fxml;
 }

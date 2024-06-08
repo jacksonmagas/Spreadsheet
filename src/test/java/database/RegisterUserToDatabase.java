@@ -1,5 +1,5 @@
 package database;
-import Model.Utils.DatabaseUtil;
+import Client.Model.Utils.DatabaseUtil;
 import Server.model.User;
 import org.junit.jupiter.api.*;
 

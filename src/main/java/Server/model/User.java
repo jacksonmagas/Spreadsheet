@@ -1,6 +1,6 @@
 package Server.model;
 
-import Model.Utils.DatabaseUtil;
+import Client.Model.Utils.DatabaseUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,10 +1,10 @@
 package Client;
 
-import Model.ISpreadsheet;
-import Model.ISpreadsheetListener;
-import Model.Spreadsheet;
-import Model.Utils.Conversions;
-import Model.Utils.Coordinate;
+import Client.Model.ISpreadsheet;
+import Client.Model.ISpreadsheetListener;
+import Client.Model.Spreadsheet;
+import Client.Model.Utils.Conversions;
+import Client.Model.Utils.Coordinate;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import javafx.util.Pair;
 
 /**
