@@ -10,7 +10,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<String> handleException(Exception e) {
-    // Log the exception (you can also use a logging framework like SLF4J)
+
     e.printStackTrace();
     return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
