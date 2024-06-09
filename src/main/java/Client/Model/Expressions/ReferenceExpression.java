@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/model/Expressions/ReferenceExpression.java
 package com.example.huskysheet.model.Expressions;
 
 import com.example.huskysheet.service.ICell;
 import com.example.huskysheet.utils.Coordinate;
+========
+package Client.Model.Expressions;
+
+import Client.Model.ICell;
+import Client.Model.Utils.Coordinate;
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Expressions/ReferenceExpression.java
 import java.util.List;
 import java.util.Objects;
 
@@ -9,6 +16,7 @@ public class ReferenceExpression extends AbstractExpression {
     ICell reference;
 
     public ReferenceExpression(ICell cell) {
+        value = VALUE_ERROR; // Default value overridden when recalculated
         reference = cell;
         plaintext = cell.getCoordinate().toString();
         recalculate();

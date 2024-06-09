@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/utils/Coordinate.java
 package com.example.huskysheet.utils;
+========
+package Client.Model.Utils;
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Utils/Coordinate.java
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +13,9 @@ public class Coordinate {
     private int row;
 
     public Coordinate(int row, int column) {
+        if (row <= 0 || column <= 0) {
+            throw new IllegalArgumentException("Invalid coordinate");
+        }
         this.row = row;
         this.column = column;
     }
@@ -58,13 +65,19 @@ public class Coordinate {
     }
 
     /**
-     * A coordinate is larger than another coordinate if it is larger in both coordinates
+     * A coordinate is larger than another coordinate if it is larger in at least 1 coordinate
      * @param o the coordinate to compare with
      * @return 1 if this is larger, -1 if this is smaller, and 0 if it is neither
      * Jackson Magas
      */
     public int compareTo(Coordinate o) {
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/utils/Coordinate.java
         if (this.row >= o.row && this.column >= o.column) {
+========
+        if (this.row == o.row && this.column == o.column) {
+            return 0;
+        } else if (this.row >= o.row && this.column >= o.column) {
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Utils/Coordinate.java
             return 1;
         } else if (this.row <= o.row && this.column <= o.column) {
             return -1;

@@ -1,8 +1,9 @@
-package com.example.huskysheet.model.Expressions;
+package Client.Model.Expressions;
 
-import com.example.huskysheet.service.ICell;
-import com.example.huskysheet.utils.Coordinate;
+import Client.Model.ICell;
+import Client.Model.Utils.Coordinate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -13,11 +14,15 @@ import java.util.stream.Collectors;
 public class RangeExpression extends AbstractExpression {
     List<ICell> cells;
 
-    public RangeExpression(List<ICell> cells) {
+    public RangeExpression(List<ICell> cells) throws IllegalArgumentException {
         this.cells = cells;
-        this.plaintext = cells.getFirst().getCoordinate().toString()
-            + ":"
-            + cells.getLast().getCoordinate().toString();
+        try {
+            this.plaintext = cells.getFirst().getCoordinate().toString()
+                + ":"
+                + cells.getLast().getCoordinate().toString();
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException();
+        }
         value = VALUE_ERROR;
     }
 

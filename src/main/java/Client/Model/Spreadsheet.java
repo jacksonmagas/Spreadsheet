@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/service/Spreadsheet.java
 package com.example.huskysheet.service;
 
 import com.example.huskysheet.utils.CellFormat;
@@ -15,6 +16,28 @@ import com.example.huskysheet.model.Expressions.StringTerm;
 import com.example.huskysheet.utils.Conversions;
 import com.example.huskysheet.utils.Coordinate;
 
+========
+package Client.Model;
+
+import Client.Model.Utils.SpreadsheetSliceView;
+import Client.Model.Utils.SpreadsheetSliceView.Direction;
+import Client.Model.Expressions.BiOperatorExpression;
+import Client.Model.Expressions.CircularErrorTerm;
+import Client.Model.Utils.CellFormatDetails;
+import Client.Model.Utils.Conversions;
+import Client.Model.Utils.Coordinate;
+import Client.Model.Expressions.EmptyTerm;
+import Client.Model.Expressions.ErrorTerm;
+import Client.Model.Expressions.FunctionExpression;
+import Client.Model.Expressions.FunctionExpression.FunctionType;
+import Client.Model.Expressions.ITerm;
+import Client.Model.Expressions.ITerm.ResultType;
+import Client.Model.Expressions.NumberTerm;
+import Client.Model.Expressions.ParenExpression;
+import Client.Model.Expressions.RangeExpression;
+import Client.Model.Expressions.ReferenceExpression;
+import Client.Model.Expressions.StringTerm;
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Spreadsheet.java
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,19 +50,28 @@ import javafx.util.Pair;
 
 public class Spreadsheet implements ISpreadsheet {
     private final HashMap<Coordinate, SpreadsheetCell> cells;
-    private final CellFormat defaultFormat;
-    private final HashMap<Integer, CellFormat> rowDefaults;
-    private final HashMap<Integer, CellFormat> columnDefaults;
+    private final Set<ISpreadsheetListener> listeners;
+    private final CellFormatDetails defaultFormat;
+    private final HashMap<Integer, CellFormatDetails> rowDefaults;
+    private final HashMap<Integer, CellFormatDetails> columnDefaults;
     private final FormulaParser parser;
+    private boolean updatingFromServer;
+    int numRows;
+    int numColumns;
 
     public Spreadsheet() {
         this.cells = new HashMap<>();
         // TODO implement methods for setting default color/font/etc for a row/col
         rowDefaults = new HashMap<>();
         columnDefaults = new HashMap<>();
+        this.listeners = new HashSet<>();
         // TODO set default formatting options
-        defaultFormat = new CellFormat(1, 2, 3, 4, 5, 6, 7, 8);
+        defaultFormat = new CellFormatDetails();
+
         this.parser = new FormulaParser();
+        this.updatingFromServer = false;
+        numRows = 0;
+        numColumns = 0;
     }
 
     @Override
@@ -47,7 +79,29 @@ public class Spreadsheet implements ISpreadsheet {
         if (!cells.containsKey(coordinate)) {
             cells.put(coordinate, new SpreadsheetCell(coordinate));
         }
+        numRows = Math.max(numRows, coordinate.getRow());
+        numColumns = Math.max(numColumns, coordinate.getColumn());
         return cells.get(coordinate);
+    }
+
+    @Override
+    public int numRows() {
+        return numRows;
+    }
+
+    @Override
+    public int numColumns() {
+        return numColumns;
+    }
+
+    @Override
+    public List<ICell> getRow(int rowNum) {
+        return new SpreadsheetSliceView(this, Direction.row, rowNum);
+    }
+
+    @Override
+    public List<ICell> getColumn(int colNum) {
+        return new SpreadsheetSliceView(this, Direction.column, colNum);
     }
 
     /**
@@ -57,8 +111,37 @@ public class Spreadsheet implements ISpreadsheet {
      */
     @Override
     public void updateSheet(List<Pair<Coordinate, String>> updates) {
+        updatingFromServer = true;
         for (Pair<Coordinate, String> pair : updates) {
             getCell(pair.getKey()).updateCell(pair.getValue());
+        }
+        updatingFromServer = false;
+    }
+
+    @Override
+    public void registerListener(ISpreadsheetListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void unregisterListener(ISpreadsheetListener listener) {
+        listeners.remove(listener);
+    }
+
+    private String cachedUpdate = "";
+
+    @Override
+    public void notifyListeners(Coordinate coordinate, String update) {
+        if (!updatingFromServer) {
+            cachedUpdate += update + "\n";
+            for (ISpreadsheetListener listener : listeners) {
+                try {
+                    listener.handleUpdate(coordinate, cachedUpdate);
+                    cachedUpdate = "";
+                } catch (Exception e) {
+                    // when handleUpdate fails the current update is kept in the cache
+                }
+            }
         }
     }
 
@@ -101,15 +184,15 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         public ITerm parse(String formula) {
+            if (formula.isEmpty()) {
+                return new EmptyTerm();
+            }
+
             List<Token> tokens;
             try {
                 tokens = tokenize(formula);
             } catch (ParseException e) {
                 return new ErrorTerm(formula);
-            }
-
-            if (tokens.isEmpty()) {
-                return new EmptyTerm();
             }
 
             // special case of just text or a number
@@ -363,13 +446,13 @@ public class Spreadsheet implements ISpreadsheet {
      */
     private class SpreadsheetCell implements ICell {
         private final Coordinate coordinate;
-        private final Set<ICellListener> listeners;
+        private final Set<ICellListener> valueListeners;
         private ITerm term;
-        private CellFormat format;
+        private CellFormatDetails format;
 
         SpreadsheetCell(Coordinate coordinate) {
             this.coordinate = coordinate;
-            this.listeners = new HashSet<>();
+            this.valueListeners = new HashSet<>();
             this.format = initFormat();
             this.term = new EmptyTerm();
         }
@@ -380,7 +463,7 @@ public class Spreadsheet implements ISpreadsheet {
          * Jackson Magas
          * @return The format of the cell
          */
-        private CellFormat initFormat() {
+        private CellFormatDetails initFormat() {
             if (rowDefaults.containsKey(coordinate.getRow())) {
                 return rowDefaults.get(coordinate.getRow());
             } else
@@ -403,7 +486,12 @@ public class Spreadsheet implements ISpreadsheet {
             } catch (IllegalStateException e) {
                 term = new CircularErrorTerm(this.getPlaintext());
             }
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/service/Spreadsheet.java
             handleUpdate();
+========
+            Spreadsheet.this.notifyListeners(getCoordinate(), data);
+            handleValueChange();
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Spreadsheet.java
         }
 
 
@@ -443,7 +531,7 @@ public class Spreadsheet implements ISpreadsheet {
          * @return the format object
          */
         @Override
-        public CellFormat getFormatting() {
+        public CellFormatDetails getFormatting() {
             return format;
         }
 
@@ -463,7 +551,7 @@ public class Spreadsheet implements ISpreadsheet {
          * Jackson Magas
          */
         @Override
-        public void handleUpdate() {
+        public void handleValueChange() {
             term.recalculate();
             notifyListeners();
         }
@@ -478,24 +566,37 @@ public class Spreadsheet implements ISpreadsheet {
             if (listener instanceof ICell && this.dependsOn(((ICell) listener).getCoordinate())) {
                 throw new IllegalStateException("Circular reference detected");
             } else {
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/service/Spreadsheet.java
                 listeners.add(listener);
+========
+                valueListeners.add(listener);
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Spreadsheet.java
             }
         }
 
         @Override
         public void notifyListeners() {
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/service/Spreadsheet.java
             for (ICellListener listener : listeners) {
                 listener.handleUpdate();
+========
+            for (ICellListener listener : valueListeners) {
+                listener.handleValueChange();
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Spreadsheet.java
             }
         }
 
         @Override
-        public void setFormatting(CellFormat formatting) {
+        public void setFormatting(CellFormatDetails formatting) {
             this.format = formatting;
         }
 
         @Override
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/service/Spreadsheet.java
         public ITerm.ResultType dataType() {
+========
+        public ResultType dataType() {
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Spreadsheet.java
             return term.resultType();
         }
 

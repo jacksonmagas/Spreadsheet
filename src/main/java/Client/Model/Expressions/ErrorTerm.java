@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/model/Expressions/ErrorTerm.java
 package com.example.huskysheet.model.Expressions;
 
 import com.example.huskysheet.utils.Coordinate;
+========
+package Client.Model.Expressions;
+
+import Client.Model.Utils.Coordinate;
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Expressions/ErrorTerm.java
 import java.util.List;
 import java.util.Objects;
 

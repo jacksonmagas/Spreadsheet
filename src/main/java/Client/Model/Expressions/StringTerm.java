@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/model/Expressions/StringTerm.java
 package com.example.huskysheet.model.Expressions;
+========
+package Client.Model.Expressions;
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Expressions/StringTerm.java
 
 
 public class StringTerm extends AbstractValueTerm {

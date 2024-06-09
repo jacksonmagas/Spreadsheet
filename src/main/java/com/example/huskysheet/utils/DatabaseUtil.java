@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/main/java/com/example/huskysheet/utils/DatabaseUtil.java
 package com.example.huskysheet.utils;
+========
+package Client.Model.Utils;
+>>>>>>>> UIIntegration:src/main/java/Client/Model/Utils/DatabaseUtil.java
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
