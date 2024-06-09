@@ -1,4 +1,4 @@
-package Model.Util;
+package com.example.huskysheet.client.Model.Util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -6,18 +6,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.huskysheet.client.Utils.Conversions;
 import com.example.huskysheet.client.Utils.Coordinate;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 /*
  * Test class for conversion functions
  * - Ezra
  */
 public class ConversionTest {
+
+    private static final String INVALID_NULL_REF = "null is not a valid Reference.";
     
     @Test
     public void testValidRef() {
-        assertTrue(Conversions.isValidRef("$A1"));
+        Assertions.assertTrue(Conversions.isValidRef("$A1"));
         assertTrue(Conversions.isValidRef("$a1"));
         assertTrue(Conversions.isValidRef("$Z1"));
         assertTrue(Conversions.isValidRef("$Z11"));
@@ -42,7 +44,7 @@ public class ConversionTest {
         try {
             Conversions.row("null");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getMessage(), "null is not a valid ref");
+            assertEquals(e.getMessage(), INVALID_NULL_REF);
         }
     }
 
@@ -51,7 +53,7 @@ public class ConversionTest {
         try {
             Conversions.column("null");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getMessage(), "null is not a valid ref");
+            assertEquals(e.getMessage(), INVALID_NULL_REF);
         }
     }
 
@@ -83,7 +85,7 @@ public class ConversionTest {
 
     @Test
     public void testStringToCoordinates() {
-        assertEquals(Conversions.stringToCoordinate("$A1"), new Coordinate(1, 1));
+        Assertions.assertEquals(Conversions.stringToCoordinate("$A1"), new Coordinate(1, 1));
         assertEquals(Conversions.stringToCoordinate("$AA1"), new Coordinate(1, 27));
         try {
             Conversions.stringToCoordinate("bad ref");

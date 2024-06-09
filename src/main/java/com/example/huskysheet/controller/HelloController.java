@@ -1,10 +1,10 @@
 package com.example.huskysheet.controller;
 
-import Client.Model.ICell;
-import Client.Model.Spreadsheet;
+import com.example.huskysheet.client.Model.ICell;
+import com.example.huskysheet.client.Model.Spreadsheet;
 
-import Client.Model.Utils.SpreadsheetSliceView;
-import Client.Model.Utils.SpreadsheetSliceView.Direction;
+import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
+import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
