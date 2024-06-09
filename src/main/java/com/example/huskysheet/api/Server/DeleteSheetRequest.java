@@ -1,0 +1,29 @@
+package com.example.huskysheet.api.Server;
+
+public class DeleteSheetRequest {
+  private String publisher;
+  private String sheet;
+
+  public DeleteSheetRequest() {}
+
+  public DeleteSheetRequest(String publisher, String sheet) {
+    this.publisher = publisher;
+    this.sheet = sheet;
+  }
+
+  public String getPublisher() {
+    return publisher;
+  }
+
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
+  }
+
+  public String getSheet() {
+    return sheet;
+  }
+
+  public void setSheet(String sheet) {
+    this.sheet = sheet;
+  }
+}

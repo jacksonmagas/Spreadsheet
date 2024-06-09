@@ -1,5 +1,8 @@
 package server;
 
+import com.example.huskysheet.controller.SpreadsheetController;
+import com.example.huskysheet.model.Publishers;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,8 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import Server.api.SpreadsheetController;
-import Server.model.Publishers;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
