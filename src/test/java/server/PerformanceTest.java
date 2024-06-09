@@ -23,6 +23,7 @@ public class PerformanceTest {
     @BeforeEach
     public void setUp() {
         spreadsheetManager = new SpreadsheetManager();
+        dataService = new PublisherDataService();
         createSpreadsheet = new CreateSpreadsheet(spreadsheetManager, dataService);
         spreadsheetManager.clear();
     }
