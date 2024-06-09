@@ -126,6 +126,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
             case 401 -> {
                 throw new IOException("Request error: " + response.statusCode());
             }
+            case 409 -> {
+                throw new IOException("Conflict Error: " + response.statusCode());
             case 500 -> {
                 throw new IOException("Internal server error: " + response.statusCode());
             }
