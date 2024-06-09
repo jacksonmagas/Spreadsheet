@@ -30,15 +30,14 @@ class SpreadsheetControllerREGISTERTest {
 
     @Test
     void testRegister() {
-        // Mocking SecurityContextHolder.getContext().getAuthentication().getName()
+
         SecurityContext securityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(securityContext);
         Authentication authentication = mock(Authentication.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn("testClient");
 
-        // Mocking the behavior of Publishers.getInstance()
-        // Assuming the registerNewPublisher() method returns void
+
         doNothing().when(publishers).registerNewPublisher("testClient");
 
         // Call the controller method

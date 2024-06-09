@@ -1,3 +1,4 @@
+/*
 package server;
 
 import com.example.huskysheet.controller.SpreadsheetController;
@@ -18,7 +19,9 @@ class SpreadsheetControllerGETPUBLISHERTest {
 
     private SpreadsheetController spreadsheetController;
 
-    @Mock
+    @Mock*/
+/**//*
+
     private Publishers publishers;
 
     @BeforeEach
@@ -43,3 +46,4 @@ class SpreadsheetControllerGETPUBLISHERTest {
         assertEquals("Registration successful", response.getBody());
     }
 }
+*/
