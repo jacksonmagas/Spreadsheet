@@ -149,6 +149,7 @@ public class TestParsing {
         // test +
         Assertions.assertInstanceOf(BiOperatorExpression.class, parser.parse("= 1 + 2"));
         parsesInto("3", "= 1 + 2", parser);
+        parsesInto("3", "= 1 + (1 + 1)", parser);
         parsesInto(VALUE_ERROR, "= 1 + \"hello\"", parser);
         parsesInto(VALUE_ERROR, "= \"a\" + \"b\"", parser);
         // test -

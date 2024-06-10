@@ -91,7 +91,7 @@ public class Spreadsheet implements ISpreadsheet {
     @Override
     public void updateSheet(List<Pair<Coordinate, String>> updates) {
         updatingFromServer = true;
-        for (Pair<Coordinate, String> pair : updates.reversed()) {
+        for (Pair<Coordinate, String> pair : updates) {
             getCell(pair.getKey()).updateCell(pair.getValue());
         }
         updatingFromServer = false;

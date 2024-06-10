@@ -9,3 +9,5 @@ endif
 run:
 	gradlew :run --args=$(RUN_ARGS)
 
+build:
+	gradlew :build

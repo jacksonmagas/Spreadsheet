@@ -23,12 +23,25 @@ public class HelloController implements Initializable {
     @FXML
     private TableView<List<ICell>> table;
 
+
+    private String userName;
+    private String password;
+    private String url;
+
     // Define the number of rows and columns
     private static final int ROWS = 8;
     private static final int COLUMNS = 8;
     private Spreadsheet spreadsheet;
 
     ObservableList<List<ICell>> list = FXCollections.observableArrayList();
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -70,5 +83,9 @@ public class HelloController implements Initializable {
             event.getRowValue().get(columnNumber).updateCell(event.getNewValue());
             table.refresh();
         });
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
