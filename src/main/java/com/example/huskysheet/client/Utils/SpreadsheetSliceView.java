@@ -16,6 +16,15 @@ import java.util.NoSuchElementException;
 public class SpreadsheetSliceView implements List<ICell> {
     ISpreadsheet spreadsheet;
     Direction direction;
+
+    public int getRowColNumber() {
+        return rowColNumber;
+    }
+
+    public void setRowColNumber(int rowColNumber) {
+        this.rowColNumber = rowColNumber;
+    }
+
     int rowColNumber;
 
     public enum Direction {

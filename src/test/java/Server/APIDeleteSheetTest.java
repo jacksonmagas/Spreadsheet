@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publisher;

@@ -3,7 +3,6 @@ package com.example.huskysheet.client.Model;
 import com.example.huskysheet.client.Expressions.ITerm.ResultType;
 import com.example.huskysheet.client.Utils.Coordinate;
 import com.example.huskysheet.client.Expressions.EmptyTerm;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

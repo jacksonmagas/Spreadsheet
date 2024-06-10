@@ -9,5 +9,8 @@ endif
 run:
 	gradlew :run --args=$(RUN_ARGS)
 
+gui:
+	gradlew :HelloApplication.main()
+
 build:
 	gradlew :build
