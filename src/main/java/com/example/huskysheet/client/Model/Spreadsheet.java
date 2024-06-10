@@ -91,7 +91,7 @@ public class Spreadsheet implements ISpreadsheet {
     @Override
     public void updateSheet(List<Pair<Coordinate, String>> updates) {
         updatingFromServer = true;
-        for (Pair<Coordinate, String> pair : updates) {
+        for (Pair<Coordinate, String> pair : updates.reversed()) {
             getCell(pair.getKey()).updateCell(pair.getValue());
         }
         updatingFromServer = false;
@@ -130,7 +130,7 @@ public class Spreadsheet implements ISpreadsheet {
      */
      protected class FormulaParser {
         List<String> operators = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
-        List<String> functions = Arrays.asList("IF", "SUM", "MAX", "MIN", "AVG", "CONCAT", "DEBUG");
+        List<String> functions = Arrays.asList("IF", "SUM", "MAX", "MIN", "AVG", "CONCAT", "DEBUG", "COPY");
 
         private enum TokenType {
             string, number, operator, function, reference, parenthesis, comma
@@ -560,6 +560,16 @@ public class Spreadsheet implements ISpreadsheet {
         @Override
         public ResultType dataType() {
             return term.resultType();
+        }
+
+        /**
+         * Get the spreadsheet this cell belongs to.
+         *
+         * @return the spreadsheet this cell is a part of
+         */
+        @Override
+        public ISpreadsheet getSpreadsheet() {
+            return Spreadsheet.this;
         }
 
         /**

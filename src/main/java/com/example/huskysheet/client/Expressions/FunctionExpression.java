@@ -1,5 +1,8 @@
 package com.example.huskysheet.client.Expressions;
 
+import com.example.huskysheet.client.Model.ICell;
+import com.example.huskysheet.client.Model.ISpreadsheet;
+import com.example.huskysheet.client.Utils.Conversions;
 import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,7 @@ public class FunctionExpression extends AbstractExpression {
     private ResultType resultType;
 
     public enum FunctionType {
-        IF, SUM, MAX, MIN, AVG, CONCAT, DEBUG
+        IF, SUM, MAX, MIN, AVG, CONCAT, DEBUG, COPY
     }
 
     /**
@@ -105,6 +108,26 @@ public class FunctionExpression extends AbstractExpression {
                 // debug does not ignore empty
                 value = calculateDebug();
             }
+            case COPY -> {
+                value = calculateCopy();
+            }
+        }
+    }
+
+    private String calculateCopy() {
+        if (args.size() == 2
+            && (args.getFirst() instanceof ReferenceExpression)
+            && (args.getLast().resultType() == ResultType.string)
+            && Conversions.isValidRef(args.getLast().getResult())) {
+            // the implementation of expressions which don't know what spreadsheet they are part of
+            // died here (it probably wasn't the best idea anyway)
+            ((ReferenceExpression) args.getFirst()).getSpreadsheet()
+                .getCell(Conversions.stringToCoordinate(args.getLast().getResult()))
+                .updateCell(args.getFirst().getResult());
+            return args.getFirst().getResult();
+        } else {
+            resultType = ResultType.error;
+            return VALUE_ERROR;
         }
     }
 

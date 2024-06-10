@@ -1,6 +1,7 @@
 package com.example.huskysheet.client.Expressions;
 
 import com.example.huskysheet.client.Model.ICell;
+import com.example.huskysheet.client.Model.ISpreadsheet;
 import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,10 @@ public class ReferenceExpression extends AbstractExpression {
         reference = cell;
         plaintext = cell.getCoordinate().toString();
         recalculate();
+    }
+
+    protected ISpreadsheet getSpreadsheet() {
+        return reference.getSpreadsheet();
     }
 
     @Override

@@ -58,4 +58,10 @@ public interface ICell extends ICellListener {
      */
     ResultType dataType();
 
+    /**
+     * Get the spreadsheet this cell belongs to.
+     * @return the spreadsheet this cell is a part of
+     */
+    ISpreadsheet getSpreadsheet();
+
 }

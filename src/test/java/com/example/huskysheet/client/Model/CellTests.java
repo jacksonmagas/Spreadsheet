@@ -3,6 +3,7 @@ package com.example.huskysheet.client.Model;
 import com.example.huskysheet.client.Expressions.ITerm.ResultType;
 import com.example.huskysheet.client.Utils.Coordinate;
 import com.example.huskysheet.client.Expressions.EmptyTerm;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +62,22 @@ public class CellTests {
     Assertions.assertEquals("barbar", c3.getData());
     a1.updateCell("foo");
     Assertions.assertEquals("foofoo", c3.getData());
+  }
+
+  @Test
+  public void testCopy() {
+    Spreadsheet sheet = new Spreadsheet();
+    ICell a1 = sheet.getCell(new Coordinate(1, 1));
+    ICell a2 = sheet.getCell(new Coordinate(2, 1));
+    ICell a3 = sheet.getCell(new Coordinate(3, 1));
+
+    a1.updateCell("\"foo\"");
+    a2.updateCell("=COPY($A1, \"$A3\")");
+    Assertions.assertEquals("foo", a2.getData());
+    Assertions.assertEquals("foo", a3.getData());
+    a1.updateCell("bar");
+    Assertions.assertEquals("bar", a2.getData());
+    Assertions.assertEquals("bar", a3.getData());
   }
 
   @Test
