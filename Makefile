@@ -9,8 +9,8 @@ endif
 run:
 	gradlew :run --args=$(RUN_ARGS)
 
-gui:
-	gradlew :HelloApplication.main()
+prof_server:
+	gradlew :run --args='--name=team4 --url=https://husksheets.fly.dev/ --password=IgUraDn4(kS>_-7>'
 
 build:
 	gradlew :build

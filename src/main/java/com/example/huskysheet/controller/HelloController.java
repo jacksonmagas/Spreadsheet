@@ -158,7 +158,7 @@ public class HelloController implements Initializable {
         column.setEditable(true);
         column.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
         column.setOnEditCommit(event -> {
-            event.getRowValue().get(columnNumber + 1).updateCell(event.getNewValue());
+            event.getRowValue().get(columnNumber).updateCell(event.getNewValue());
             table.refresh();
         });
     }

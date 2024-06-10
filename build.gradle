@@ -97,7 +97,7 @@ java {
 
 run {
   jvmArgs += [
-          '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.datatransfer,java.desktop,java.ws.rs,jersey.server,jersey.container.servlet.core,javax.servlet.api',
+          '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.datatransfer,java.desktop,jersey.server,jersey.container.servlet.core,javax.servlet.api',
           '--module-path', sourceSets.main.runtimeClasspath.asPath
   ]
 }
