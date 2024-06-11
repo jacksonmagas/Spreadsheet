@@ -5,7 +5,6 @@ module com.example.huskysheet {
   requires java.sql;
   requires java.datatransfer;
   requires java.desktop;
-  requires java.ws.rs;
   requires jersey.server;
   requires jersey.container.servlet.core;
   requires javax.servlet.api;
@@ -27,6 +26,8 @@ module com.example.huskysheet {
 
   opens com.example.huskysheet to javafx.fxml, spring.core;
   exports com.example.huskysheet;
+
+  opens com.example.huskysheet.client to com.google.gson;
 
 
   exports com.example.huskysheet.model;

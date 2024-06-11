@@ -250,7 +250,7 @@ public class HelloController implements Initializable {
     private void createSheet() {
         try {
             // Send a request to create a new sheet with the name "Sheet1"
-            spreadsheetManager.createSpreadsheet("Sheet1");
+            spreadsheetManager.createSpreadsheet("Test 6:01");
 
             // Refresh the "Open Recent" menu after creation
             addItemsToOpenRecentMenu();
