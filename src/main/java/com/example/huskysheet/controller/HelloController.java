@@ -249,8 +249,11 @@ public class HelloController implements Initializable {
 
     private void createSheet() {
         try {
+            // Delete all existing sheets first
+            deleteAllSheets();
+
             // Send a request to create a new sheet with the name "Sheet1"
-            spreadsheetManager.createSpreadsheet("Sheet1");
+            spreadsheetManager.createSpreadsheet("Sheet134134");
 
             // Refresh the "Open Recent" menu after creation
             addItemsToOpenRecentMenu();
@@ -260,6 +263,25 @@ public class HelloController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    private void deleteAllSheets() {
+        try {
+            // Get the list of publishers
+            List<String> publishers = spreadsheetManager.getPublishers();
+            for (String publisher : publishers) {
+                // Get the list of sheets for each publisher
+                List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
+                // Delete each sheet
+                for (String sheet : sheets) {
+                    spreadsheetManager.deleteSpreadsheet(publisher, sheet);
+                }
+            }
+        } catch (APICallException e) {
+            e.printStackTrace();
+            // Handle API call exception
+        }
+    }
+
 
     private void setCurrentDisplay(String publisher, String sheet) {
 
