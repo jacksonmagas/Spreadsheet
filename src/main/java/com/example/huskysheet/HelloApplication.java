@@ -25,9 +25,9 @@ public class HelloApplication extends Application {
         controller.setUrl(url);
         controller.setUserName(userName);
         controller.setPassword(password);
-        //controller.setUrl("https://husksheets.fly.dev/");
-        //controller.setUserName("team4");
-        //controller.setPassword("IgUraDn4(kS>_-7>");
+        controller.setUrl("https://husksheets.fly.dev/");
+        controller.setUserName("team4");
+        controller.setPassword("IgUraDn4(kS>_-7>");
         controller.init();
 
         stage.show();
@@ -37,7 +37,6 @@ public class HelloApplication extends Application {
         var params = getParameters().getNamed();
         url = params.get("url");
         userName = params.get("name");
-        password = params.get("password");
     }
 
     public static void main(String[] args) {

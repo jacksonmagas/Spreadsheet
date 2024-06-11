@@ -89,7 +89,6 @@ public class HelloController implements Initializable {
         }
 
         // setup initial table
-        spreadsheet = new Spreadsheet();
         setupTable();
 
         // Dynamically add items to the "Open Recent" submenu
@@ -97,6 +96,7 @@ public class HelloController implements Initializable {
     }
 
     private void setupTable() {
+        spreadsheet = new Spreadsheet();
         table.setEditable(true);
 
         String headerStyle = "-fx-background-color: -fx-body-color; -fx-font-weight: bold; -fx-text-alignment: center;";
