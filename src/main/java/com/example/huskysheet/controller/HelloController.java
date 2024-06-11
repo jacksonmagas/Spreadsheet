@@ -45,6 +45,12 @@ public class HelloController implements Initializable {
     @FXML
     private MenuBar menuBar;
 
+    @FXML
+    private MenuItem newSheetMenuItem;
+
+    @FXML
+    private MenuItem deleteSheetMenuItem;
+
     private SpreadsheetManager spreadsheetManager;
 
     private String userName;
@@ -71,6 +77,7 @@ public class HelloController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
     }
 
     public void init() {
@@ -95,6 +102,10 @@ public class HelloController implements Initializable {
 
         // Dynamically add items to the "Open Recent" submenu
         addItemsToOpenRecentMenu();
+
+        // Set event handlers for the menu items
+        newSheetMenuItem.setOnAction(event -> createSheet());
+        deleteSheetMenuItem.setOnAction(event -> deleteSheet());
     }
 
     private void setupTable() {
@@ -115,40 +126,40 @@ public class HelloController implements Initializable {
 
         table.getSelectionModel().setCellSelectionEnabled(true);
         Callback<TableColumn<SpreadsheetSliceView, String>, TableCell<SpreadsheetSliceView, String>> rowNumFactory =
-            (tv) -> new TableCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText("");
-                        setStyle(headerStyle);
-                    } else {
-                        setText(item);
-                        setStyle(headerStyle);
+                (tv) -> new TableCell<>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText("");
+                            setStyle(headerStyle);
+                        } else {
+                            setText(item);
+                            setStyle(headerStyle);
+                        }
+                        // Prevent cell from being selectable
+                        setMouseTransparent(true);
+                        setFocusTraversable(false);
                     }
-                    // Prevent cell from being selectable
-                    setMouseTransparent(true);
-                    setFocusTraversable(false);
-                }
-            };
+                };
         // Add a listener to the selection model
         table.getSelectionModel().getSelectedCells().addListener(
-            new ListChangeListener<>() {
-                @Override
-                public void onChanged(Change<? extends TablePosition> c) {
-                    if (c.next()
-                        && !c.getAddedSubList().isEmpty()
-                        && c.getAddedSubList().getFirst().getColumn() == 0) {
-                        int row = c.getAddedSubList().getFirst().getRow();
-                        int col = c.getAddedSubList().getFirst().getColumn() + 1;
-                        Platform.runLater(() -> table.getSelectionModel().clearSelection());
-                        Platform.runLater(() -> table.getSelectionModel().select(row, table.getColumns().get(col)));
+                new ListChangeListener<>() {
+                    @Override
+                    public void onChanged(Change<? extends TablePosition> c) {
+                        if (c.next()
+                                && !c.getAddedSubList().isEmpty()
+                                && c.getAddedSubList().getFirst().getColumn() == 0) {
+                            int row = c.getAddedSubList().getFirst().getRow();
+                            int col = c.getAddedSubList().getFirst().getColumn() + 1;
+                            Platform.runLater(() -> table.getSelectionModel().clearSelection());
+                            Platform.runLater(() -> table.getSelectionModel().select(row, table.getColumns().get(col)));
+                        }
                     }
-                }
-            });
+                });
         rowNumbers.setCellFactory(rowNumFactory);
         rowNumbers.setCellValueFactory(cellData ->
-            new SimpleStringProperty(Integer.toString(cellData.getValue().getRowColNumber())));
+                new SimpleStringProperty(Integer.toString(cellData.getValue().getRowColNumber())));
         rowNumbers.setPrefWidth(50);
         rowNumbers.setResizable(false);
         rowNumbers.setEditable(false);
@@ -197,6 +208,53 @@ public class HelloController implements Initializable {
                 }
                 openRecentMenu.getItems().add(publisherMenu);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteSheet() {
+        try {
+            // Get the selected sheet from the "Open Recent" menu
+            MenuItem selectedMenuItem = openRecentMenu.getItems().stream()
+                    .filter(MenuItem.class::isInstance)
+                    .map(MenuItem.class::cast)
+                    .findFirst()
+                    .orElse(null);
+
+            if (selectedMenuItem == null) {
+                System.out.println("No sheet selected to delete.");
+                return;
+            }
+
+            String sheetName = selectedMenuItem.getText();
+
+            // Get the publisher of the selected sheet
+            Menu publisherMenu = (Menu) selectedMenuItem.getParentMenu();
+            String publisher = publisherMenu.getText();
+
+            // Send a request to delete the sheet from the server
+            spreadsheetManager.deleteSpreadsheet(publisher, sheetName);
+
+            // Refresh the "Open Recent" menu after deletion
+            addItemsToOpenRecentMenu();
+
+            // Optionally, you can update the UI to reflect the changes
+        } catch (APICallException e) {
+            e.printStackTrace();
+            // Handle API call exception
+        }
+    }
+
+    private void createSheet() {
+        try {
+            // Send a request to create a new sheet with the name "Sheet1"
+            spreadsheetManager.createSpreadsheet("Sheet1");
+
+            // Refresh the "Open Recent" menu after creation
+            addItemsToOpenRecentMenu();
+
+            // Optionally, you can update the UI to reflect the changes
         } catch (Exception e) {
             e.printStackTrace();
         }

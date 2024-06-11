@@ -10,8 +10,10 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="New Sheet" />
-                        <MenuItem mnemonicParsing="false" text="Delete Sheet" />
+                        <MenuItem fx:id="newSheetMenuItem" mnemonicParsing="false" text="New Sheet" />
+
+                        <MenuItem fx:id="deleteSheetMenuItem" mnemonicParsing="false" text="Delete Sheet" />
+
                         <MenuItem mnemonicParsing="false" text="Rename Sheet" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open" />
