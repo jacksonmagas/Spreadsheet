@@ -104,7 +104,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     private Result callAPI(Endpoint target, Argument arg)
         throws JsonSyntaxException, IOException, InterruptedException {
         var requestBuilder = HttpRequest.newBuilder()
-            .header("Authorization", authHeader);
+            .header("Authorization", authHeader)
+            .header("Content-Type", "application/json");
         try {
             requestBuilder.uri(new URI(serverUrl + "/api/v1/" + target.name()));
         } catch(URISyntaxException ignored) {
