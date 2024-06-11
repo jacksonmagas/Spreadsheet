@@ -37,6 +37,7 @@ public class HelloApplication extends Application {
         var params = getParameters().getNamed();
         url = params.get("url");
         userName = params.get("name");
+        password = params.get("password");
     }
 
     public static void main(String[] args) {
