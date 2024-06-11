@@ -2,27 +2,34 @@ package com.example.huskysheet.controller;
 
 import com.example.huskysheet.client.Model.ICell;
 import com.example.huskysheet.client.Model.Spreadsheet;
-
+import com.example.huskysheet.client.SpreadsheetManager;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
-import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
+
     @FXML
     private TableView<List<ICell>> table;
 
+    @FXML
+    private Menu openRecentMenu;
+
+    @FXML
+    private MenuBar menuBar;
+
+    private SpreadsheetManager spreadsheetManager;
 
     private String userName;
     private String password;
@@ -43,13 +50,64 @@ public class HelloController implements Initializable {
         this.password = password;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO spreadsheet selection
+//        // Check if necessary fields are set
+//        if (this.url == null || this.userName == null || this.password == null) {
+//            System.err.println("URL, username, or password not set!");
+//            return;
+//        }
+//
+//        // Initialize the SpreadsheetManager with server URL, username, and password
+//        try {
+//            spreadsheetManager = new SpreadsheetManager(this.url, this.userName, this.password);
+//            // Register the user
+//            spreadsheetManager.register();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//
+//        // Set up the table
+//        setupTable();
+//
+//        // Dynamically add items to the "Open Recent" submenu
+//        addItemsToOpenRecentMenu();
+    }
+
+
+    public void init() {
+        // Check if necessary fields are set
+        if (this.url == null || this.userName == null || this.password == null) {
+            System.err.println("URL, username, or password not set!");
+            return;
+        }
+
+        // Initialize the SpreadsheetManager with server URL, username, and password
+        try {
+            spreadsheetManager = new SpreadsheetManager(this.url, this.userName, this.password);
+            // Register the user
+            spreadsheetManager.register();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Set up the table
+        setupTable();
+
+        // Dynamically add items to the "Open Recent" submenu
+        addItemsToOpenRecentMenu();
+    }
+
+    private void setupTable() {
         spreadsheet = new Spreadsheet();
 
         table.setEditable(true);
-
         table.getSelectionModel().setCellSelectionEnabled(true);
 
         // Create the table columns dynamically
@@ -67,10 +125,31 @@ public class HelloController implements Initializable {
         table.setItems(list);
     }
 
+    private void addItemsToOpenRecentMenu() {
+        try {
+            // Get the list of publishers
+            List<String> publishers = spreadsheetManager.getPublishers();
+            for (String publisher : publishers) {
+                // Get the list of sheets for each publisher
+                List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
+                // Create a submenu for each publisher
+                Menu publisherMenu = new Menu(publisher);
+                for (String sheet : sheets) {
+                    // Add a menu item for each sheet
+                    MenuItem sheetItem = new MenuItem(sheet);
+                    publisherMenu.getItems().add(sheetItem);
+                }
+                openRecentMenu.getItems().add(publisherMenu);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Set up a column of the spreadsheet.
      * Create a cell value factory which gets the data from the cell at that row/column.
-     * Create a cell factory which sets each cell as an editable cell/
+     * Create a cell factory which sets each cell as an editable cell
      * Set the callback for edits in this column to edit the cell
      * @param column the column to set up
      * @param columnNumber the column number
@@ -83,9 +162,5 @@ public class HelloController implements Initializable {
             event.getRowValue().get(columnNumber).updateCell(event.getNewValue());
             table.refresh();
         });
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }
