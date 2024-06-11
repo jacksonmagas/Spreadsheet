@@ -6,7 +6,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.huskysheet.controller.HelloController">
     <children>
-        <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <MenuBar fx:id="menuBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -14,9 +14,15 @@
                         <MenuItem mnemonicParsing="false" text="Delete Sheet" />
                         <MenuItem mnemonicParsing="false" text="Rename Sheet" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Open" />
+                        <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open" />
+                        <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open Recent">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="File1.xlsx" />
+                                <MenuItem mnemonicParsing="false" text="File2.xlsx" />
+                                <MenuItem mnemonicParsing="false" text="File3.xlsx" />
+                            </items>
+                        </Menu>
                         <MenuItem mnemonicParsing="false" text="Close" />
-
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Font">
@@ -50,7 +56,6 @@
                             </toggleGroup></RadioMenuItem>
                         <RadioMenuItem mnemonicParsing="false" text="Green" toggleGroup="$backColor" />
                         <RadioMenuItem mnemonicParsing="false" text="Blue" toggleGroup="$backColor" />
-
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Cell Color">
@@ -93,10 +98,9 @@
                     <items>
                         <MenuItem mnemonicParsing="false" text="Zoom In" />
                         <MenuItem mnemonicParsing="false" text="Zoom Out" />
-                        <MenuItem mnemonicParsing="false" text="Dafault Zoom" />
+                        <MenuItem mnemonicParsing="false" text="Default Zoom" />
                     </items>
                 </Menu>
-
             </menus>
         </MenuBar>
         <TableView fx:id="table" editable="true" layoutX="-1.0" layoutY="24.0" prefHeight="376.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="24.0">

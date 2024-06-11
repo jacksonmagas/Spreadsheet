@@ -1,33 +1,29 @@
 package com.example.huskysheet.controller;
 
-import com.example.huskysheet.client.Model.ICell;
 import com.example.huskysheet.client.Model.Spreadsheet;
 
+import com.example.huskysheet.client.SpreadsheetManager;
 import com.example.huskysheet.client.Utils.Conversions;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
-import javafx.util.Pair;
 import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
@@ -42,6 +38,12 @@ public class HelloController implements Initializable {
     private Button newColumnButton;
     @FXML
     private Button newRowButton;
+    @FXML
+    private Menu openRecentMenu;
+    @FXML
+    private MenuBar menuBar;
+
+    private SpreadsheetManager spreadsheetManager;
 
     private String userName;
     private String password;
@@ -67,9 +69,34 @@ public class HelloController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO spreadsheet selection
-        spreadsheet = new Spreadsheet();
+    }
 
+    public void init() {
+        // Check if necessary fields are set
+        if (this.url == null || this.userName == null || this.password == null) {
+            System.err.println("URL, username, or password not set!");
+            return;
+        }
+
+        // Initialize the SpreadsheetManager with server URL, username, and password
+        try {
+            spreadsheetManager = new SpreadsheetManager(this.url, this.userName, this.password);
+            // Register the user
+            spreadsheetManager.register();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // setup initial table
+        setupTable();
+
+        // Dynamically add items to the "Open Recent" submenu
+        addItemsToOpenRecentMenu();
+    }
+
+    private void setupTable() {
+        spreadsheet = new Spreadsheet();
         table.setEditable(true);
 
         String headerStyle = "-fx-background-color: -fx-body-color; -fx-font-weight: bold; -fx-text-alignment: center;";
@@ -117,12 +144,12 @@ public class HelloController implements Initializable {
         table.getColumns().add(rowNumbers);
 
         // Create the table columns dynamically
-        for (int i = 1; i <= Math.max(spreadsheet.numColumns(), INITIAL_COLUMN_NUM); i++) {
+        for (int i = 1; i <= Math.max(spreadsheet != null ? spreadsheet.numColumns() : 0, INITIAL_COLUMN_NUM); i++) {
             newColumn();
         }
 
         // Populate the table with rows of the spreadsheet
-        for (int row = 1; row <= Math.max(spreadsheet.numRows(), INITIAL_ROW_NUM); row++) {
+        for (int row = 1; row <= Math.max(spreadsheet != null ? spreadsheet.numRows() : 0, INITIAL_ROW_NUM); row++) {
             newRow();
         }
 
@@ -130,6 +157,27 @@ public class HelloController implements Initializable {
         newRowButton.setOnAction(event -> {newRow();});
 
         table.setItems(list);
+    }
+
+    private void addItemsToOpenRecentMenu() {
+        try {
+            // Get the list of publishers
+            List<String> publishers = spreadsheetManager.getPublishers();
+            for (String publisher : publishers) {
+                // Get the list of sheets for each publisher
+                List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
+                // Create a submenu for each publisher
+                Menu publisherMenu = new Menu(publisher);
+                for (String sheet : sheets) {
+                    // Add a menu item for each sheet
+                    MenuItem sheetItem = new MenuItem(sheet);
+                    publisherMenu.getItems().add(sheetItem);
+                }
+                openRecentMenu.getItems().add(publisherMenu);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void newRow() {
