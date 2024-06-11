@@ -1,9 +1,12 @@
 package com.example.huskysheet.model;
 
+
 import com.example.huskysheet.model.Publisher;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class Spreadsheet {
     private final Publisher publisher;
@@ -11,6 +14,7 @@ public class Spreadsheet {
     private List<String> updates;
     private List<String> updateRequests;
     private String payload;
+
 
     public Spreadsheet(Publisher publisher, String spreadsheetName) {
         if (publisher == null) {
@@ -23,14 +27,17 @@ public class Spreadsheet {
         this.payload = "";
     }
 
+
     public String getSheetName() {
         return this.spreadsheetName;
     }
+
 
     public void addUpdate(String update) {
         int nextId = updates.size() + 1;
         this.updates.add(nextId + "," + update);
     }
+
 
     public List<String> getUpdatesAfterId(String id) {
         List<String> updatesAfterId = new ArrayList<>();
@@ -49,10 +56,12 @@ public class Spreadsheet {
         return updatesAfterId;
     }
 
+
     public void addUpdateRequest(String updateRequest) {
         int nextId = updates.size() + 1;
         this.updateRequests.add(nextId + "," + updateRequest);
     }
+
 
     public List<String> getUpdateRequestsAfterId(String id) {
         List<String> updateRequestsAfterId = new ArrayList<>();
@@ -71,16 +80,20 @@ public class Spreadsheet {
         return updateRequestsAfterId;
     }
 
+
     public void setPayload(String payload) {
         this.payload = payload;
         addUpdate(payload); // Adding payload to updates list with a mock ID
     }
 
+
     public String getPayload() {
         return payload;
     }
+
 
     public int getLastUpdateId() {
         return updates.size();
     }
 }
+
