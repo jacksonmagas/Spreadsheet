@@ -6,6 +6,10 @@ public class Argument {
   private String id;
   private String payload;
 
+  public String getPublisher() {
+    return publisher;
+  }
+
   public void setPublisher(String publisher) {
     this.publisher = publisher;
   }

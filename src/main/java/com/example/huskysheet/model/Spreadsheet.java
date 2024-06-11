@@ -28,32 +28,44 @@ public class Spreadsheet {
     }
 
     public void addUpdate(String update) {
-        this.updates.add(update);
+        int nextId = updates.size() + 1;
+        this.updates.add(nextId + "," + update);
     }
 
     public List<String> getUpdatesAfterId(String id) {
         List<String> updatesAfterId = new ArrayList<>();
         int lastId = Integer.parseInt(id);
         for (String update : updates) {
-            int updateId = Integer.parseInt(update.split(",")[0]);
-            if (updateId > lastId) {
-                updatesAfterId.add(update);
+            try {
+                String[] parts = update.split(",", 2);
+                int updateId = Integer.parseInt(parts[0]);
+                if (updateId > lastId) {
+                    updatesAfterId.add(update);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace(); // Log the error
             }
         }
         return updatesAfterId;
     }
 
     public void addUpdateRequest(String updateRequest) {
-        this.updateRequests.add(updateRequest);
+        int nextId = updates.size() + 1;
+        this.updateRequests.add(nextId + "," + updateRequest);
     }
 
     public List<String> getUpdateRequestsAfterId(String id) {
         List<String> updateRequestsAfterId = new ArrayList<>();
         int lastId = Integer.parseInt(id);
         for (String request : updateRequests) {
-            int requestId = Integer.parseInt(request.split(",")[0]);
-            if (requestId > lastId) {
-                updateRequestsAfterId.add(request);
+            try {
+                String[] parts = request.split(",", 2);
+                int requestId = Integer.parseInt(parts[0]);
+                if (requestId > lastId) {
+                    updateRequestsAfterId.add(request);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace(); // Log the error
             }
         }
         return updateRequestsAfterId;
@@ -61,10 +73,14 @@ public class Spreadsheet {
 
     public void setPayload(String payload) {
         this.payload = payload;
-        addUpdate("1," + payload); // Adding payload to updates list with a mock ID
+        addUpdate(payload); // Adding payload to updates list with a mock ID
     }
 
     public String getPayload() {
         return payload;
+    }
+
+    public int getLastUpdateId() {
+        return updates.size();
     }
 }

@@ -34,8 +34,11 @@ public class Publishers {
   }
 
   public void registerNewPublisher(String clientName) {
-    Publisher publisher =  new Publisher(clientName, new ArrayList<>());
-    publisherMap.put(publisher, new ArrayList<>());
+    if (getPublisherByUsername(clientName) == null) {
+      Publisher publisher = new Publisher(clientName, new ArrayList<>());
+      publisherMap.put(publisher, new ArrayList<>());
+      System.out.println("Publisher registered: " + clientName);
+    }
   }
 
   public List<Spreadsheet> getSpreadsheetsForPublisher(Publisher publisher) {
@@ -44,5 +47,11 @@ public class Publishers {
 
   public List<Publisher> getAllPublishers() {
     return new ArrayList<>(publisherMap.keySet());
+  }
+
+  public void printPublishers() {
+    for (Publisher publisher : publisherMap.keySet()) {
+      System.out.println("Publisher: " + publisher.getName());
+    }
   }
 }

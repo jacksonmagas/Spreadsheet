@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+
 @RestController
 @RequestMapping("/api/v1")
 public class SpreadsheetController {
@@ -59,6 +61,7 @@ public class SpreadsheetController {
       arg.setId(null);
       arg.setPayload(null);
       publisherArguments.add(arg);
+      System.out.println("Publisher in list: " + publisher.getName());
     }
 
     Result result = new Result();
@@ -204,14 +207,6 @@ public class SpreadsheetController {
 
       Publisher publisherObj = publishers.getPublisherByUsername(request.getPublisher());
 
-      if (publisherObj == null) {
-        result.setSuccess(false);
-        result.setMessage("Publisher not found");
-        result.setValue(new ArrayList<>());
-        result.setTime(System.currentTimeMillis());
-        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-      }
-
       if (!request.getPublisher().equals(clientName)) {
         result.setSuccess(false);
         result.setMessage("Unauthorized: sender is not owner of sheet");
@@ -296,32 +291,37 @@ public class SpreadsheetController {
       }
 
       if (sheetToUpdate != null) {
-        List<String> updates = sheetToUpdate.getUpdatesAfterId(id);
-        List<Argument> arguments = new ArrayList<>();
-        for (String update : updates) {
-          Argument arg = new Argument();
-          arg.setPublisher(publisherName);
-          arg.setSheet(sheetName);
+        List<String> updateRequests = sheetToUpdate.getUpdatesAfterId(id);
+        StringBuilder combinedPayload = new StringBuilder();
+        int lastId = Integer.parseInt(id);
+
+        for (String update : updateRequests) {
           String[] parts = update.split(",", 2);
-          arg.setId(parts[0]);
-          arg.setPayload(parts[1]);
-          arguments.add(arg);
+          lastId = Integer.parseInt(parts[0]);
+          combinedPayload.append(parts[1]).append("\n");
         }
+
+        Argument arg = new Argument();
+        arg.setPublisher(publisherName);
+        arg.setSheet(sheetName);
+        arg.setId(String.valueOf(sheetToUpdate.getLastUpdateId()));
+        arg.setPayload(combinedPayload.toString());
+
         result.setSuccess(true);
         result.setMessage(null);
-        result.setValue(arguments);
+        result.setValue(List.of(arg));
         result.setTime(System.currentTimeMillis());
         return new ResponseEntity<>(result, HttpStatus.OK);
       } else {
         result.setSuccess(false);
-        result.setMessage("Not found:" + publisherName + "/" + sheetName);
+        result.setMessage("Not found: " + publisherName + "/" + sheetName);
         result.setValue(new ArrayList<>());
         result.setTime(System.currentTimeMillis());
         return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
       }
     } else {
       result.setSuccess(false);
-      result.setMessage("Not found:" + publisherName + "/" + sheetName);
+      result.setMessage("Not found: " + publisherName + "/" + sheetName);
       result.setValue(new ArrayList<>());
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
@@ -363,7 +363,7 @@ public class SpreadsheetController {
 
     if (!publisherName.equals(clientName)) {
       result.setSuccess(false);
-      result.setMessage("Unathorized: sender is not owner of sheet");
+      result.setMessage("Unauthorized: sender is not owner of sheet");
       result.setValue(new ArrayList<>());
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
@@ -382,19 +382,24 @@ public class SpreadsheetController {
 
       if (sheetToUpdate != null) {
         List<String> updateRequests = sheetToUpdate.getUpdateRequestsAfterId(id);
-        List<Argument> arguments = new ArrayList<>();
+        StringBuilder combinedPayload = new StringBuilder();
+        int lastId = Integer.parseInt(id);
+
         for (String update : updateRequests) {
-          Argument arg = new Argument();
-          arg.setPublisher(publisherName);
-          arg.setSheet(sheetName);
           String[] parts = update.split(",", 2);
-          arg.setId(parts[0]);
-          arg.setPayload(parts[1]);
-          arguments.add(arg);
+          lastId = Integer.parseInt(parts[0]);
+          combinedPayload.append(parts[1]).append("\n");
         }
+
+        Argument arg = new Argument();
+        arg.setPublisher(publisherName);
+        arg.setSheet(sheetName);
+        arg.setId(String.valueOf(sheetToUpdate.getLastUpdateId()));
+        arg.setPayload(combinedPayload.toString());
+
         result.setSuccess(true);
         result.setMessage(null);
-        result.setValue(arguments);
+        result.setValue(List.of(arg));
         result.setTime(System.currentTimeMillis());
         return new ResponseEntity<>(result, HttpStatus.OK);
       } else {
@@ -532,7 +537,7 @@ public class SpreadsheetController {
       }
 
       if (sheetToUpdate != null) {
-        sheetToUpdate.addUpdateRequest(payload);
+        sheetToUpdate.addUpdateRequest(payload); // Increment ID for each new update
         result.setSuccess(true);
         result.setMessage(null);
         result.setValue(new ArrayList<>());
