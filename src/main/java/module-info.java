@@ -16,5 +16,6 @@ module com.example.huskysheet {
     exports com.example.huskysheet to javafx.graphics;
     exports com.example.huskysheet.controller to javafx.fxml;
     opens com.example.huskysheet.controller to javafx.fxml;
+    opens com.example.huskysheet.client to com.google.gson;
 }
 
