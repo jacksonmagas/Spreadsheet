@@ -323,7 +323,9 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     public void handleUpdate(Coordinate coordinate, String update) throws Exception {
         try {
             Result result;
-            if (currentSheetPublisher.equals(userName)) {
+
+            //todo
+            if (false && currentSheetPublisher.equals(userName)) {
                 result = callAPI(Endpoint.updatePublished,
                     new Argument(currentSheetPublisher,
                         currentSheetName,
