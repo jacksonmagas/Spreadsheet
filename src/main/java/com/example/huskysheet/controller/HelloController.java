@@ -264,6 +264,7 @@ public class HelloController implements Initializable {
         }
     }
 
+
     private void deleteAllSheets() {
         try {
             // Get the list of publishers

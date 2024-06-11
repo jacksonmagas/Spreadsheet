@@ -33,6 +33,7 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+
     private void parseArgs() {
         var params = getParameters().getNamed();
         url = params.get("url");
