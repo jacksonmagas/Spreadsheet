@@ -13,7 +13,9 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -119,6 +121,10 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         }
         var request = requestBuilder.build();
         var response = client.send(request, BodyHandlers.ofString());
+        System.out.println("Request: " + request.toString());
+        System.out.println("Request Body: " + new Gson().toJson(arg));
+        System.out.println("Response: " + response.toString());
+        System.out.println("Response Body: " + response.body());
         switch(response.statusCode()) {
             case 200, 201 -> {
                 return new Gson().fromJson(response.body(), Result.class);
@@ -133,7 +139,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
                 throw new IOException("Internal server error: " + response.statusCode());
             }
             default -> {
-                throw new IOException("Unexpected status code: " + response.statusCode());
+                throw new IOException("Unexpected status code: " + response);
             }
         }
     }
@@ -204,17 +210,20 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         try {
             Result result;
             if (publisher.equals(userName)) {
-                result = callAPI(Endpoint.getUpdatesForPublished);
+                result = callAPI(Endpoint.getUpdatesForPublished, new Argument(publisher, sheetName, "0", ""));
             } else {
-                result = callAPI(Endpoint.getUpdatesForSubscription);
+                result = callAPI(Endpoint.getUpdatesForSubscription, new Argument(publisher, sheetName, "0", ""));
             }
             if (result.success) {
-                currentSpreadsheet.unregisterListener(this);
+                if (currentSpreadsheet != null) {
+                    currentSpreadsheet.unregisterListener(this);
+                }
                 currentSpreadsheet = new Spreadsheet();
                 currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
                 currentSpreadsheet.registerListener(this);
                 currentSheetName = sheetName;
                 currentID = Integer.parseInt(result.value.getFirst().id());
+                currentSheetPublisher = result.value.getFirst().publisher();
                 return currentSpreadsheet;
             } else {
                 throw new APICallException(result.message);
@@ -233,6 +242,9 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      *                                  such as $A1 or $b2
      */
     private List<Pair<Coordinate, String>> parsePayload(String payload) throws IllegalArgumentException {
+        if (payload.isEmpty()) {
+            return new ArrayList<>();
+        }
         return Arrays.stream(payload.split("\n"))
             .map(s -> s.split(" ", 2))
             .map(s -> new Pair<>(Conversions.stringToCoordinate(s[0]), s[1]))

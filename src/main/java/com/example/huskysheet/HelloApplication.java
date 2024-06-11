@@ -25,7 +25,7 @@ public class HelloApplication extends Application {
         controller.setUrl(url);
         controller.setUserName(userName);
         controller.setPassword(password);
-        controller.setUrl("https://husksheets.fly.dev/");
+        controller.setUrl("https://husksheets.fly.dev");
         controller.setUserName("team4");
         controller.setPassword("IgUraDn4(kS>_-7>");
         controller.init();

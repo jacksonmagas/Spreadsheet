@@ -1,5 +1,7 @@
 package com.example.huskysheet.controller;
 
+import com.example.huskysheet.client.APICallException;
+import com.example.huskysheet.client.Model.ISpreadsheet;
 import com.example.huskysheet.client.Model.Spreadsheet;
 
 import com.example.huskysheet.client.SpreadsheetManager;
@@ -52,10 +54,10 @@ public class HelloController implements Initializable {
     // Define the number of rows and columns
     private static final int INITIAL_ROW_NUM = 8;
     private static final int INITIAL_COLUMN_NUM = 8;
-    private int numRows = 0;
-    private int numCols = 0;
+    private int numRows;
+    private int numCols;
 
-    private Spreadsheet spreadsheet;
+    private ISpreadsheet spreadsheet;
 
     ObservableList<SpreadsheetSliceView> list = FXCollections.observableArrayList();
 
@@ -89,7 +91,6 @@ public class HelloController implements Initializable {
         }
 
         // setup initial table
-        spreadsheet = new Spreadsheet();
         setupTable();
 
         // Dynamically add items to the "Open Recent" submenu
@@ -97,8 +98,19 @@ public class HelloController implements Initializable {
     }
 
     private void setupTable() {
-        table.setEditable(true);
+        // check that there is a spreadsheet
+        if (spreadsheet == null) {
+            return;
+        }
 
+        // clear current table
+        table.getColumns().clear();
+        table.getItems().clear();
+        numCols = 0;
+        numRows = 0;
+
+
+        table.setEditable(true);
         String headerStyle = "-fx-background-color: -fx-body-color; -fx-font-weight: bold; -fx-text-alignment: center;";
 
         table.getSelectionModel().setCellSelectionEnabled(true);
@@ -171,6 +183,16 @@ public class HelloController implements Initializable {
                 for (String sheet : sheets) {
                     // Add a menu item for each sheet
                     MenuItem sheetItem = new MenuItem(sheet);
+                    sheetItem.setOnAction((event) -> {
+                        try {
+                            spreadsheet = spreadsheetManager.getSpreadsheet(publisher, sheet);
+                        } catch (APICallException e) {
+                            //todo probably display message to user instead
+                            throw new RuntimeException(e);
+                        }
+                        setCurrentDisplay(publisher, sheet);
+                        setupTable();
+                    });
                     publisherMenu.getItems().add(sheetItem);
                 }
                 openRecentMenu.getItems().add(publisherMenu);
@@ -178,6 +200,10 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setCurrentDisplay(String publisher, String sheet) {
+
     }
 
     private void newRow() {

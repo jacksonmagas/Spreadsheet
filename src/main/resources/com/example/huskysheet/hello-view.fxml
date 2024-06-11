@@ -15,13 +15,7 @@
                         <MenuItem mnemonicParsing="false" text="Rename Sheet" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open" />
-                        <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open Recent">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="File1.xlsx" />
-                                <MenuItem mnemonicParsing="false" text="File2.xlsx" />
-                                <MenuItem mnemonicParsing="false" text="File3.xlsx" />
-                            </items>
-                        </Menu>
+                        <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open Recent" />
                         <MenuItem mnemonicParsing="false" text="Close" />
                     </items>
                 </Menu>
