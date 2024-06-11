@@ -5,9 +5,6 @@ module com.example.huskysheet {
   requires java.sql;
   requires java.datatransfer;
   requires java.desktop;
-  requires jersey.server;
-  requires jersey.container.servlet.core;
-  requires javax.servlet.api;
   requires spring.web;
   requires spring.security.core;
   requires jdk.jdi;
