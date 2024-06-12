@@ -5,10 +5,6 @@ module com.example.huskysheet {
   requires java.sql;
   requires java.datatransfer;
   requires java.desktop;
-  requires java.ws.rs;
-  requires jersey.server;
-  requires jersey.container.servlet.core;
-  requires javax.servlet.api;
   requires spring.web;
   requires spring.security.core;
   requires jdk.jdi;
@@ -18,27 +14,31 @@ module com.example.huskysheet {
   requires spring.context;
   requires spring.security.config;
   requires spring.security.web;
-  requires spring.beans; // Add this line to resolve IllegalAccessError
+  requires spring.beans;
+  requires java.net.http;
+  requires com.google.gson;
+  requires javafx.base;
+  requires jakarta.persistence;
+
 
   opens com.example.huskysheet to javafx.fxml, spring.core;
   exports com.example.huskysheet;
 
+  opens com.example.huskysheet.client to com.google.gson;
+
+
   exports com.example.huskysheet.model;
   opens com.example.huskysheet.model to javafx.fxml, org.mockito, spring.core;
 
-  exports com.example.huskysheet.utils;
-  opens com.example.huskysheet.utils to javafx.fxml, spring.core;
 
   exports com.example.huskysheet.api.Server;
   opens com.example.huskysheet.api.Server to org.mockito, spring.core;
 
+
   exports com.example.huskysheet.config;
   opens com.example.huskysheet.config to javafx.fxml, spring.core;
 
+
   exports com.example.huskysheet.controller;
   opens com.example.huskysheet.controller to javafx.fxml, org.mockito, spring.core;
-
-  exports com.example.huskysheet.service;
-  opens com.example.huskysheet.service to javafx.fxml, spring.core;
 }
-

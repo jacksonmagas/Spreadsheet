@@ -6,8 +6,10 @@ plugins {
   id 'org.beryx.jlink' version '2.25.0'
 }
 
+
 group 'com.example'
 version '1.0-SNAPSHOT'
+
 
 repositories {
   mavenCentral {
@@ -18,31 +20,38 @@ repositories {
   }
 }
 
+
 ext {
   junitVersion = '5.10.0'
 }
 
+
 sourceCompatibility = '21'
 targetCompatibility = '21'
+
 
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
 }
 
+
 application {
   mainModule = 'com.example.huskysheet'
-  mainClass = 'com.example.huskysheet.HuskySheetApplication'
+  mainClass = 'com.example.huskysheet.HelloApplication'
 }
+
 
 javafx {
   version = '21'
   modules = ['javafx.controls', 'javafx.fxml']
 }
 
+
 dependencies {
   implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
   implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
   implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+
 
   implementation 'org.springframework.boot:spring-boot-starter:3.3.0'
   implementation 'org.springframework.boot:spring-boot-starter-web:3.3.0'
@@ -50,11 +59,19 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-security:3.3.0'
 
 
+
+
+  // used for tests/client
+  implementation("com.google.code.gson:gson:2.11.0")
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
   testImplementation 'org.mockito:mockito-core:4.8.0'
   testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
   testImplementation 'org.mockito:mockito-inline:4.8.0'
+
+
+
+
   testImplementation 'net.bytebuddy:byte-buddy:1.12.7'
   testImplementation 'net.bytebuddy:byte-buddy-agent:1.12.7'
   implementation 'org.glassfish.jersey.core:jersey-server:2.34'
@@ -63,18 +80,16 @@ dependencies {
   implementation 'javax.servlet:javax.servlet-api:4.0.1'
   implementation 'mysql:mysql-connector-java:8.0.28'
   implementation 'com.h2database:h2:1.4.200'
-
-
-
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.boot:spring-boot-starter-web'
-
 }
+
 
 test {
   useJUnitPlatform()
   jvmArgs += "-Dnet.bytebuddy.experimental=true"
 }
+
 
 jlink {
   imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
@@ -84,22 +99,45 @@ jlink {
   }
 }
 
+
 jlinkZip {
   group = 'distribution'
 }
+
 
 java {
   modularity.inferModulePath = true
 }
 
+
 run {
   jvmArgs += [
-          '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.datatransfer,' +
-          'java.desktop,java.ws.rs,jersey.server,jersey.container.servlet.core,javax.servlet.api',
+          '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.datatransfer,java.desktop,jersey.server,jersey.container.servlet.core,javax.servlet.api',
           '--module-path', sourceSets.main.runtimeClasspath.asPath
   ]
 }
 
+
 tasks.withType(JavaExec) {
   jvmArgs += '--add-opens=java.base/java.lang=ALL-UNNAMED'
 }
+
+
+sourceSets {
+  main {
+    java {
+      srcDirs = ['src/main/java']
+    }
+  }
+  test {
+    java {
+      srcDirs = ['src/test/java']
+      exclude '**/*'
+      exclude 'com/example/huskysheet/client/TestAPICalls.java'
+    }
+  }
+}
+
+
+
+

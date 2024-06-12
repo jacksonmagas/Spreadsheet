@@ -1,4 +1,4 @@
-package Model.Util;
+package com.example.huskysheet.client.Model.Util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 /*
  * Test class for coordinates
@@ -40,10 +39,12 @@ public class CoordinateTest {
         assertEquals(c1.compareTo(c5), -1);
         assertEquals(c5.compareTo(c1), 1);
         assertEquals(c1.compareTo(c2), 0);
-        assertEquals(c1.compareTo(c3), 0);
-        assertEquals(c1.compareTo(c4), 0);
-        assertEquals(c3.compareTo(c1), 0);
-        assertEquals(c4.compareTo(c1), 0);
+        assertEquals(c1.compareTo(c3), -1);
+        assertEquals(c1.compareTo(c4), -1);
+        assertEquals(c3.compareTo(c1), 1);
+        assertEquals(c4.compareTo(c1), 1);
+        assertEquals(c4.compareTo(c3), 0);
+        assertEquals(c3.compareTo(c4), 0);
     }
 
     @Test
@@ -103,4 +104,12 @@ public class CoordinateTest {
             Assertions.fail("Constructing Coordinate from Invalid ref does not throw error.");
         } catch (IllegalArgumentException e) {}
     }
+
+    @Test
+    public void testNegativeCoordinate() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Coordinate(0, 0));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Coordinate(-1, 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Coordinate("A-1"));
+    }
+
 }
