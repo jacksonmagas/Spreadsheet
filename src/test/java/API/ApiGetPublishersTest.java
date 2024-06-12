@@ -1,10 +1,10 @@
 package API;
 
-import com.example.demo.controller.SpreadsheetController;
-import com.example.demo.model.Argument;
-import com.example.demo.model.Publisher;
-import com.example.demo.model.Publishers;
-import com.example.demo.model.Result;
+import com.example.huskysheet.controller.SpreadsheetController;
+import com.example.huskysheet.model.Argument;
+import com.example.huskysheet.model.Publisher;
+import com.example.huskysheet.model.Publishers;
+import com.example.huskysheet.model.Result;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 class ApiGetPublishersTest {
@@ -59,8 +62,8 @@ class ApiGetPublishersTest {
     }
 
     // Assert
-    assertEquals(true, result.isSuccess());
-    assertEquals(null, result.getMessage());
+    assertTrue(result.isSuccess());
+    assertNull(result.getMessage());
     assertEquals(2, result.getValue().size());
 
     for (Argument expectedArgument : expectedArguments) {

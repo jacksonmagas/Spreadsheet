@@ -22,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class APIUpdateSubscriptionTest {
+public class ApiUpdateSubscriptionTest {
 
   @Mock
   private Publishers publishers;

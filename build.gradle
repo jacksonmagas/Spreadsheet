@@ -132,7 +132,7 @@ sourceSets {
   test {
     java {
       srcDirs = ['src/test/java']
-      exclude '**/*'
+   //   exclude '**/*'
       exclude 'com/example/huskysheet/client/TestAPICalls.java'
     }
   }

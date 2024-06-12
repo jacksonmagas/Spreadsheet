@@ -67,7 +67,6 @@ public class ApiCreateSheetTest {
     Argument arg = new Argument();
     arg.setPublisher(mockPublisher.getName());
     arg.setSheet("NewSheet");
-    arg.setId(null); // Set this if your Spreadsheet has a method to get ID
     arg.setPayload("Sheet created successfully");
     expectedArguments.add(arg);
 
@@ -77,7 +76,7 @@ public class ApiCreateSheetTest {
     result.setTime(System.currentTimeMillis());
 
 // Assert - First call
-    assertEquals(true, result.isSuccess());
+    assertTrue(result.isSuccess());
     assertEquals("Sheet created successfully", result.getMessage());
     assertEquals(expectedArguments, result.getValue());
 

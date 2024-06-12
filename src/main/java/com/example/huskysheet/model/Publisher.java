@@ -28,4 +28,8 @@ public class Publisher {
     public List<Spreadsheet> getSpreadsheets() {
         return this.spreadsheets;
     }
+
+  public void setSpreadsheets(List<Spreadsheet> sheets1) {
+        this.spreadsheets = sheets1;
+  }
 }
