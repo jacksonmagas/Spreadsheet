@@ -117,7 +117,6 @@ run {
   ]
 }
 
-
 tasks.withType(JavaExec) {
   jvmArgs += '--add-opens=java.base/java.lang=ALL-UNNAMED'
 }
@@ -132,8 +131,6 @@ sourceSets {
   test {
     java {
       srcDirs = ['src/test/java']
-      exclude '**/*'
-      exclude 'com/example/huskysheet/client/TestAPICalls.java'
     }
   }
 }
