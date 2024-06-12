@@ -1,11 +1,11 @@
 package API;
 
-import com.example.demo.Server.GetSheetRequest;
-import com.example.demo.controller.SpreadsheetController;
-import com.example.demo.model.Publisher;
-import com.example.demo.model.Publishers;
-import com.example.demo.model.Result;
-import com.example.demo.model.Spreadsheet;
+import com.example.huskysheet.api.Server.GetSheetRequest;
+import com.example.huskysheet.controller.SpreadsheetController;
+import com.example.huskysheet.model.Publisher;
+import com.example.huskysheet.model.Publishers;
+import com.example.huskysheet.model.Result;
+import com.example.huskysheet.model.Spreadsheet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
