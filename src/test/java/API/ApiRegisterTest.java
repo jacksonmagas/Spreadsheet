@@ -1,26 +1,26 @@
-package server;
+package API;
 
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publishers;
+import com.example.huskysheet.model.Result;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SpreadsheetControllerREGISTERTest {
+class ApiRegisterTest {
 
     @Mock
     private Publishers publishers;
@@ -30,7 +30,7 @@ class SpreadsheetControllerREGISTERTest {
 
     @Test
     void testRegister() {
-
+        // Mock the security context to simulate an authenticated user
         SecurityContext securityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(securityContext);
         Authentication authentication = mock(Authentication.class);
@@ -38,16 +38,12 @@ class SpreadsheetControllerREGISTERTest {
         when(authentication.getName()).thenReturn("testClient");
 
 
-        doNothing().when(publishers).registerNewPublisher("testClient");
-
         // Call the controller method
-        ResponseEntity<String> response = spreadsheetController.register();
-
-        // Verify that the Publishers.registerNewPublisher() method was called with the correct argument
-        verify(publishers, times(1)).registerNewPublisher("testClient");
+        Result response = spreadsheetController.register();
 
         // Check the response
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Registration successful", response.getBody());
+      assertTrue(response.isSuccess());
+      assertNull(response.getMessage());
+        assertEquals(0, response.getValue().size());
     }
 }
