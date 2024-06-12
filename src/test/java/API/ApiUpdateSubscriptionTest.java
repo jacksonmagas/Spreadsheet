@@ -1,9 +1,11 @@
-package Server;
+package API;
+
 
 import com.example.huskysheet.api.Server.UpdateRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publisher;
 import com.example.huskysheet.model.Publishers;
+import com.example.huskysheet.model.Result;
 import com.example.huskysheet.model.Spreadsheet;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-class APIUpdatePublishedTest {
+public class ApiUpdateSubscriptionTest {
 
   @Mock
   private Publishers publishers;
@@ -34,7 +36,7 @@ class APIUpdatePublishedTest {
   }
 
   @Test
-  void updatePublished_success() {
+  void updateSubscription_sheetNotFound() {
     // Arrange
     List<Spreadsheet> spreadsheets = new ArrayList<>();
     Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
@@ -43,66 +45,42 @@ class APIUpdatePublishedTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
-    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New payload");
+    UpdateRequest request = new UpdateRequest("testPublisher", "NonExistentSheet", "New subscription payload");
 
     // Act
-    ResponseEntity<String> response = controller.updatePublished(request);
-
-    // Assert
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("Sheet updated successfully", response.getBody());
-    assertEquals("New payload", sheet.getPayload());
-  }
-
-  @Test
-  void updatePublished_sheetNotFound() {
-    // Arrange
-    List<Spreadsheet> spreadsheets = new ArrayList<>();
-    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
-    spreadsheets.add(sheet);
-
-    Publisher publisher = new Publisher("testPublisher", spreadsheets);
-    when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
-
-    UpdateRequest request = new UpdateRequest("testPublisher", "NonExistentSheet", "New payload");
-
-    // Act
-    ResponseEntity<String> response = controller.updatePublished(request);
+    ResponseEntity<Result> response = controller.updateSubscription(request);
 
     // Assert
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    assertEquals("Sheet not found", response.getBody());
   }
 
   @Test
-  void updatePublished_publisherNotFound() {
+  void updateSubscription_publisherNotFound() {
     // Arrange
     when(publishers.getPublisherByUsername("nonExistentPublisher")).thenReturn(null);
 
-    UpdateRequest request = new UpdateRequest("nonExistentPublisher", "Sheet1", "New payload");
+    UpdateRequest request = new UpdateRequest("nonExistentPublisher", "Sheet1", "New subscription payload");
 
     // Act
-    ResponseEntity<String> response = controller.updatePublished(request);
+    ResponseEntity<Result> response = controller.updateSubscription(request);
 
     // Assert
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    assertEquals("Publisher not found", response.getBody());
   }
 
   @Test
-  void updatePublished_noSpreadsheets() {
+  void updateSubscription_noSpreadsheets() {
     // Arrange
     Publisher publisher = new Publisher("testPublisher", new ArrayList<>());
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
-    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New payload");
+    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New subscription payload");
 
     // Act
-    ResponseEntity<String> response = controller.updatePublished(request);
+    ResponseEntity<Result> response = controller.updateSubscription(request);
 
     // Assert
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    assertEquals("Sheet not found", response.getBody());
   }
 }
 

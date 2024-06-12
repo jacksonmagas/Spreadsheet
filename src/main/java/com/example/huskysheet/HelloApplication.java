@@ -25,13 +25,14 @@ public class HelloApplication extends Application {
         controller.setUrl(url);
         controller.setUserName(userName);
         controller.setPassword(password);
-        controller.setUrl("https://husksheets.fly.dev");
-        controller.setUserName("team4");
-        controller.setPassword("IgUraDn4(kS>_-7>");
+        controller.setUrl("http://localhost:8090");
+        controller.setUserName("admin");
+        controller.setPassword("admin123");
         controller.init();
 
         stage.show();
     }
+
 
     private void parseArgs() {
         var params = getParameters().getNamed();
