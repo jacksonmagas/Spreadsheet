@@ -8,4 +8,4 @@ build:
 	gradlew :build
 
 test:
-	gradlew :build :test
+	gradlew :test
