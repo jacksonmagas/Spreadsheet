@@ -375,7 +375,7 @@ public class Spreadsheet implements ISpreadsheet {
                     }
                     tokens.add(new Token(TokenType.operator, tok));
                     tok = "";
-                } else if (functions.contains(tok)) {
+                } else if (functions.contains(tok.toUpperCase())) {
                     tokens.add(new Token(TokenType.function, tok));
                     tok = "";
                 } else if (Conversions.isValidRef(tok)) {

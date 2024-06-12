@@ -9,12 +9,24 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+    private static String[] appArgs;
     private String userName;
     private String password;
     private String url;
+    private RunType runType;
+
+    private enum RunType {
+        server, client, both
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
+        switch (runType) {
+            case server -> {
+                HuskySheetApplication.main(appArgs);
+                return;
+            }
+        }
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("HuskySheet");
@@ -25,9 +37,6 @@ public class HelloApplication extends Application {
         controller.setUrl(url);
         controller.setUserName(userName);
         controller.setPassword(password);
-        controller.setUrl("http://localhost:8090");
-        controller.setUserName("admin");
-        controller.setPassword("admin123");
         controller.init();
 
         stage.show();
@@ -39,9 +48,11 @@ public class HelloApplication extends Application {
         url = params.get("url");
         userName = params.get("name");
         password = params.get("password");
+        runType = RunType.valueOf(params.getOrDefault("mode", "both").toLowerCase());
     }
 
     public static void main(String[] args) {
+        appArgs = args;
         launch(args);
     }
 }
