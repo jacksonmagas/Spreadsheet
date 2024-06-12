@@ -281,7 +281,6 @@ public class SpreadsheetController {
   public ResponseEntity<Result> getUpdatesForSubscription(@RequestBody GetUpdatesRequest request) {
     Result result = new Result();
 
-
     if (request.getPublisher() == null) {
       result.setSuccess(false);
       result.setMessage("Publisher is null");
@@ -289,7 +288,6 @@ public class SpreadsheetController {
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
-
 
     if (request.getSheet() == null) {
       result.setSuccess(false);
@@ -299,7 +297,6 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     if (request.getId() == null) {
       result.setSuccess(false);
       result.setMessage("Id is null");
@@ -308,14 +305,11 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     String publisherName = request.getPublisher();
     String sheetName = request.getSheet();
     String id = request.getId();
 
-
     Publisher publisherObj = publishers.getPublisherByUsername(publisherName);
-
 
     if (publisherObj != null) {
       Spreadsheet sheetToUpdate = null;
@@ -326,26 +320,22 @@ public class SpreadsheetController {
         }
       }
 
-
       if (sheetToUpdate != null) {
-        List<String> updateRequests = sheetToUpdate.getUpdatesAfterId(id);
+        List<String> updates = sheetToUpdate.getUpdatesAfterId(id);
         StringBuilder combinedPayload = new StringBuilder();
         int lastId = Integer.parseInt(id);
 
-
-        for (String update : updateRequests) {
+        for (String update : updates) {
           String[] parts = update.split(",", 2);
-          lastId = Integer.parseInt(parts[0]);
           combinedPayload.append(parts[1]).append("\n");
+          lastId = Integer.parseInt(parts[0]);
         }
-
 
         Argument arg = new Argument();
         arg.setPublisher(publisherName);
         arg.setSheet(sheetName);
-        arg.setId(String.valueOf(sheetToUpdate.getLastUpdateId()));
+        arg.setId(String.valueOf(lastId));
         arg.setPayload(combinedPayload.toString());
-
 
         result.setSuccess(true);
         result.setMessage(null);
@@ -368,11 +358,9 @@ public class SpreadsheetController {
     }
   }
 
-
   @PostMapping("/getUpdatesForPublished")
   public ResponseEntity<Result> getUpdatesForPublished(@RequestBody GetUpdatesRequest request) {
     Result result = new Result();
-
 
     if (request.getPublisher() == null) {
       result.setSuccess(false);
@@ -382,7 +370,6 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     if (request.getSheet() == null) {
       result.setSuccess(false);
       result.setMessage("Sheet is null");
@@ -390,7 +377,6 @@ public class SpreadsheetController {
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
-
 
     if (request.getId() == null) {
       result.setSuccess(false);
@@ -400,12 +386,10 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     String clientName = SecurityContextHolder.getContext().getAuthentication().getName();
     String publisherName = request.getPublisher();
     String sheetName = request.getSheet();
     String id = request.getId();
-
 
     if (!publisherName.equals(clientName)) {
       result.setSuccess(false);
@@ -415,9 +399,7 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
     }
 
-
     Publisher publisherObj = publishers.getPublisherByUsername(publisherName);
-
 
     if (publisherObj != null) {
       Spreadsheet sheetToUpdate = null;
@@ -428,26 +410,22 @@ public class SpreadsheetController {
         }
       }
 
-
       if (sheetToUpdate != null) {
         List<String> updateRequests = sheetToUpdate.getUpdateRequestsAfterId(id);
         StringBuilder combinedPayload = new StringBuilder();
         int lastId = Integer.parseInt(id);
 
-
         for (String update : updateRequests) {
           String[] parts = update.split(",", 2);
-          lastId = Integer.parseInt(parts[0]);
           combinedPayload.append(parts[1]).append("\n");
+          lastId = Integer.parseInt(parts[0]);
         }
-
 
         Argument arg = new Argument();
         arg.setPublisher(publisherName);
         arg.setSheet(sheetName);
-        arg.setId(String.valueOf(sheetToUpdate.getLastUpdateId()));
+        arg.setId(String.valueOf(lastId));
         arg.setPayload(combinedPayload.toString());
-
 
         result.setSuccess(true);
         result.setMessage(null);
@@ -470,11 +448,9 @@ public class SpreadsheetController {
     }
   }
 
-
   @PostMapping("/updatePublished")
   public ResponseEntity<Result> updatePublished(@RequestBody UpdateRequest request) {
     Result result = new Result();
-
 
     if (request.getPublisher() == null) {
       result.setSuccess(false);
@@ -484,7 +460,6 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     if (request.getSheet() == null) {
       result.setSuccess(false);
       result.setMessage("Sheet is null");
@@ -492,7 +467,6 @@ public class SpreadsheetController {
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
-
 
     if (request.getPayload() == null) {
       result.setSuccess(false);
@@ -502,24 +476,20 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     String clientName = SecurityContextHolder.getContext().getAuthentication().getName();
     String publisherName = request.getPublisher();
     String sheetName = request.getSheet();
     String payload = request.getPayload();
 
-
     if (!publisherName.equals(clientName)) {
       result.setSuccess(false);
-      result.setMessage("Unathorized: sender is not owner of sheet");
+      result.setMessage("Unauthorized: sender is not owner of sheet");
       result.setValue(new ArrayList<>());
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
     }
 
-
     Publisher publisherObj = publishers.getPublisherByUsername(publisherName);
-
 
     if (publisherObj != null) {
       Spreadsheet sheetToUpdate = null;
@@ -530,9 +500,8 @@ public class SpreadsheetController {
         }
       }
 
-
       if (sheetToUpdate != null) {
-        sheetToUpdate.setPayload(payload);
+        sheetToUpdate.addPublishedUpdate(payload);
         result.setSuccess(true);
         result.setMessage(null);
         result.setValue(new ArrayList<>());
@@ -559,7 +528,6 @@ public class SpreadsheetController {
   public ResponseEntity<Result> updateSubscription(@RequestBody UpdateRequest request) {
     Result result = new Result();
 
-
     if (request.getPublisher() == null) {
       result.setSuccess(false);
       result.setMessage("Publisher is null");
@@ -567,7 +535,6 @@ public class SpreadsheetController {
       result.setTime(System.currentTimeMillis());
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
-
 
     if (request.getSheet() == null) {
       result.setSuccess(false);
@@ -577,7 +544,6 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     if (request.getPayload() == null) {
       result.setSuccess(false);
       result.setMessage("Payload is null");
@@ -586,14 +552,11 @@ public class SpreadsheetController {
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
     String publisherName = request.getPublisher();
     String sheetName = request.getSheet();
     String payload = request.getPayload();
 
-
     Publisher publisherObj = publishers.getPublisherByUsername(publisherName);
-
 
     if (publisherObj != null) {
       Spreadsheet sheetToUpdate = null;
@@ -604,9 +567,8 @@ public class SpreadsheetController {
         }
       }
 
-
       if (sheetToUpdate != null) {
-        sheetToUpdate.addUpdateRequest(payload); // Increment ID for each new update
+        sheetToUpdate.addSubscriptionUpdate(payload);
         result.setSuccess(true);
         result.setMessage(null);
         result.setValue(new ArrayList<>());
