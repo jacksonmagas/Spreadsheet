@@ -28,11 +28,17 @@ public class Spreadsheet {
     }
 
     public void addPublishedUpdate(String update) {
+        if (update == null) {
+            throw new NullPointerException("Update cannot be null");
+        }
         lastPublishedUpdateId++;
         this.updates.add(lastPublishedUpdateId + "," + update);
     }
 
     public void addSubscriptionUpdate(String updateRequest) {
+        if (updateRequest == null) {
+            throw new NullPointerException("Update request cannot be null");
+        }
         lastSubscriptionUpdateId++;
         this.updateRequests.add(lastSubscriptionUpdateId + "," + updateRequest);
     }

@@ -41,19 +41,13 @@ public class TestSpreadsheet {
 
   @Test
   public void testUpdateAdd() {
-    testSpreadsheet.addUpdate("1, Updated TestSpreadsheet Once");
+    testSpreadsheet.addPublishedUpdate("1, Updated TestSpreadsheet Once");
     assertEquals(1, testSpreadsheet.getUpdatesAfterId("0").size());
   }
 
   @Test
   public void testAddUpdateRequest() {
-    testSpreadsheet.addUpdateRequest("1, Update Request");
+    testSpreadsheet.addSubscriptionUpdate("1, Update Request");
     assertEquals(1, testSpreadsheet.getUpdateRequestsAfterId("0").size());
-  }
-
-  @Test
-  public void testSetAndGetPayload() {
-    testSpreadsheet.setPayload("Payload");
-    assertEquals("Payload", testSpreadsheet.getPayload());
   }
 }
