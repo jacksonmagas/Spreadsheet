@@ -103,10 +103,11 @@
         <TableView fx:id="table" editable="true" layoutX="-1.0" layoutY="24.0" prefHeight="376.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="24.0">
             <TableColumn fx:id="rowNumbers" />
         </TableView>
+        <TextField fx:id="promptSheet" visible="false" />
         <Button fx:id="newColumnButton" contentDisplay="TEXT_ONLY" layoutX="578.0" layoutY="24.0" maxWidth="22.0" minWidth="22.0" prefWidth="22.0" text="+" AnchorPane.rightAnchor="-0.3999999999999986" AnchorPane.topAnchor="24.0">
-         <font>
-            <Font size="11.0" />
-         </font></Button>
+            <font>
+                <Font size="11.0" />
+            </font></Button>
         <Button fx:id="newRowButton" contentDisplay="TEXT_ONLY" layoutX="578.0" layoutY="24.0" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="+" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0">
             <font>
                 <Font size="11.0" />

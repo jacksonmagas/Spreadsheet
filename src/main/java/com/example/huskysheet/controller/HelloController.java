@@ -26,6 +26,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -55,6 +56,9 @@ public class HelloController implements Initializable {
 
     @FXML
     private MenuItem deleteSheetMenuItem;
+
+    @FXML
+    private TextField promptSheet;
 
     private SpreadsheetManager spreadsheetManager;
 
@@ -281,20 +285,28 @@ public class HelloController implements Initializable {
     }
 
 
+    @FXML
     private void createSheet() {
         try {
-            // Delete all existing sheets first
-            deleteAllSheets();
+            promptSheet.setVisible(true);
+            String sheetName = promptSheet.getText();
 
-            // Send a request to create a new sheet with the name "Sheet1"
-            spreadsheetManager.createSpreadsheet("Sheet134134");
+            if(sheetName == null || sheetName.trim().isEmpty()) {
+                System.out.println("Sheet name cannot be empty!");
+                return;
+            }
+
+            // Delete all existing sheets first
+            // deleteAllSheets();
+
+            // Send a request to create a new sheet with the name from TextField
+            spreadsheetManager.createSpreadsheet(sheetName);
 
             // Refresh the "Open Recent" menu after creation
             addItemsToOpenRecentMenu();
 
             // Optionally, you can update the UI to reflect the changes
         } catch (Exception e) {
-
             e.printStackTrace();
         }
     }
