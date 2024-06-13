@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class CellTests {
   /**
    * Cell creation and value change tests.
-   * Jackson Magas
+   * @author Jackson Magas
    */
   @Test
   public void testValueChanges() {
@@ -29,7 +29,7 @@ public class CellTests {
 
   /**
    * Test that reference cells properly change their values when the cell they reference changes.
-   * Jackson Magas
+   * @author Jackson Magas
    */
   @Test
   public void testUnderlyingValueChanges() {

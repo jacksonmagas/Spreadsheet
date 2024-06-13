@@ -12,6 +12,8 @@ public class HelloApplication extends Application {
     private String userName;
     private String password;
     private String url;
+    private String initialSheetName;
+    private String initialSheetPublisher;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -22,10 +24,7 @@ public class HelloApplication extends Application {
         HelloController controller = fxmlLoader.getController();
 
         parseArgs();
-        controller.setUrl(url);
-        controller.setUserName(userName);
-        controller.setPassword(password);
-        controller.init();
+        controller.init(url, userName, password, initialSheetPublisher, initialSheetName);
 
         stage.show();
     }
@@ -36,6 +35,8 @@ public class HelloApplication extends Application {
         url = params.get("url");
         userName = params.get("name");
         password = params.get("password");
+        initialSheetPublisher = params.get("publisher");
+        initialSheetName = params.get("sheet");
     }
 
     public static void main(String[] args) {

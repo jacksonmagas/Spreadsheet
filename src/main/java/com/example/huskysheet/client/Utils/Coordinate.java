@@ -31,7 +31,7 @@ public class Coordinate {
      * @param target the end coordinate for the range inclusive
      * @return A list of coordinates in the range
      * @throws IllegalArgumentException If the target is less than this
-     * Jackson Magas
+     * @author Jackson Magas
      */
     public List<Coordinate> getRange(Coordinate target) throws IllegalArgumentException {
         if (this.compareTo(target) != -1) {
@@ -64,7 +64,7 @@ public class Coordinate {
      * A coordinate is larger than another coordinate if it is larger in at least 1 coordinate
      * @param o the coordinate to compare with
      * @return 1 if this is larger, -1 if this is smaller, and 0 if it is neither
-     * Jackson Magas
+     * @author Jackson Magas
      */
     public int compareTo(Coordinate o) {
         if (this.row == o.row && this.column == o.column) {

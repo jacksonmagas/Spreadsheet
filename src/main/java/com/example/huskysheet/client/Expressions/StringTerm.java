@@ -11,7 +11,7 @@ public class StringTerm extends AbstractValueTerm {
     /**
      * The result of a string term is what to display for this term.
      * Outer quotes are removed for the display.
-     * Jackson Magas
+     * @author Jackson Magas
      * @return the value of this term with outer quotes removed
      */
     @Override
@@ -25,7 +25,7 @@ public class StringTerm extends AbstractValueTerm {
     }
 
     // remove escaped slashes from escapes entered by the user
-    // Jackson Magas
+    // @author Jackson Magas
     private String withoutEscapes(String value) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < value.length(); i++) {
@@ -36,7 +36,7 @@ public class StringTerm extends AbstractValueTerm {
         return result.toString();
     }
 
-    // Jackson Magas
+    // @author Jackson Magas
     public String toString() {
         return value;
     }

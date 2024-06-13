@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Represents a range of cells.
  * Trying to get the value of a range is a value error, ranges are instead used for functions
- * Jackson Magas
+ * @author Jackson Magas
  */
 public class RangeExpression extends AbstractExpression {
     List<ICell> cells;
@@ -28,7 +28,7 @@ public class RangeExpression extends AbstractExpression {
 
     /**
      * Returns an unmodifiable list of reference expressions for all of the cells in this range
-     * Jackson Magas
+     * @author Jackson Magas
      * @return reference expressions for the cells in this range
      */
     public List<ITerm> getReferenceExpressions() {

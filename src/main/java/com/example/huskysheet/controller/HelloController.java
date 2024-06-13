@@ -2,21 +2,28 @@ package com.example.huskysheet.controller;
 
 import com.example.huskysheet.client.APICallException;
 import com.example.huskysheet.client.Model.ISpreadsheet;
-import com.example.huskysheet.client.Model.Spreadsheet;
 
 import com.example.huskysheet.client.SpreadsheetManager;
 import com.example.huskysheet.client.Utils.Conversions;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
 import java.util.List;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -24,12 +31,18 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
-import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.util.Duration;
+import javafx.util.converter.DefaultStringConverter;
 
 public class HelloController implements Initializable {
     @FXML
@@ -53,48 +66,51 @@ public class HelloController implements Initializable {
 
     private SpreadsheetManager spreadsheetManager;
 
-    private String userName;
-    private String password;
-    private String url;
+    private String copyBuffer;
 
     // Define the number of rows and columns
     private static final int INITIAL_ROW_NUM = 8;
     private static final int INITIAL_COLUMN_NUM = 8;
     private int numRows;
     private int numCols;
-
     private ISpreadsheet spreadsheet;
 
     ObservableList<SpreadsheetSliceView> list = FXCollections.observableArrayList();
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
-    public void init() {
+    /**
+     * Initialize spreadsheet manager with username, url, and password from args.
+     * Create table from initial sheet if provided.
+     * @author Nikita Clark
+     */
+    public void init(String url, String userName, String password,
+        String initialSheetPublisher, String initialSheetName) {
         // Check if necessary fields are set
-        if (this.url == null || this.userName == null || this.password == null) {
+        if (url == null || userName == null || password == null) {
             System.err.println("URL, username, or password not set!");
             return;
         }
 
         // Initialize the SpreadsheetManager with server URL, username, and password
         try {
-            spreadsheetManager = new SpreadsheetManager(this.url, this.userName, this.password);
+            spreadsheetManager = new SpreadsheetManager(url, userName, password);
             // Register the user
             spreadsheetManager.register();
         } catch (Exception e) {
             e.printStackTrace();
             return;
+        }
+
+        if (initialSheetPublisher != null && initialSheetName != null) {
+            try {
+                spreadsheetManager.getSpreadsheet(initialSheetPublisher, initialSheetName);
+            } catch (APICallException e) {
+                System.err.println("Failed to load initial sheet");
+            }
         }
 
         // setup initial table
@@ -106,8 +122,26 @@ public class HelloController implements Initializable {
         // Set event handlers for the menu items
         newSheetMenuItem.setOnAction(event -> createSheet());
         deleteSheetMenuItem.setOnAction(event -> deleteSheet());
+
+        // set timer for updating the sheet from the server
+        var updates = new Timeline();
+        updates.getKeyFrames().add(new KeyFrame(new Duration(3000), event -> {
+            try {
+                if (spreadsheet != null) {
+                    spreadsheetManager.tryGetUpdates();
+                }
+            } catch (APICallException e) {
+                System.err.println("Failed to load updates: " + e.getMessage());
+            }
+        }));
+        updates.setCycleCount(Timeline.INDEFINITE);
+        updates.play();
     }
 
+    /**
+     * Clear the current columns of the table then initialize the table based on the current spreadsheet.
+     * @author Jackson Magas
+     */
     private void setupTable() {
         // check that there is a spreadsheet
         if (spreadsheet == null) {
@@ -180,6 +214,18 @@ public class HelloController implements Initializable {
         newRowButton.setOnAction(event -> {newRow();});
 
         table.setItems(list);
+        // add copy paste when cell isn't focused
+        table.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if (new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN).match(keyEvent)) {
+                copyBuffer = table.getSelectionModel().getSelectedItem().get(table.getSelectionModel().getSelectedIndex() + 1).getPlaintext();
+                keyEvent.consume();
+            } else if (new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN).match(keyEvent)
+                && copyBuffer != null) {
+                table.getSelectionModel().getSelectedItem().get(table.getSelectionModel().getSelectedIndex() + 1).updateCell(copyBuffer);
+                keyEvent.consume();
+                table.refresh();
+            }
+        });
     }
 
     private void addItemsToOpenRecentMenu() {
@@ -195,14 +241,7 @@ public class HelloController implements Initializable {
                     // Add a menu item for each sheet
                     MenuItem sheetItem = new MenuItem(sheet);
                     sheetItem.setOnAction((event) -> {
-                        try {
-                            spreadsheet = spreadsheetManager.getSpreadsheet(publisher, sheet);
-                        } catch (APICallException e) {
-                            //todo probably display message to user instead
-                            throw new RuntimeException(e);
-                        }
-                        setCurrentDisplay(publisher, sheet);
-                        setupTable();
+                        setSpreadsheet(publisher, sheet);
                     });
                     publisherMenu.getItems().add(sheetItem);
                 }
@@ -211,6 +250,17 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setSpreadsheet(String publisher, String sheet) {
+        try {
+            spreadsheet = spreadsheetManager.getSpreadsheet(publisher, sheet);
+        } catch (APICallException e) {
+            //todo probably display message to user instead
+            throw new RuntimeException(e);
+        }
+        setCurrentDisplay(publisher, sheet);
+        setupTable();
     }
 
     private void deleteSheet() {
@@ -260,6 +310,7 @@ public class HelloController implements Initializable {
 
             // Optionally, you can update the UI to reflect the changes
         } catch (Exception e) {
+
             e.printStackTrace();
         }
     }
@@ -288,11 +339,19 @@ public class HelloController implements Initializable {
 
     }
 
+    /**
+     * Add a new row to the table at the end of the rows.
+     * @author Jackson Magas
+     */
     private void newRow() {
         list.add(new SpreadsheetSliceView(spreadsheet, Direction.row, numRows + 1));
         ++numRows;
     }
 
+    /**
+     * Create a new column and add it to the table.
+     * @author Jackson Magas
+     */
     private void newColumn() {
         TableColumn<SpreadsheetSliceView, String> column = new TableColumn<>(Conversions.columnToString(numCols + 1));
         column.setPrefWidth(100);
@@ -304,22 +363,41 @@ public class HelloController implements Initializable {
     /**
      * Set up a column of the spreadsheet.
      * Create a cell value factory which gets the data from the cell at that row/column.
-     * Create a cell factory which sets each cell as an editable cell/
-     * Set the callback for edits in this column to edit the cell
+     * Create a cell factory which sets each cell as an editable cell.
+     * Set the callback so edits to cells in this column are reflected in the data.
      * @param column the column to set up
      * @param columnNumber the column number
+     * @author Jackson Magas
      */
     private void setupColumn(TableColumn<SpreadsheetSliceView, String> column, int columnNumber) {
         column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().get(columnNumber).getData()));
         column.setEditable(true);
-        column.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        column.setCellFactory(tc -> {
+            var cell = new EditingCell();
+            // add copy and paste functionality when cell selected
+            EventHandler<KeyEvent> copyPaste = keyEvent -> {
+                if (new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN).match(keyEvent)) {
+                    copyBuffer = list.get(cell.getIndex()).get(columnNumber).getPlaintext();
+                    keyEvent.consume();
+                } else if (new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN).match(keyEvent)
+                    && copyBuffer != null) {
+                    cell.commitEdit(copyBuffer);
+                    keyEvent.consume();
+                    table.refresh();
+                }
+            };
+            cell.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
+            //cell.getTextField().addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
+            return cell;
+        });
+            //TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
         column.setOnEditCommit(event -> {
-            event.getRowValue().get(columnNumber).updateCell(event.getNewValue());
+            try {
+                event.getRowValue().get(columnNumber).updateCell(event.getNewValue());
+            } catch (NullPointerException ignored) {
+                // the event system ends up sending a null event every other time
+            }
             table.refresh();
         });
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }

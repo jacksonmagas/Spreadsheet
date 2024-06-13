@@ -7,7 +7,7 @@ import com.example.huskysheet.client.Utils.Coordinate;
 /**
  * An ICell is a rectangular cell in a spreadsheet with a term of data
  * and formatting details
- * Jackson Magas
+ * @author Jackson Magas
  */
 public interface ICell extends ICellListener {
     // Set the contents of this cell to the given data
