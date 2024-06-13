@@ -12,18 +12,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -31,8 +26,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -42,7 +35,6 @@ import javafx.util.Callback;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.util.Duration;
-import javafx.util.converter.DefaultStringConverter;
 
 public class HelloController implements Initializable {
     @FXML
@@ -125,17 +117,18 @@ public class HelloController implements Initializable {
 
         // set timer for updating the sheet from the server
         var updates = new Timeline();
-        updates.getKeyFrames().add(new KeyFrame(new Duration(3000), event -> {
+        int updateDelaySeconds = 1;
+        updates.getKeyFrames().add(new KeyFrame(new Duration(updateDelaySeconds * 1000), event -> {
             try {
-                if (spreadsheet != null) {
-                    spreadsheetManager.tryGetUpdates();
+                if (spreadsheet != null && spreadsheetManager.tryGetUpdates()) {
+                    table.refresh();
                 }
             } catch (APICallException e) {
                 System.err.println("Failed to load updates: " + e.getMessage());
             }
         }));
         updates.setCycleCount(Timeline.INDEFINITE);
-        updates.play();
+        updates.playFrom(new Duration(updateDelaySeconds * 1000 - 500));
     }
 
     /**

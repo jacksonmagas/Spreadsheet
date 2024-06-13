@@ -38,6 +38,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     private String currentSheetPublisher;
     private String currentSheetName;
     private CompletableFuture<Result> lastUpdateFuture;
+    private Result lastUpdate;
 
     /**
      * Create a new spreadsheet manager.
@@ -284,10 +285,9 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      */
     public void getUpdates() throws APICallException {
         try {
-            if (!tryGetUpdates()) {
-                lastUpdateFuture.get();
-                tryGetUpdates();
-            }
+            tryGetUpdates();
+            lastUpdateFuture.get();
+            tryGetUpdates();
         } catch (Exception e) {
             throw new APICallException(e);
         }
@@ -298,7 +298,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      * received update the current sheet with the results of that call then make a new get updates
      * call.
      * Also makes a new call if there has not been one yet.
-     * @return true if the last call was received
+     * @return true if the update attempt changed the sheet
      * @throws APICallException If the api call fails, or the future fails with exception.
      * @author Jackson Magas
      */
@@ -310,7 +310,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
                 if (result.success) {
                     currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
                     currentID = Integer.parseInt(result.value.getFirst().id());
-                    updateRecieved = true;
+                    updateRecieved = !result.equals(lastUpdate);
+                    lastUpdate = result;
                 } else {
                     throw new APICallException(result.message);
                 }
