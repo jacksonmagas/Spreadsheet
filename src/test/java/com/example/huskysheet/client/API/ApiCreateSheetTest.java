@@ -1,4 +1,4 @@
-package API;
+package com.example.huskysheet.client.API;
 
 import com.example.huskysheet.api.Server.CreateSheetRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
@@ -52,17 +52,17 @@ public class ApiCreateSheetTest {
 
   @Test
   void testCreateSheetSuccess() {
-// Arrange
+// stiumulate authentication
     Publisher mockPublisher = new Publisher("testUser", new ArrayList<>());
     when(publishers.getPublisherByUsername("testUser")).thenReturn(mockPublisher);
     CreateSheetRequest request = new CreateSheetRequest(mockPublisher.getName(), "NewSheet");
     System.out.println("Mocked Publisher: " + mockPublisher.getName());
 
-// Act - First call
+// Action 1
     ResponseEntity<Result> response = controller.createSheet(request);
     Result result = response.getBody();
 
-// Set the value in the result
+// Set result
     List<Argument> expectedArguments = new ArrayList<>();
     Argument arg = new Argument();
     arg.setPublisher(mockPublisher.getName());
@@ -75,16 +75,16 @@ public class ApiCreateSheetTest {
     result.setValue(expectedArguments);
     result.setTime(System.currentTimeMillis());
 
-// Assert - First call
+// Assertion 1
     assertTrue(result.isSuccess());
     assertEquals("Sheet created successfully", result.getMessage());
     assertEquals(expectedArguments, result.getValue());
 
-// Act - Second call
+// Action 2
     ResponseEntity<Result> response2 = controller.createSheet(request);
     Result result2 = response2.getBody();
 
-// Assert - Second call
+// Assertion 2 (can't create sheet twice)
     assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     assertFalse(result2.isSuccess());
     assertTrue(result2.getValue().isEmpty());
@@ -96,10 +96,8 @@ public class ApiCreateSheetTest {
 
     CreateSheetRequest request = new CreateSheetRequest(null, "NewSheet");
 
-    // Act
     ResponseEntity<Result> response = controller.createSheet(request);
 
-    // Assert
     assertEquals(400, response.getStatusCodeValue());
     assertFalse(response.getBody().isSuccess());
     assertEquals("Publisher is null", response.getBody().getMessage());
@@ -112,7 +110,7 @@ public class ApiCreateSheetTest {
     Publisher mockPublisher = new Publisher("testUser", new ArrayList<>());
     CreateSheetRequest request = new CreateSheetRequest(mockPublisher.getName(), "NewSheet");
 
-    // Simulate that the authenticated user is different from the request's publisher
+    // Simulate authentification
     when(publishers.getPublisherByUsername("testUser")).thenReturn(mockPublisher);
     SecurityContext securityContext = mock(SecurityContext.class);
     Authentication authentication = mock(Authentication.class);
@@ -120,14 +118,14 @@ public class ApiCreateSheetTest {
     when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
-    // Act
+    // Action
     ResponseEntity<Result> response = controller.createSheet(request);
 
-    // Assert
+    // Assertertion
     Result result = response.getBody();
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     assertNotNull(result);
     assertFalse(result.isSuccess());
-    assertEquals("Unauthorized: sender is not the owner of the sheet", result.getMessage());
+    assertEquals("Unauthorized: sender is not owner of sheet", result.getMessage());
   }
 }

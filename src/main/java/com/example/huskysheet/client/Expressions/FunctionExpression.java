@@ -1,7 +1,5 @@
 package com.example.huskysheet.client.Expressions;
 
-import com.example.huskysheet.client.Model.ICell;
-import com.example.huskysheet.client.Model.ISpreadsheet;
 import com.example.huskysheet.client.Utils.Conversions;
 import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.ArrayList;
@@ -22,16 +20,15 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * Create a new function object from a function and its arguments
-     * Jackson Magas
+     * @author Jackson Magas
      * @param type the enum type of the function
      * @param parameters The terms to use as arguments for the function
      *                   RangeExpressions can be provided as a parameter
      */
     public FunctionExpression(FunctionType type, List<ITerm> parameters) {
+        super(buildPlaintext(type, parameters));
         this.type = type;
-        StringBuilder plaintext = new StringBuilder().append(type).append("(");
         for (ITerm arg : parameters) {
-            plaintext.append(arg.toString()).append(", ");
             // Coupling is annoying but would need a major refactor to fix
             if (arg instanceof RangeExpression) {
                 args.addAll(((RangeExpression) arg).getReferenceExpressions());
@@ -39,11 +36,18 @@ public class FunctionExpression extends AbstractExpression {
                 args.add(arg);
             }
         }
-        if (!args.isEmpty()) {
-            plaintext.setLength(plaintext.length() - 1);
-        }
-        this.plaintext = plaintext.append(")").toString();
         recalculate();
+    }
+
+    private static String buildPlaintext(FunctionType type, List<ITerm> parameters) {
+        StringBuilder plaintext = new StringBuilder().append(type).append("(");
+        for (ITerm arg : parameters) {
+            plaintext.append(arg.toString()).append(", ");
+        }
+        if (plaintext.charAt(plaintext.length() - 1) == ',') {
+            plaintext.deleteCharAt(plaintext.length() - 1);
+        }
+        return plaintext.append(")").toString();
     }
 
     @Override
@@ -67,7 +71,7 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * Recalculate the value of this function based on its dependencies and function type
-     * Jackson Magas
+     * @author Jackson Magas
      */
     @Override
     public void recalculate() {
@@ -139,7 +143,7 @@ public class FunctionExpression extends AbstractExpression {
     /**
      * Causes this expression to mirror its argument and print it to stdout
      * errors if there is not exactly one argument
-     * Jackson Magas
+     * @author Jackson Magas
      * @return the result of the argument
      */
     private String calculateDebug() {
@@ -156,9 +160,9 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * Concatenate string arguments
-     * Jackson Magas
-     * @param args
-     * @return
+     * @author Jackson Magas
+     * @param args the strings to concatenate
+     * @return the result of concatenating the arguments
      */
     private String calculateConcat(List<String> args) {
         for (String arg : args) {
@@ -175,7 +179,7 @@ public class FunctionExpression extends AbstractExpression {
     /**
      * Get the average value of the arguments
      * If any arguments are not numbers or if there are no arguments return VALUE_ERROR
-     * Jackson Magas
+     * @author Jackson Magas
      * @param args the arguments to average
      * @return AVG(args) or VALUE_ERROR
      */
@@ -200,7 +204,7 @@ public class FunctionExpression extends AbstractExpression {
     /**
      * Get the min value of the arguments.
      * If any arguments are not numbers, or if there are no arguments return value error
-     * Jackson Magas
+     * @author Jackson Magas
      * @param args stringified arguments to use
      * @return MIN(args) or VALUE_ERROR
      */
@@ -225,7 +229,7 @@ public class FunctionExpression extends AbstractExpression {
     /**
      * Get the max value of the arguments.
      * If any arguments are not numbers, or if there are no arguments return value error
-     * Jackson Magas
+     * @author Jackson Magas
      * @param args stringified arguments to use
      * @return MAX(args) or VALUE_ERROR
      */
@@ -249,7 +253,7 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * Calculate the sum of the arguments to this function.
-     * Jackson Magas
+     * @author Jackson Magas
      * @return the sum of the args or VALUE_ERROR if they are not all numbers
      */
     private String calculateSum(List<String> args) {
@@ -266,7 +270,7 @@ public class FunctionExpression extends AbstractExpression {
 
     /**
      * check if the string is a number
-     * Jackson Magas
+     * @author Jackson Magas
      * @param s the potential number to check
      * @return true if the string can be parsed to a double
      */
@@ -282,7 +286,7 @@ public class FunctionExpression extends AbstractExpression {
     /**
      * Set the value of this function to the value of IF on its args
      * IF needs 3 args with the first being a number
-     * Jackson Magas
+     * @author Jackson Magas
      * @return the value of IF(arg[1], arg[2], arg[3])
      */
     private String calculateIf() {

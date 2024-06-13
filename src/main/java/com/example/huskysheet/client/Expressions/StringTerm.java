@@ -1,22 +1,24 @@
 package com.example.huskysheet.client.Expressions;
 
 
+/**
+ * Represents an equation term that is a string.
+ * @author Jackson Magas
+ */
 public class StringTerm extends AbstractValueTerm {
-    String value;
-
     public StringTerm(String value) {
-        this.value = value;
+        super(value);
     }
 
     /**
      * The result of a string term is what to display for this term.
      * Outer quotes are removed for the display.
-     * Jackson Magas
+     * @author Jackson Magas
      * @return the value of this term with outer quotes removed
      */
     @Override
     public String getResult() {
-        String result = withoutEscapes(value);
+        String result = withoutEscapes(plaintext);
         if (result.startsWith("\"") && result.endsWith("\"")) {
             return result.substring(1, result.length() - 1);
         } else {
@@ -25,7 +27,7 @@ public class StringTerm extends AbstractValueTerm {
     }
 
     // remove escaped slashes from escapes entered by the user
-    // Jackson Magas
+    // @author Jackson Magas
     private String withoutEscapes(String value) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < value.length(); i++) {
@@ -34,11 +36,6 @@ public class StringTerm extends AbstractValueTerm {
             }
         }
         return result.toString();
-    }
-
-    // Jackson Magas
-    public String toString() {
-        return value;
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface ITerm {
     /**
      * Get whether this term is empty.
      * An empty term is the empty term or a reference to the empty term.
-     * Jackson Magas
+     * @author Jackson Magas
      */
     boolean isEmpty();
 

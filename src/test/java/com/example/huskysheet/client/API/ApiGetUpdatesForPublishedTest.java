@@ -1,4 +1,5 @@
-package API;
+
+package com.example.huskysheet.client.API;
 
 import com.example.huskysheet.api.Server.GetUpdatesRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
@@ -43,27 +44,28 @@ class ApiGetUpdatesForPublishedTest {
 
   @Test
   void getUpdatesForPublished_validRequest() {
-    // Arrange
+    // Arrange mocks
     List<Spreadsheet> spreadsheets = new ArrayList<>();
     Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
-    sheet.addUpdateRequest("2,Request1");
-    sheet.addUpdateRequest("3,Request2");
+    sheet.addPublishedUpdate("2,Request1") ;
+    sheet.addPublishedUpdate("3,Request2") ;
     spreadsheets.add(sheet);
 
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
+    // Request
     GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "Sheet1", "1");
 
-    // Set up authentication context
+    // Authentification
     Authentication authentication = new UsernamePasswordAuthenticationToken("testPublisher", null);
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
 
-    // Act
+    // Action
     ResponseEntity<Result> response = controller.getUpdatesForPublished(request);
 
-    // Assert
+    // Assertertion
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Result result = response.getBody();
     assertFalse(result.isSuccess());

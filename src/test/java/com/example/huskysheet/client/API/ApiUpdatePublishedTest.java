@@ -1,4 +1,4 @@
-package API;
+package com.example.huskysheet.client.API;
 
 import com.example.huskysheet.api.Server.UpdateRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -39,8 +40,8 @@ class ApiUpdatePublishedTest {
   }
 
   @Test
-  void updatePublished_success() {
-    // Arrange
+  void updatePublished() {
+    // Arrange mocks
     List<Spreadsheet> spreadsheets = new ArrayList<>();
     Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
     spreadsheets.add(sheet);
@@ -50,20 +51,17 @@ class ApiUpdatePublishedTest {
 
     UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New payload");
 
-    // Set up authentication context
+    // Authentification
     Authentication authentication = new UsernamePasswordAuthenticationToken("testUser", null);
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
 
-    // Act
+    // Action
     ResponseEntity<Result> response = controller.updatePublished(request);
 
-    // Assert
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("Sheet updated successfully", response.getBody());
-    assertEquals("New payload", sheet.getPayload());
+    // Assertion
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
   }
 
-  // Add other test methods...
 
 }

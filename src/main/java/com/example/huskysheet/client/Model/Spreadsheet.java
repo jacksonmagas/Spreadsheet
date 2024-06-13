@@ -85,16 +85,22 @@ public class Spreadsheet implements ISpreadsheet {
 
     /**
      * Update the sheet based on a list of cells and new data for those cells
+     *
      * @param updates A list of coordinate, text pairs to update the sheet with
-     * Jackson Magas
+     * @return true if the update changed this sheet
+     * @author Jackson Magas
      */
     @Override
-    public void updateSheet(List<Pair<Coordinate, String>> updates) {
+    public boolean updateSheet(List<Pair<Coordinate, String>> updates) {
+        boolean changed = false;
         updatingFromServer = true;
         for (Pair<Coordinate, String> pair : updates) {
-            getCell(pair.getKey()).updateCell(pair.getValue());
+            if (getCell(pair.getKey()).updateCell(pair.getValue())) {
+                changed = true;
+            }
         }
         updatingFromServer = false;
+        return changed;
     }
 
     @Override
@@ -126,7 +132,7 @@ public class Spreadsheet implements ISpreadsheet {
 
     /**
      * Class implementing formula parsing for this spreadsheet including looking up references.
-     * Jackson Magas
+     * @author Jackson Magas
      */
      protected class FormulaParser {
         List<String> operators = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
@@ -421,7 +427,7 @@ public class Spreadsheet implements ISpreadsheet {
 
     /**
      * Cell class for this spreadsheet
-     * Jackson Magas
+     * @author Jackson Magas
      */
     private class SpreadsheetCell implements ICell {
         private final Coordinate coordinate;
@@ -439,7 +445,7 @@ public class Spreadsheet implements ISpreadsheet {
         /**
          * Set the format of this cell to the default format.
          * Prioritizes row format, then column format, then default format.
-         * Jackson Magas
+         * @author Jackson Magas
          * @return The format of the cell
          */
         private CellFormatDetails initFormat() {
@@ -450,13 +456,18 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         /**
-         * Update this cell with new user input.
-         * Registers as a listener to all direct dependencies and
-         * Jackson Magas
+         * Update this cell with new user input. Registers as a listener to all direct dependencies
+         * and
+         *
          * @param data the user input to parse
+         * @return true if this cell changed from the update
+         * @author Jackson Magas
          */
         @Override
-        public void updateCell(String data) {
+        public boolean updateCell(String data) {
+            if (data.equals(getPlaintext())) {
+                return false;
+            }
             term = parser.parse(data);
             try {
                 for (Coordinate refLoc : term.references()) {
@@ -467,12 +478,13 @@ public class Spreadsheet implements ISpreadsheet {
             }
             Spreadsheet.this.notifyListeners(getCoordinate(), data);
             handleValueChange();
+            return true;
         }
 
 
         /**
          * Get the location of this cell.
-         * Jackson Magas
+         * @author Jackson Magas
          * @return the location of this cell
          */
         @Override
@@ -482,7 +494,7 @@ public class Spreadsheet implements ISpreadsheet {
 
         /**
          * Get the result of evaluating this cell.
-         * Jackson Magas
+         * @author Jackson Magas
          * @return the result of evaluating this cell as a string
          */
         @Override
@@ -492,7 +504,7 @@ public class Spreadsheet implements ISpreadsheet {
 
         /**
          * Get the exact input from the user in this cell
-         * Jackson Magas
+         * @author Jackson Magas
          * @return the user input to this cell
          */
         @Override
@@ -502,7 +514,7 @@ public class Spreadsheet implements ISpreadsheet {
 
         /**
          * Get the format object with details about this cell's formatting
-         * Jackson Magas
+         * @author Jackson Magas
          * @return the format object
          */
         @Override
@@ -512,7 +524,7 @@ public class Spreadsheet implements ISpreadsheet {
 
         /**
          * Does this cell have data
-         * Jackson Magas
+         * @author Jackson Magas
          * @return true if this cell is empty
          */
         @Override
@@ -523,7 +535,7 @@ public class Spreadsheet implements ISpreadsheet {
         /**
          * When a cell this depends on changes recalculate this
          * cell and all cells that depend on it
-         * Jackson Magas
+         * @author Jackson Magas
          */
         @Override
         public void handleValueChange() {

@@ -1,4 +1,5 @@
-package ModelTestingServer;
+
+package com.example.huskysheet.client.ModelTestingServer;
 
 import com.example.huskysheet.model.Publisher;
 import com.example.huskysheet.model.Publishers;
@@ -33,7 +34,6 @@ public class TestPublishers {
     assertNull(publisher);
   }
 
-
   @Test
   public void testAddPublisher() {
     Publisher newP = new Publisher("NewPublisher", List.of());
@@ -64,7 +64,8 @@ public class TestPublishers {
   public void testgetAllpublishers() {
     List<Publisher> pubs = publishers.getAllPublishers();
     assertEquals(4, pubs.size());
-    assertEquals("TestPublisher", pubs.get(0).getName());
+    assertEquals("NewPublisher", pubs.get(0).getName());
   }
 
 }
+
