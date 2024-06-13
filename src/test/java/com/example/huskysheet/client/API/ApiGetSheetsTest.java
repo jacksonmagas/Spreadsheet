@@ -38,14 +38,14 @@ class ApiGetSheetsTest {
 
   @Test
   void testGetSheets() {
-    // Arrange
+    // Arrange mocks
     List<Publisher> mockPublishers = new ArrayList<>();
     Publisher publisher1 = new Publisher("Publisher1", new ArrayList<>());
     Publisher publisher2 = new Publisher("Publisher2", new ArrayList<>());
     mockPublishers.add(publisher1);
     mockPublishers.add(publisher2);
 
-    // Mock sheets for each publisher
+    // mock sheets for testing
     List<Spreadsheet> sheets1 = new ArrayList<>();
     sheets1.add(new Spreadsheet(publisher1, "Sheet1"));
     sheets1.add(new Spreadsheet(publisher2, "Sheet2"));

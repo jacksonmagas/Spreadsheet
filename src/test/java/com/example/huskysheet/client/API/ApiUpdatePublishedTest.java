@@ -49,9 +49,10 @@ class ApiUpdatePublishedTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
+    //request
     UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New payload");
 
-    // Authentification
+    // Authentification (bad)
     Authentication authentication = new UsernamePasswordAuthenticationToken("testUser", null);
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
@@ -59,7 +60,7 @@ class ApiUpdatePublishedTest {
     // Action
     ResponseEntity<Result> response = controller.updatePublished(request);
 
-    // Assertion
+    // Assertion that authentification led to unauthorized response
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
   }
 

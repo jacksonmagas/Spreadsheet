@@ -6,6 +6,7 @@ import com.example.huskysheet.api.Server.GetUpdatesRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publisher;
 import com.example.huskysheet.model.Publishers;
+import com.example.huskysheet.model.Result;
 import com.example.huskysheet.model.Spreadsheet;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -46,12 +47,13 @@ class ApiGetUpdatesForSubscriptionTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
+    // request
     GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "NonExistentSheet", "1");
 
     // Action
     ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
 
-    // Assertertion
+    // Assert sheet not found response
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
@@ -65,7 +67,7 @@ class ApiGetUpdatesForSubscriptionTest {
     // Action
     ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
 
-    // Assertion
+    // Assertion that publisher is not found
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
@@ -80,12 +82,13 @@ class ApiGetUpdatesForSubscriptionTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
+    //requesst
     GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "Sheet1", "nonIntegerId");
 
     // Action
-    ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
+    ResponseEntity<Result> response = controller.getUpdatesForSubscription(request);
 
-    // Asserttion
+    // Asserttion not found due to invalid id
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }

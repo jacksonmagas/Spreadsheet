@@ -28,23 +28,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 public class ApiCreateSheetTest {
+
 
   @Mock
   private Publishers publishers;
 
+
   @InjectMocks
   private SpreadsheetController controller;
+
 
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
     System.out.println("Mocks initialized");
 
+
     SecurityContext securityContext = mock(SecurityContext.class);
     Authentication authentication = mock(Authentication.class);
+    //mocks user putting in their username
     when(authentication.getName()).thenReturn("testUser");
+    //links security to authentification
     when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
   }
@@ -52,15 +57,19 @@ public class ApiCreateSheetTest {
 
   @Test
   void testCreateSheetSuccess() {
-// stiumulate authentication
+
     Publisher mockPublisher = new Publisher("testUser", new ArrayList<>());
+    // stiumulate authentication
     when(publishers.getPublisherByUsername("testUser")).thenReturn(mockPublisher);
+    // create request
     CreateSheetRequest request = new CreateSheetRequest(mockPublisher.getName(), "NewSheet");
     System.out.println("Mocked Publisher: " + mockPublisher.getName());
 
-// Action 1
+
+// Action 1 (create first sheet)
     ResponseEntity<Result> response = controller.createSheet(request);
     Result result = response.getBody();
+
 
 // Set result
     List<Argument> expectedArguments = new ArrayList<>();
@@ -70,19 +79,23 @@ public class ApiCreateSheetTest {
     arg.setPayload("Sheet created successfully");
     expectedArguments.add(arg);
 
+
     result.setSuccess(true);
     result.setMessage("Sheet created successfully");
     result.setValue(expectedArguments);
     result.setTime(System.currentTimeMillis());
+
 
 // Assertion 1
     assertTrue(result.isSuccess());
     assertEquals("Sheet created successfully", result.getMessage());
     assertEquals(expectedArguments, result.getValue());
 
-// Action 2
+
+// Action 2 (create same sheet twice so it fails)
     ResponseEntity<Result> response2 = controller.createSheet(request);
     Result result2 = response2.getBody();
+
 
 // Assertion 2 (can't create sheet twice)
     assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
@@ -94,10 +107,13 @@ public class ApiCreateSheetTest {
   @Test
   public void testCreateSheetPublisherNull() {
 
+// create null publisher sheet
     CreateSheetRequest request = new CreateSheetRequest(null, "NewSheet");
+
 
     ResponseEntity<Result> response = controller.createSheet(request);
 
+// null publisher response
     assertEquals(400, response.getStatusCodeValue());
     assertFalse(response.getBody().isSuccess());
     assertEquals("Publisher is null", response.getBody().getMessage());
@@ -110,19 +126,24 @@ public class ApiCreateSheetTest {
     Publisher mockPublisher = new Publisher("testUser", new ArrayList<>());
     CreateSheetRequest request = new CreateSheetRequest(mockPublisher.getName(), "NewSheet");
 
-    // Simulate authentification
+
+    // simulate authentification
     when(publishers.getPublisherByUsername("testUser")).thenReturn(mockPublisher);
     SecurityContext securityContext = mock(SecurityContext.class);
     Authentication authentication = mock(Authentication.class);
+    // tries authentification with the wrong username
     when(authentication.getName()).thenReturn("otherUser");
     when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
+
     // Action
     ResponseEntity<Result> response = controller.createSheet(request);
 
+
     // Assertertion
     Result result = response.getBody();
+    // unauthorized because username does not exist
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     assertNotNull(result);
     assertFalse(result.isSuccess());

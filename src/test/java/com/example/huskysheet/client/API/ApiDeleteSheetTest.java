@@ -36,14 +36,14 @@ class ApiDeleteSheetTest {
 
   @Test
   void testDeleteSheet_NullPublisher() {
-    // Start request with null publisher
+    // create sheet where the publisher is null
     DeleteSheetRequest request = new DeleteSheetRequest();
-    request.setPublisher(null); // Set publisher to null
+    request.setPublisher(null);
 
-    // Perform the deleteSheet operation on null publisher
+    // delete sheet with a null publisher
     ResponseEntity<Result> responseEntity = controller.deleteSheet(request);
 
-    // Verify that the controller returned a bad request status
+    // asserts that the request was bad because null publisher
     assert responseEntity != null;
     assert responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST;
   }
@@ -55,19 +55,20 @@ class ApiDeleteSheetTest {
       Publisher publisher = mock(Publisher.class);
       when(publishers.getPublisherByUsername(anyString())).thenReturn(publisher);
 
-      // Create request
+      // create request
       DeleteSheetRequest request = new DeleteSheetRequest();
       request.setPublisher("username");
       request.setSheet("sheetName");
 
-      // Stimulate authentification
-      String clientName = "username"; // Change this to the desired username
-      SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(clientName, null));
+      // Stimulate false authentification
+      String clientName = "username";
+      SecurityContextHolder.getContext().setAuthentication(
+              new UsernamePasswordAuthenticationToken(clientName, null));
 
       // Call request
       ResponseEntity<Result> response = controller.deleteSheet(request);
 
-      // Verify the result
+      // assert that internal server error because of the wrong username
       assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
   }

@@ -44,6 +44,7 @@ class ApiRegisterTest {
         // Assertion
       assertTrue(response.isSuccess());
       assertNull(response.getMessage());
+      // no response for registering
         assertEquals(0, response.getValue().size());
     }
 }

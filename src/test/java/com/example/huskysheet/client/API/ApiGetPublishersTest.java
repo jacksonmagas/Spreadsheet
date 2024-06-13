@@ -36,7 +36,7 @@ class ApiGetPublishersTest {
 
   @Test
   void testGetPublisher() {
-    // Arrange
+    // Arrange mocks
     List<Publisher> mockPublishers = new ArrayList<>();
     Publisher publisher1 = new Publisher("Publisher1", new ArrayList<>());
     Publisher publisher2 = new Publisher("Publisher2", new ArrayList<>());
@@ -51,6 +51,7 @@ class ApiGetPublishersTest {
     // Action
     Result result = controller.getPublisher();
 
+    // sets results
     List<Argument> expectedArguments = new ArrayList<>();
     for (Publisher pub : mockPublishers) {
       Argument arg = new Argument();
@@ -62,7 +63,7 @@ class ApiGetPublishersTest {
       expectedArguments.add(arg);
     }
 
-    // Assert
+    // Assert that the publishers were gotten successfully
     assertTrue(result.isSuccess());
     assertNull(result.getMessage());
     assertEquals(2, result.getValue().size());

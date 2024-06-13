@@ -45,12 +45,13 @@ public class ApiUpdateSubscriptionTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
+    // request
     UpdateRequest request = new UpdateRequest("testPublisher", "NonExistentSheet", "New subscription payload");
 
     // Action
     ResponseEntity<Result> response = controller.updateSubscription(request);
 
-    // Asserttion
+    // Asserttion that sheet not found
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
@@ -59,12 +60,13 @@ public class ApiUpdateSubscriptionTest {
     // Arrange mocks
     when(publishers.getPublisherByUsername("nonExistentPublisher")).thenReturn(null);
 
+    //request
     UpdateRequest request = new UpdateRequest("nonExistentPublisher", "Sheet1", "New subscription payload");
 
     // Action
     ResponseEntity<Result> response = controller.updateSubscription(request);
 
-    // Assertion
+    // Assertion that username of publisher does not exist
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
@@ -74,12 +76,14 @@ public class ApiUpdateSubscriptionTest {
     Publisher publisher = new Publisher("testPublisher", new ArrayList<>());
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
-    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New subscription payload");
+    //request
+    UpdateRequest request = new UpdateRequest("testPublisher",
+            "Sheet1", "New subscription payload");
 
     // Action
     ResponseEntity<Result> response = controller.updateSubscription(request);
 
-    // Assertion
+    // Assertion that sheet1 was not found
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }

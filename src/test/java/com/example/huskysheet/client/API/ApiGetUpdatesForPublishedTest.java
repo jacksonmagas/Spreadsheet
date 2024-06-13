@@ -43,7 +43,7 @@ class ApiGetUpdatesForPublishedTest {
   }
 
   @Test
-  void getUpdatesForPublished_validRequest() {
+  void getUpdatesForPublished() {
     // Arrange mocks
     List<Spreadsheet> spreadsheets = new ArrayList<>();
     Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
@@ -54,10 +54,10 @@ class ApiGetUpdatesForPublishedTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
-    // Request
+    // Request updates
     GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "Sheet1", "1");
 
-    // Authentification
+    // null authentification so that we can test not found
     Authentication authentication = new UsernamePasswordAuthenticationToken("testPublisher", null);
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
