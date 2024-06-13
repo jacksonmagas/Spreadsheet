@@ -1,4 +1,4 @@
-package API;
+package com.example.huskysheet.client.API;
 
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publishers;
@@ -30,7 +30,7 @@ class ApiRegisterTest {
 
     @Test
     void testRegister() {
-        // Mock the security context to simulate an authenticated user
+        // MOck authentification for user to register
         SecurityContext securityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(securityContext);
         Authentication authentication = mock(Authentication.class);
@@ -38,10 +38,10 @@ class ApiRegisterTest {
         when(authentication.getName()).thenReturn("testClient");
 
 
-        // Call the controller method
+        // Call request
         Result response = spreadsheetController.register();
 
-        // Check the response
+        // Assertion
       assertTrue(response.isSuccess());
       assertNull(response.getMessage());
         assertEquals(0, response.getValue().size());

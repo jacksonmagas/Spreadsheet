@@ -1,4 +1,5 @@
-package ModelTestingServer;
+
+package com.example.huskysheet.client.ModelTestingServer;
 
 import com.example.huskysheet.model.UpdatePayload;
 

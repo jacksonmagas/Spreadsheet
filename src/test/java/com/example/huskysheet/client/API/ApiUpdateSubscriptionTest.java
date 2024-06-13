@@ -1,10 +1,11 @@
-package API;
+package com.example.huskysheet.client.API;
 
 
-import com.example.huskysheet.api.Server.GetUpdatesRequest;
+import com.example.huskysheet.api.Server.UpdateRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publisher;
 import com.example.huskysheet.model.Publishers;
+import com.example.huskysheet.model.Result;
 import com.example.huskysheet.model.Spreadsheet;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-class ApiGetUpdatesForSubscriptionTest {
+public class ApiUpdateSubscriptionTest {
 
   @Mock
   private Publishers publishers;
@@ -34,10 +35,9 @@ class ApiGetUpdatesForSubscriptionTest {
     MockitoAnnotations.openMocks(this);
   }
 
-
   @Test
-  void getUpdatesForSubscription_sheetNotFound() {
-    // Arrange
+  void updateSubscription_sheetNotFound() {
+    // Arrange mocks
     List<Spreadsheet> spreadsheets = new ArrayList<>();
     Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
     spreadsheets.add(sheet);
@@ -45,46 +45,41 @@ class ApiGetUpdatesForSubscriptionTest {
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
-    GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "NonExistentSheet", "1");
+    UpdateRequest request = new UpdateRequest("testPublisher", "NonExistentSheet", "New subscription payload");
 
-    // Act
-    ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
+    // Action
+    ResponseEntity<Result> response = controller.updateSubscription(request);
 
-    // Assert
+    // Asserttion
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
-  void getUpdatesForSubscription_publisherNotFound() {
-    // Arrange
+  void updateSubscription_publisherNotFound() {
+    // Arrange mocks
     when(publishers.getPublisherByUsername("nonExistentPublisher")).thenReturn(null);
 
-    GetUpdatesRequest request = new GetUpdatesRequest("nonExistentPublisher", "Sheet1", "1");
+    UpdateRequest request = new UpdateRequest("nonExistentPublisher", "Sheet1", "New subscription payload");
 
-    // Act
-    ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
+    // Action
+    ResponseEntity<Result> response = controller.updateSubscription(request);
 
-    // Assert
+    // Assertion
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
-  void getUpdatesForSubscription_invalidId() {
+  void updateSubscription_noSpreadsheets() {
     // Arrange
-    List<Spreadsheet> spreadsheets = new ArrayList<>();
-    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
-    sheet.addUpdate("1,InitialUpdate");
-    spreadsheets.add(sheet);
-
-    Publisher publisher = new Publisher("testPublisher", spreadsheets);
+    Publisher publisher = new Publisher("testPublisher", new ArrayList<>());
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
-    GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "Sheet1", "nonIntegerId");
+    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New subscription payload");
 
-    // Act
-    ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
+    // Action
+    ResponseEntity<Result> response = controller.updateSubscription(request);
 
-    // Assert
+    // Assertion
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }
