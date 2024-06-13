@@ -23,7 +23,7 @@ public class TestAPICalls {
     @AfterEach
     public void cleanup() {
         try {
-            spreadsheetManager.deleteSpreadsheet(USERNAME, testSheet);
+            spreadsheetManager.deleteSpreadsheet();
         } catch (Exception ignored) {
 
         }
@@ -54,7 +54,7 @@ public class TestAPICalls {
         testSheet = "test-sheet-" + System.currentTimeMillis();
         spreadsheetManager.register();
         spreadsheetManager.createSpreadsheet(testSheet);
-        spreadsheetManager.deleteSpreadsheet(USERNAME, testSheet);
+        spreadsheetManager.deleteSpreadsheet();
         Assertions.assertFalse(spreadsheetManager.getAvailableSheets(USERNAME).contains(testSheet));
     }
 

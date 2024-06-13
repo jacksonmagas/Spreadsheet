@@ -142,11 +142,7 @@ public class HelloController implements Initializable {
         }
 
         // clear current table
-        table.getColumns().clear();
-        table.getItems().clear();
-        numCols = 0;
-        numRows = 0;
-
+        clearTable();
 
         table.setEditable(true);
         String headerStyle = "-fx-background-color: -fx-body-color; -fx-font-weight: bold; -fx-text-alignment: center;";
@@ -221,6 +217,13 @@ public class HelloController implements Initializable {
         });
     }
 
+    private void clearTable() {
+        table.getColumns().clear();
+        table.getItems().clear();
+        numCols = 0;
+        numRows = 0;
+    }
+
     private void addItemsToOpenRecentMenu() {
         try {
             // Get the list of publishers
@@ -258,31 +261,19 @@ public class HelloController implements Initializable {
 
     private void deleteSheet() {
         try {
-            // Get the selected sheet from the "Open Recent" menu
-            MenuItem selectedMenuItem = openRecentMenu.getItems().stream()
-                    .filter(MenuItem.class::isInstance)
-                    .map(MenuItem.class::cast)
-                    .findFirst()
-                    .orElse(null);
-
-            if (selectedMenuItem == null) {
+            if (spreadsheet == null) {
                 System.out.println("No sheet selected to delete.");
                 return;
             }
-
-            String sheetName = selectedMenuItem.getText();
-
-            // Get the publisher of the selected sheet
-            Menu publisherMenu = (Menu) selectedMenuItem.getParentMenu();
-            String publisher = publisherMenu.getText();
-
             // Send a request to delete the sheet from the server
-            spreadsheetManager.deleteSpreadsheet(publisher, sheetName);
+            spreadsheetManager.deleteSpreadsheet();
 
             // Refresh the "Open Recent" menu after deletion
             addItemsToOpenRecentMenu();
 
             // Optionally, you can update the UI to reflect the changes
+            spreadsheet = null;
+            clearTable();
         } catch (APICallException e) {
             e.printStackTrace();
             // Handle API call exception
@@ -318,7 +309,7 @@ public class HelloController implements Initializable {
                 List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
                 // Delete each sheet
                 for (String sheet : sheets) {
-                    spreadsheetManager.deleteSpreadsheet(publisher, sheet);
+                    spreadsheetManager.deleteSpreadsheet();
                 }
             }
         } catch (APICallException e) {

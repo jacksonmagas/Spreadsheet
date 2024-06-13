@@ -357,13 +357,13 @@ public class SpreadsheetManager implements ISpreadsheetListener {
 
     /**
      * Delete the spreadsheet with the given name from the server.
-     * @author Jackson Magas
-     * @param sheetName the name of the sheet to delete
+     *
      * @throws APICallException if the API call fails
+     * @author Jackson Magas
      */
-    public void deleteSpreadsheet(String publisher, String sheetName) throws APICallException {
+    public void deleteSpreadsheet() throws APICallException {
         try {
-            Result result = callAPI(Endpoint.deleteSheet, new Argument(publisher, sheetName, "", ""));
+            Result result = callAPI(Endpoint.deleteSheet, new Argument(currentSheetPublisher, currentSheetName, "", ""));
             if (!result.success) {
                 throw new APICallException(result.message);
             }
