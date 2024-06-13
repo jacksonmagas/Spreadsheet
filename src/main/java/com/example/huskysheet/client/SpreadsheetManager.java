@@ -339,15 +339,20 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     }
 
     /**
-     * Publish a new spreadsheet with the given name on the server
-     * @author Jackson Magas
+     * Publish a new spreadsheet with the given name on the server Set the current spreadsheet to
+     * that sheet
+     *
      * @param sheetName the name of the new sheet to create
+     * @return the created sheet
      * @throws APICallException if the API call fails
+     * @author Jackson Magas
      */
-    public void createSpreadsheet(String sheetName) throws APICallException {
+    public ISpreadsheet createSpreadsheet(String sheetName) throws APICallException {
         try {
             Result result = callAPI(Endpoint.createSheet, new Argument(userName, sheetName, "", ""));
-            if (!result.success) {
+            if (result.success) {
+                return getSpreadsheet(userName, sheetName);
+            } else {
                 throw new APICallException(result.message);
             }
         } catch (Exception e) {

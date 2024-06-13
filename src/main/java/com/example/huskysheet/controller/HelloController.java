@@ -116,7 +116,7 @@ public class HelloController implements Initializable {
         addItemsToOpenRecentMenu();
 
         // Set event handlers for the menu items
-        newSheetMenuItem.setOnAction(event -> createSheet());
+        newSheetMenuItem.setOnAction(event -> promptSheet.setVisible(true));
         deleteSheetMenuItem.setOnAction(event -> deleteSheet());
 
         // set timer for updating the sheet from the server
@@ -133,6 +133,7 @@ public class HelloController implements Initializable {
         }));
         updates.setCycleCount(Timeline.INDEFINITE);
         updates.playFrom(new Duration(updateDelaySeconds * 1000 - 500));
+        promptSheet.setOnAction(event -> createSheet());
     }
 
     /**
@@ -288,7 +289,6 @@ public class HelloController implements Initializable {
     @FXML
     private void createSheet() {
         try {
-            promptSheet.setVisible(true);
             String sheetName = promptSheet.getText();
 
             if(sheetName == null || sheetName.trim().isEmpty()) {
@@ -300,12 +300,15 @@ public class HelloController implements Initializable {
             // deleteAllSheets();
 
             // Send a request to create a new sheet with the name from TextField
-            spreadsheetManager.createSpreadsheet(sheetName);
+            spreadsheet = spreadsheetManager.createSpreadsheet(sheetName);
 
             // Refresh the "Open Recent" menu after creation
             addItemsToOpenRecentMenu();
 
             // Optionally, you can update the UI to reflect the changes
+            promptSheet.setText("");
+            promptSheet.setVisible(false);
+            setupTable();
         } catch (Exception e) {
             e.printStackTrace();
         }
