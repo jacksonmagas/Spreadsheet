@@ -15,7 +15,7 @@ public abstract class AbstractValueTerm implements ITerm {
         return false;
     }
 
-    // Jackson Magas
+    // @author Jackson Magas
     @Override
     public void recalculate() {
         // intentionally empty value terms do not need to recalculate

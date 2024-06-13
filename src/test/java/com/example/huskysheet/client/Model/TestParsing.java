@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test that parsing works properly for all types of input.
- * Jackson Magas
+ * @author Jackson Magas
  */
 public class TestParsing {
 
@@ -213,7 +213,7 @@ public class TestParsing {
     /**
      * Test parsing and basic functionality for references
      * Tests for references properly updating and circular references are in CellTests
-     * Jackson Magas
+     * @author Jackson Magas
      */
     @Test
     public void testReferenceParsing() {
