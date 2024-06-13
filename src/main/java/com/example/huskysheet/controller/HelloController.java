@@ -233,6 +233,7 @@ public class HelloController implements Initializable {
         try {
             // Get the list of publishers
             List<String> publishers = spreadsheetManager.getPublishers();
+            openRecentMenu.getItems().clear();
             for (String publisher : publishers) {
                 // Get the list of sheets for each publisher
                 List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
@@ -386,7 +387,13 @@ public class HelloController implements Initializable {
                 }
             };
             cell.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
-            //cell.getTextField().addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
+            var tf = cell.getTextField();
+            tf.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
+            tf.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    tf.setText(list.get(cell.getIndex()).get(columnNumber).getPlaintext());
+                }
+            });
             return cell;
         });
             //TextFieldTableCell.forTableColumn(new DefaultStringConverter()));

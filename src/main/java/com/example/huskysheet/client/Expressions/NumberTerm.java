@@ -5,20 +5,25 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents an equation term which is a double
+ * @author Jackson Magas
+ */
 public class NumberTerm extends AbstractValueTerm {
     private final double value;
 
     public NumberTerm(double value) {
+        super(format(value));
         this.value = value;
+    }
+
+    private static String format(double value) {
+        return new DecimalFormat("#.################").format(value);
     }
 
     @Override
     public String getResult() {
-        return new DecimalFormat("#.################").format(value);
-    }
-
-    public String toString() {
-        return Double.toString(value);
+        return format(value);
     }
 
     @Override

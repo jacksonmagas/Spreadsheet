@@ -13,6 +13,7 @@ public class BiOperatorExpression extends AbstractExpression {
     ResultType resultType;
 
     public BiOperatorExpression(String operator, ITerm left, ITerm right) {
+        super(left.toString() + " " + operator + " " + right.toString());
         if (OPERATORS.contains(operator)) {
             this.operator = operator;
         } else {

@@ -20,7 +20,7 @@ public interface ISpreadsheet {
     List<ICell> getColumn(int colNum);
 
     // Update the cell at each coordinate to the given string
-    void updateSheet(List<Pair<Coordinate, String>> update);
+    boolean updateSheet(List<Pair<Coordinate, String>> update);
 
     // register a new listener for changes to this spreadsheet
     void registerListener(ISpreadsheetListener listener);

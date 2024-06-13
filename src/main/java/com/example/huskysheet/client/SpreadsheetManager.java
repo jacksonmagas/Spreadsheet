@@ -303,14 +303,13 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      * @author Jackson Magas
      */
     public boolean tryGetUpdates() throws APICallException {
-        boolean updateRecieved = false;
+        boolean sheetChanged = false;
         if (lastUpdateFuture != null && lastUpdateFuture.isDone()) {
             try {
                 var result = lastUpdateFuture.get();
                 if (result.success) {
-                    currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
+                    sheetChanged = currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
                     currentID = Integer.parseInt(result.value.getFirst().id());
-                    updateRecieved = !result.equals(lastUpdate);
                     lastUpdate = result;
                 } else {
                     throw new APICallException(result.message);
@@ -335,7 +334,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
             }
         }
 
-        return updateRecieved;
+        return sheetChanged;
     }
 
     /**

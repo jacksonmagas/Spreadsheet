@@ -1,6 +1,14 @@
 package com.example.huskysheet.client.Expressions;
 
+/**
+ * Represents a term with no value
+ * @author Jackson Magas
+ */
 public class EmptyTerm extends AbstractValueTerm {
+    public EmptyTerm() {
+        super("");
+    }
+
     @Override
     public String getResult() {
         return "";

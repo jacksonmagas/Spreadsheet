@@ -4,6 +4,10 @@ import com.example.huskysheet.client.Utils.Coordinate;
 import java.text.DecimalFormat;
 import java.util.List;
 
+/**
+ * Represents an equation which can depend on other terms and can recalculate its results.
+ * @author Jackson Magas
+ */
 public abstract class AbstractExpression implements ITerm {
     protected static final String DIV_ZERO = "#DIV/0!";
     protected static final String VALUE_ERROR = "#VALUE!";
@@ -12,6 +16,10 @@ public abstract class AbstractExpression implements ITerm {
     String plaintext;
     List<Coordinate> dependencies;
 
+    public AbstractExpression(String plaintext) {
+        this.plaintext = plaintext;
+    }
+
     @Override
     public String getResult() {
         return value;
@@ -19,7 +27,7 @@ public abstract class AbstractExpression implements ITerm {
 
     @Override
     public String toString() {
-        return plaintext;
+        return "=" + plaintext;
     }
 
     protected String format(double value) {
