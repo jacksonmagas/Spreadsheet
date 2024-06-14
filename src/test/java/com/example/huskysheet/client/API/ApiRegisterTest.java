@@ -19,6 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+
+/**
+ * Test the API call 'register which registers users into the system and makes
+ * sure a username can only be registered once.
+ *
+ * @author Katie Winkleblack
+ */
+
 @ExtendWith(MockitoExtension.class)
 class ApiRegisterTest {
 

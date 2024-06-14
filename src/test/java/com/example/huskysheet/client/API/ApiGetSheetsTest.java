@@ -14,13 +14,21 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
+
+/**
+ * Test that the Getsheet method works for when there is no Publisher given
+ * @author Katie Winkleblack
+ */
 
 class ApiGetSheetsTest {
 
@@ -37,36 +45,19 @@ class ApiGetSheetsTest {
   }
 
   @Test
-  void testGetSheets() {
-    // Arrange mocks
-    List<Publisher> mockPublishers = new ArrayList<>();
-    Publisher publisher1 = new Publisher("Publisher1", new ArrayList<>());
-    Publisher publisher2 = new Publisher("Publisher2", new ArrayList<>());
-    mockPublishers.add(publisher1);
-    mockPublishers.add(publisher2);
+void testGetSheetsNoPublisher() {
 
-    // mock sheets for testing
-    List<Spreadsheet> sheets1 = new ArrayList<>();
-    sheets1.add(new Spreadsheet(publisher1, "Sheet1"));
-    sheets1.add(new Spreadsheet(publisher2, "Sheet2"));
-    publisher1.setSpreadsheets(sheets1);
+    GetSheetRequest request = new GetSheetRequest("Non existent");
 
-    List<Spreadsheet> sheets2 = new ArrayList<>();
-    sheets2.add(new Spreadsheet(publisher2, "Sheet3"));
-    publisher2.setSpreadsheets(sheets2);
+    when(publishers.getPublisherByUsername("Non existent")).thenReturn(null);
+    SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken("username",null));
 
-    // Authentification
-    when(publishers.getAllPublishers()).thenReturn(mockPublishers);
-    System.out.println("Mocked Publishers: " + publishers.getAllPublishers());
+    ResponseEntity<Result> response = controller.getSheets(request);
+    Result result = response.getBody();
 
-    // Action
-    GetSheetRequest request = new GetSheetRequest(publisher2.getName());
-    ResponseEntity<Result> responseEntity = controller.getSheets(request);
-    Result result = responseEntity.getBody();
-
-    // Assertertion
-    assertNotNull(result);
-    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertFalse(result.isSuccess());
+    assertEquals("Publisher not found: Non existent", result.getMessage());
   }
 }

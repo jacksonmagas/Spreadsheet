@@ -27,7 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
-
+/**
+ * Test the API call 'getUpdatesForPublisher' which is used to to retrieve updates
+ * for a published Spreadsheet
+ *
+ * @author Katie Winkleblack
+ */
 
 class ApiGetUpdatesForPublishedTest {
 

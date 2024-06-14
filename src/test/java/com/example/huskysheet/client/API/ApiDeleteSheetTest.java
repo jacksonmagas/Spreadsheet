@@ -21,13 +21,16 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test that the API call 'deleteSheet' works with exceptions
+ * @author Katie Winkleblack
+ */
+
 class ApiDeleteSheetTest {
 
   @InjectMocks
   private SpreadsheetController controller;
 
-  @Mock
-  private Publishers publishers;
 
   @BeforeEach
   void setUp() {

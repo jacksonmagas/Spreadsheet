@@ -23,6 +23,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+
+/**
+ * Test the API call 'getUpdatesForSubscription' which is used to retrieve updates about
+ * certain subscriptions from specific publishers and Spreadsheets.
+ *
+ * @author Katie Winkleblack
+ */
 class ApiGetUpdatesForSubscriptionTest {
 
   @Mock

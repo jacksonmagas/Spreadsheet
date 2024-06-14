@@ -1,5 +1,5 @@
 
-package com.example.huskysheet.client.ModelTestingServer;
+package com.example.huskysheet.client.Model;
 
 import com.example.huskysheet.model.Publisher;
 import com.example.huskysheet.model.Publishers;
@@ -13,6 +13,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+/**
+ * Test that the Publishers class works
+ * @author Katie Winkleblack
+ */
 
 public class TestPublishers {
 

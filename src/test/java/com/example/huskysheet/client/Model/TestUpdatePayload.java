@@ -1,5 +1,5 @@
 
-package com.example.huskysheet.client.ModelTestingServer;
+package com.example.huskysheet.client.Model;
 
 import com.example.huskysheet.model.UpdatePayload;
 
@@ -11,6 +11,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+/**
+ * Test that Updating Payloads works
+ * @author Katie Winkleblack
+ */
+
 
 public class TestUpdatePayload {
 

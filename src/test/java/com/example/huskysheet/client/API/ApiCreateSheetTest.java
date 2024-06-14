@@ -28,6 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test that the API call 'createSheet' works using authentification.
+ * @author Katie Winkleblack
+ */
+
+
 public class ApiCreateSheetTest {
 
 

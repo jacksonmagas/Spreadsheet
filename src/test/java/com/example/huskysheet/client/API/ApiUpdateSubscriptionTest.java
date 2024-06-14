@@ -1,6 +1,14 @@
 package com.example.huskysheet.client.API;
 
 
+/**
+ * Test the API call 'updateSubscription' which requests to update a subscription for
+ * a Spreadsheet owned by a certain Publisher.
+ *
+ * @author Katie Winkleblack
+ */
+
+
 import com.example.huskysheet.api.Server.UpdateRequest;
 import com.example.huskysheet.controller.SpreadsheetController;
 import com.example.huskysheet.model.Publisher;

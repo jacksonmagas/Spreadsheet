@@ -1,4 +1,4 @@
-package com.example.huskysheet.client.ModelTestingServer;
+package com.example.huskysheet.client.Model;
 
 import com.example.huskysheet.model.Publisher;
 import com.example.huskysheet.model.Spreadsheet;
@@ -12,6 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+/**
+ * Test that the Spreadsheet class works
+ * @author Katie Winkleblack
+ */
 
 public class TestSpreadsheet {
 

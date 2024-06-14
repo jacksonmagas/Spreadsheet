@@ -20,6 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test that the API call 'getPublishers' successfully returns the proper publishers
+ * @author Katie Winkleblack
+ */
+
 class ApiGetPublishersTest {
 
   @Mock

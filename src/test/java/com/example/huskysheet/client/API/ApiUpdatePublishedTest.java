@@ -26,6 +26,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test the API call 'updatePublished' which is used to send requests to update a certain
+ * Spreadsheet that is owned by a certain Publisher.
+ *
+ * @author Katie Winkleblack
+ */
+
 class ApiUpdatePublishedTest {
 
   @Mock
