@@ -1,6 +1,9 @@
 package com.example.huskysheet.config;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Scanner;
 import javafx.util.Pair;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +22,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class WebSecurityConfig {
 
   @Bean
-  public UserDetailsService userDetailsService() {
+  public UserDetailsService userDetailsService() throws FileNotFoundException {
     String fileName = "src/main/resources/UsernamePasswords.txt";
     List<Pair<String, String>> userDetails = userDetailsFromFile(fileName);
     UserDetails[] users = userDetails.stream()
@@ -27,13 +30,22 @@ public class WebSecurityConfig {
             .username(p.getKey())
             .password(p.getValue())
             .roles("USER")
-            .build()).toArray();
+            .build()).toArray(UserDetails[]::new);
     return new InMemoryUserDetailsManager(users);
   }
 
-  private List<Pair<String, String>> userDetailsFromFile(String fileName) {
+  /**
+   * Read the usernames and passwords from file
+   * @author Jackson Magas
+   * @param fileName
+   * @return
+   */
+  private List<Pair<String, String>> userDetailsFromFile(String fileName)
+      throws FileNotFoundException {
     //TODO read from file
     return List.of(new Pair<>("alice", "ert*hdu4GGwkw89"), new Pair<>("bob", "2V56$*BBBB1}mkrl"), new Pair<>("admin", "admin123"));
+
+    //Scanner sc = new Scanner(new File(fileName));
   }
 
   @Bean
