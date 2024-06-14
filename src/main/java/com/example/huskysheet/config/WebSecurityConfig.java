@@ -1,5 +1,7 @@
 package com.example.huskysheet.config;
 
+import java.util.List;
+import javafx.util.Pair;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,13 +20,20 @@ public class WebSecurityConfig {
 
   @Bean
   public UserDetailsService userDetailsService() {
-    UserDetails user = User.withDefaultPasswordEncoder()
-            .username("admin")
-            .password("admin123")
+    String fileName = "src/main/resources/UsernamePasswords.txt";
+    List<Pair<String, String>> userDetails = userDetailsFromFile(fileName);
+    UserDetails[] users = userDetails.stream()
+        .map(p -> User.withDefaultPasswordEncoder()
+            .username(p.getKey())
+            .password(p.getValue())
             .roles("USER")
-            .build();
+            .build()).toArray();
+    return new InMemoryUserDetailsManager(users);
+  }
 
-    return new InMemoryUserDetailsManager(user);
+  private List<Pair<String, String>> userDetailsFromFile(String fileName) {
+    //TODO read from file
+    return List.of(new Pair<>("alice", "ert*hdu4GGwkw89"), new Pair<>("bob", "2V56$*BBBB1}mkrl"), new Pair<>("admin", "admin123"));
   }
 
   @Bean
