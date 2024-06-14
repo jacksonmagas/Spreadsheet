@@ -132,7 +132,7 @@ public class TestParsing {
         parsesInto(VALUE_ERROR, "=DEBUG(1, 2)", parser);
         parsesInto(VALUE_ERROR, "=DEBUG($A1:$A5)", parser);
         // test COPY
-        parsesInto("5.1", "=COPY(5.1, \"$B1\")", parser);
+        parsesInto("0", "=COPY($A1, \"$B1\")", parser);
         parsesInto(VALUE_ERROR, "=COPY($A1, $b1)", parser);
         parsesInto(VALUE_ERROR, "=COPY($A2, \"hello\")", parser);
     }

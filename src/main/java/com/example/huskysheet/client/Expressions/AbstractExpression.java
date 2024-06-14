@@ -27,10 +27,22 @@ public abstract class AbstractExpression implements ITerm {
 
     @Override
     public String toString() {
-        return "=" + plaintext;
+        return plaintext;
+    }
+
+    /**
+     * Get a list of the multiple results of this term
+     *
+     * @return a list of terms that are the result of the results
+     */
+    @Override
+    public List<ITerm> getMultipleResults() {
+        return List.of();
     }
 
     protected String format(double value) {
         return new DecimalFormat("#.################").format(value);
     }
+
+
 }

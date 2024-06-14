@@ -1,5 +1,6 @@
 package com.example.huskysheet.client.Model;
 
+import com.example.huskysheet.client.Expressions.AbstractExpression;
 import com.example.huskysheet.client.Expressions.BiOperatorExpression;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
 import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
@@ -253,7 +254,7 @@ public class Spreadsheet implements ISpreadsheet {
                     if (match == tokens.size() - 1) {
                         return new ParenExpression(parse(tokens.subList(1, tokens.size() - 1)));
                     } else {
-                        return parseOperator(tokens.subList(match + 1, tokens.size()));
+                        return parseOperator(tokens);
                     }
                 }
                 case TokenType.reference -> {
@@ -275,8 +276,12 @@ public class Spreadsheet implements ISpreadsheet {
 
         private ITerm parseOperator(List<Token> tokens) throws ParseException {
             int operatorIndex = 0;
+            int oParenCount = 0;
             for (Token token : tokens) {
-                if (token.type == TokenType.operator) {
+                if (token.type == TokenType.parenthesis) {
+                    oParenCount += token.strValue.equals("(") ? 1 : -1;
+                }
+                if (token.type == TokenType.operator && oParenCount == 0) {
                     if (operatorIndex == tokens.size() - 1) {
                         throw new ParseException("Nothing after operator", 0);
                     } else if (token.strValue.equals(":")) {
@@ -509,7 +514,8 @@ public class Spreadsheet implements ISpreadsheet {
          */
         @Override
         public String getPlaintext() {
-            return term.toString();
+            String prepend = term instanceof AbstractExpression ? "=" : "";
+            return prepend + term.toString();
         }
 
         /**
@@ -582,6 +588,16 @@ public class Spreadsheet implements ISpreadsheet {
         @Override
         public ISpreadsheet getSpreadsheet() {
             return Spreadsheet.this;
+        }
+
+        /**
+         * Get the term of the data for this spreadsheet
+         *
+         * @return the term for this spreadsheet
+         */
+        @Override
+        public ITerm getTerm() {
+            return term;
         }
 
         /**

@@ -31,23 +31,24 @@ public class RangeExpression extends AbstractExpression {
     }
 
     /**
-     * Returns an unmodifiable list of reference expressions for all of the cells in this range
-     * @author Jackson Magas
-     * @return reference expressions for the cells in this range
+     * Get a list of the multiple results of this term
+     *
+     * @return a list of terms that are the result of the results
      */
-    public List<ITerm> getReferenceExpressions() {
-        return cells.stream().map(ReferenceExpression::new).collect(Collectors.toUnmodifiableList());
+    @Override
+    public List<ITerm> getMultipleResults() {
+        return cells.stream().map(ICell::getTerm).toList();
     }
 
     @Override
     public List<Coordinate> references() {
-        return getReferenceExpressions().stream().map(ITerm::references).flatMap(List::stream).toList();
+        return getMultipleResults().stream().map(ITerm::references).flatMap(List::stream).toList();
     }
 
     // getting the result of a range directly is an error
     @Override
     public ResultType resultType() {
-        return ResultType.error;
+        return ResultType.range;
     }
 
     @Override

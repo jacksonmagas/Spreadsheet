@@ -39,4 +39,9 @@ public abstract class AbstractValueTerm implements ITerm {
     public String toString() {
         return plaintext;
     }
+
+    @Override
+    public List<ITerm> getMultipleResults() {
+        return List.of();
+    }
 }

@@ -11,6 +11,11 @@ public interface ITerm {
     @Override
     String toString();
 
+    /**
+     * Get a list of the multiple results of this term
+     * @return a list of terms that are the result of the results
+     */
+    List<ITerm> getMultipleResults();
 
     /**
      * Gets a list of all cells referenced directly by this term.
@@ -20,7 +25,7 @@ public interface ITerm {
     List<Coordinate> references();
 
     enum ResultType {
-        string, number, empty, error
+        string, number, empty, error, range
     }
 
     /**

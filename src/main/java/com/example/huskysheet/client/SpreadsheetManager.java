@@ -273,6 +273,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         }
         return Arrays.stream(payload.split("\n"))
             .map(s -> s.split(" ", 2))
+            .filter(s -> s.length == 2)
             .map(s -> new Pair<>(Conversions.stringToCoordinate(s[0]), s[1]))
             .toList();
     }

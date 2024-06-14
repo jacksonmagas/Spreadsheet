@@ -30,8 +30,8 @@ public class FunctionExpression extends AbstractExpression {
         this.type = type;
         for (ITerm arg : parameters) {
             // Coupling is annoying but would need a major refactor to fix
-            if (arg instanceof RangeExpression) {
-                args.addAll(((RangeExpression) arg).getReferenceExpressions());
+            if (arg.resultType() == ResultType.range) {
+                args.addAll(arg.getMultipleResults());
             } else {
                 args.add(arg);
             }
@@ -44,8 +44,8 @@ public class FunctionExpression extends AbstractExpression {
         for (ITerm arg : parameters) {
             plaintext.append(arg.toString()).append(", ");
         }
-        if (plaintext.charAt(plaintext.length() - 1) == ',') {
-            plaintext.deleteCharAt(plaintext.length() - 1);
+        if (plaintext.charAt(plaintext.length() - 2) == ',') {
+            plaintext.delete(plaintext.length() - 2, plaintext.length());
         }
         return plaintext.append(")").toString();
     }
@@ -127,7 +127,8 @@ public class FunctionExpression extends AbstractExpression {
             // died here (it probably wasn't the best idea anyway)
             ((ReferenceExpression) args.getFirst()).getSpreadsheet()
                 .getCell(Conversions.stringToCoordinate(args.getLast().getResult()))
-                .updateCell(args.getFirst().getResult());
+                .updateCell(args.getFirst().toString());
+            resultType = args.getFirst().resultType();
             return args.getFirst().getResult();
         } else {
             resultType = ResultType.error;

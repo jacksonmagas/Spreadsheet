@@ -1,5 +1,6 @@
 package com.example.huskysheet.client.Model;
 
+import com.example.huskysheet.client.Expressions.ITerm;
 import com.example.huskysheet.client.Utils.CellFormatDetails;
 import com.example.huskysheet.client.Expressions.ITerm.ResultType;
 import com.example.huskysheet.client.Utils.Coordinate;
@@ -64,4 +65,10 @@ public interface ICell extends ICellListener {
      */
     ISpreadsheet getSpreadsheet();
 
+    /**
+     * Get the term of the data for this spreadsheet
+     *
+     * @return the term for this spreadsheet
+     */
+    ITerm getTerm();
 }

@@ -49,4 +49,14 @@ public class ParenExpression extends AbstractExpression {
     public int hashCode() {
         return Objects.hashCode(enclosed);
     }
+
+    /**
+     * Get a list of the multiple results of this term
+     *
+     * @return a list of terms that are the result of the results
+     */
+    @Override
+    public List<ITerm> getMultipleResults() {
+        return enclosed.getMultipleResults();
+    }
 }
