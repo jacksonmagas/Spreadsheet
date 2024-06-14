@@ -11,7 +11,7 @@ import com.example.huskysheet.client.Utils.Coordinate;
  */
 public interface ICell extends ICellListener {
     // Set the contents of this cell to the given data
-    void updateCell(String data);
+    boolean updateCell(String data);
 
     // get the coordinates of this cell
     Coordinate getCoordinate();

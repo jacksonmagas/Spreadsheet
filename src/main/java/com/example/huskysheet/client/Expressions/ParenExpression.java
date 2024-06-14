@@ -9,8 +9,8 @@ public class ParenExpression extends AbstractExpression {
     ITerm enclosed;
 
     public ParenExpression(ITerm enclosed) {
+        super("(" + enclosed.toString() + ")");
         this.enclosed = enclosed;
-        this.plaintext = "(" + enclosed.toString() + ")";
         this.value = enclosed.getResult();
     }
 

@@ -1,7 +1,5 @@
 package com.example.huskysheet.client.Expressions;
 
-import com.example.huskysheet.client.Model.ICell;
-import com.example.huskysheet.client.Model.ISpreadsheet;
 import com.example.huskysheet.client.Utils.Conversions;
 import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.ArrayList;
@@ -28,10 +26,9 @@ public class FunctionExpression extends AbstractExpression {
      *                   RangeExpressions can be provided as a parameter
      */
     public FunctionExpression(FunctionType type, List<ITerm> parameters) {
+        super(buildPlaintext(type, parameters));
         this.type = type;
-        StringBuilder plaintext = new StringBuilder().append(type).append("(");
         for (ITerm arg : parameters) {
-            plaintext.append(arg.toString()).append(", ");
             // Coupling is annoying but would need a major refactor to fix
             if (arg instanceof RangeExpression) {
                 args.addAll(((RangeExpression) arg).getReferenceExpressions());
@@ -39,11 +36,18 @@ public class FunctionExpression extends AbstractExpression {
                 args.add(arg);
             }
         }
-        if (!args.isEmpty()) {
-            plaintext.setLength(plaintext.length() - 1);
-        }
-        this.plaintext = plaintext.append(")").toString();
         recalculate();
+    }
+
+    private static String buildPlaintext(FunctionType type, List<ITerm> parameters) {
+        StringBuilder plaintext = new StringBuilder().append(type).append("(");
+        for (ITerm arg : parameters) {
+            plaintext.append(arg.toString()).append(", ");
+        }
+        if (plaintext.charAt(plaintext.length() - 1) == ',') {
+            plaintext.deleteCharAt(plaintext.length() - 1);
+        }
+        return plaintext.append(")").toString();
     }
 
     @Override
@@ -157,8 +161,8 @@ public class FunctionExpression extends AbstractExpression {
     /**
      * Concatenate string arguments
      * @author Jackson Magas
-     * @param args
-     * @return
+     * @param args the strings to concatenate
+     * @return the result of concatenating the arguments
      */
     private String calculateConcat(List<String> args) {
         for (String arg : args) {

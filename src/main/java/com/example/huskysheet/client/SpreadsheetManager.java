@@ -38,6 +38,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     private String currentSheetPublisher;
     private String currentSheetName;
     private CompletableFuture<Result> lastUpdateFuture;
+    private Result lastUpdate;
 
     /**
      * Create a new spreadsheet manager.
@@ -284,10 +285,9 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      */
     public void getUpdates() throws APICallException {
         try {
-            if (!tryGetUpdates()) {
-                lastUpdateFuture.get();
-                tryGetUpdates();
-            }
+            tryGetUpdates();
+            lastUpdateFuture.get();
+            tryGetUpdates();
         } catch (Exception e) {
             throw new APICallException(e);
         }
@@ -298,19 +298,19 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      * received update the current sheet with the results of that call then make a new get updates
      * call.
      * Also makes a new call if there has not been one yet.
-     * @return true if the last call was received
+     * @return true if the update attempt changed the sheet
      * @throws APICallException If the api call fails, or the future fails with exception.
      * @author Jackson Magas
      */
     public boolean tryGetUpdates() throws APICallException {
-        boolean updateRecieved = false;
+        boolean sheetChanged = false;
         if (lastUpdateFuture != null && lastUpdateFuture.isDone()) {
             try {
                 var result = lastUpdateFuture.get();
                 if (result.success) {
-                    currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
+                    sheetChanged = currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));
                     currentID = Integer.parseInt(result.value.getFirst().id());
-                    updateRecieved = true;
+                    lastUpdate = result;
                 } else {
                     throw new APICallException(result.message);
                 }
@@ -334,19 +334,24 @@ public class SpreadsheetManager implements ISpreadsheetListener {
             }
         }
 
-        return updateRecieved;
+        return sheetChanged;
     }
 
     /**
-     * Publish a new spreadsheet with the given name on the server
-     * @author Jackson Magas
+     * Publish a new spreadsheet with the given name on the server Set the current spreadsheet to
+     * that sheet
+     *
      * @param sheetName the name of the new sheet to create
+     * @return the created sheet
      * @throws APICallException if the API call fails
+     * @author Jackson Magas
      */
-    public void createSpreadsheet(String sheetName) throws APICallException {
+    public ISpreadsheet createSpreadsheet(String sheetName) throws APICallException {
         try {
             Result result = callAPI(Endpoint.createSheet, new Argument(userName, sheetName, "", ""));
-            if (!result.success) {
+            if (result.success) {
+                return getSpreadsheet(userName, sheetName);
+            } else {
                 throw new APICallException(result.message);
             }
         } catch (Exception e) {
@@ -356,13 +361,13 @@ public class SpreadsheetManager implements ISpreadsheetListener {
 
     /**
      * Delete the spreadsheet with the given name from the server.
-     * @author Jackson Magas
-     * @param sheetName the name of the sheet to delete
+     *
      * @throws APICallException if the API call fails
+     * @author Jackson Magas
      */
-    public void deleteSpreadsheet(String publisher, String sheetName) throws APICallException {
+    public void deleteSpreadsheet() throws APICallException {
         try {
-            Result result = callAPI(Endpoint.deleteSheet, new Argument(publisher, sheetName, "", ""));
+            Result result = callAPI(Endpoint.deleteSheet, new Argument(currentSheetPublisher, currentSheetName, "", ""));
             if (!result.success) {
                 throw new APICallException(result.message);
             }

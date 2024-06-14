@@ -85,16 +85,22 @@ public class Spreadsheet implements ISpreadsheet {
 
     /**
      * Update the sheet based on a list of cells and new data for those cells
+     *
      * @param updates A list of coordinate, text pairs to update the sheet with
+     * @return true if the update changed this sheet
      * @author Jackson Magas
      */
     @Override
-    public void updateSheet(List<Pair<Coordinate, String>> updates) {
+    public boolean updateSheet(List<Pair<Coordinate, String>> updates) {
+        boolean changed = false;
         updatingFromServer = true;
         for (Pair<Coordinate, String> pair : updates) {
-            getCell(pair.getKey()).updateCell(pair.getValue());
+            if (getCell(pair.getKey()).updateCell(pair.getValue())) {
+                changed = true;
+            }
         }
         updatingFromServer = false;
+        return changed;
     }
 
     @Override
@@ -450,13 +456,18 @@ public class Spreadsheet implements ISpreadsheet {
         }
 
         /**
-         * Update this cell with new user input.
-         * Registers as a listener to all direct dependencies and
-         * @author Jackson Magas
+         * Update this cell with new user input. Registers as a listener to all direct dependencies
+         * and
+         *
          * @param data the user input to parse
+         * @return true if this cell changed from the update
+         * @author Jackson Magas
          */
         @Override
-        public void updateCell(String data) {
+        public boolean updateCell(String data) {
+            if (data.equals(getPlaintext())) {
+                return false;
+            }
             term = parser.parse(data);
             try {
                 for (Coordinate refLoc : term.references()) {
@@ -467,6 +478,7 @@ public class Spreadsheet implements ISpreadsheet {
             }
             Spreadsheet.this.notifyListeners(getCoordinate(), data);
             handleValueChange();
+            return true;
         }
 
 

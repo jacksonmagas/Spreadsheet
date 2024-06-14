@@ -15,15 +15,19 @@ public class RangeExpression extends AbstractExpression {
     List<ICell> cells;
 
     public RangeExpression(List<ICell> cells) throws IllegalArgumentException {
+        super(buildPlaintext(cells));
         this.cells = cells;
+        value = VALUE_ERROR;
+    }
+
+    private static String buildPlaintext(List<ICell> cells) {
         try {
-            this.plaintext = cells.getFirst().getCoordinate().toString()
+            return cells.getFirst().getCoordinate().toString()
                 + ":"
                 + cells.getLast().getCoordinate().toString();
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException();
         }
-        value = VALUE_ERROR;
     }
 
     /**

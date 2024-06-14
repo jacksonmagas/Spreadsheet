@@ -1,11 +1,13 @@
 package com.example.huskysheet.client.Expressions;
 
 
+/**
+ * Represents an equation term that is a string.
+ * @author Jackson Magas
+ */
 public class StringTerm extends AbstractValueTerm {
-    String value;
-
     public StringTerm(String value) {
-        this.value = value;
+        super(value);
     }
 
     /**
@@ -16,7 +18,7 @@ public class StringTerm extends AbstractValueTerm {
      */
     @Override
     public String getResult() {
-        String result = withoutEscapes(value);
+        String result = withoutEscapes(plaintext);
         if (result.startsWith("\"") && result.endsWith("\"")) {
             return result.substring(1, result.length() - 1);
         } else {
@@ -34,11 +36,6 @@ public class StringTerm extends AbstractValueTerm {
             }
         }
         return result.toString();
-    }
-
-    // @author Jackson Magas
-    public String toString() {
-        return value;
     }
 
     @Override

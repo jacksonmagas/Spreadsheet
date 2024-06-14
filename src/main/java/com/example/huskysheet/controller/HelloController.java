@@ -12,18 +12,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -32,7 +27,6 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -42,7 +36,6 @@ import javafx.util.Callback;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.util.Duration;
-import javafx.util.converter.DefaultStringConverter;
 
 public class HelloController implements Initializable {
     @FXML
@@ -63,6 +56,9 @@ public class HelloController implements Initializable {
 
     @FXML
     private MenuItem deleteSheetMenuItem;
+
+    @FXML
+    private TextField promptSheet;
 
     private SpreadsheetManager spreadsheetManager;
 
@@ -120,22 +116,24 @@ public class HelloController implements Initializable {
         addItemsToOpenRecentMenu();
 
         // Set event handlers for the menu items
-        newSheetMenuItem.setOnAction(event -> createSheet());
+        newSheetMenuItem.setOnAction(event -> promptSheet.setVisible(true));
         deleteSheetMenuItem.setOnAction(event -> deleteSheet());
 
         // set timer for updating the sheet from the server
         var updates = new Timeline();
-        updates.getKeyFrames().add(new KeyFrame(new Duration(3000), event -> {
+        int updateDelaySeconds = 1;
+        updates.getKeyFrames().add(new KeyFrame(new Duration(updateDelaySeconds * 1000), event -> {
             try {
-                if (spreadsheet != null) {
-                    spreadsheetManager.tryGetUpdates();
+                if (spreadsheet != null && spreadsheetManager.tryGetUpdates()) {
+                    table.refresh();
                 }
             } catch (APICallException e) {
                 System.err.println("Failed to load updates: " + e.getMessage());
             }
         }));
         updates.setCycleCount(Timeline.INDEFINITE);
-        updates.play();
+        updates.playFrom(new Duration(updateDelaySeconds * 1000 - 500));
+        promptSheet.setOnAction(event -> createSheet());
     }
 
     /**
@@ -149,11 +147,7 @@ public class HelloController implements Initializable {
         }
 
         // clear current table
-        table.getColumns().clear();
-        table.getItems().clear();
-        numCols = 0;
-        numRows = 0;
-
+        clearTable();
 
         table.setEditable(true);
         String headerStyle = "-fx-background-color: -fx-body-color; -fx-font-weight: bold; -fx-text-alignment: center;";
@@ -228,10 +222,18 @@ public class HelloController implements Initializable {
         });
     }
 
+    private void clearTable() {
+        table.getColumns().clear();
+        table.getItems().clear();
+        numCols = 0;
+        numRows = 0;
+    }
+
     private void addItemsToOpenRecentMenu() {
         try {
             // Get the list of publishers
             List<String> publishers = spreadsheetManager.getPublishers();
+            openRecentMenu.getItems().clear();
             for (String publisher : publishers) {
                 // Get the list of sheets for each publisher
                 List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
@@ -265,31 +267,19 @@ public class HelloController implements Initializable {
 
     private void deleteSheet() {
         try {
-            // Get the selected sheet from the "Open Recent" menu
-            MenuItem selectedMenuItem = openRecentMenu.getItems().stream()
-                    .filter(MenuItem.class::isInstance)
-                    .map(MenuItem.class::cast)
-                    .findFirst()
-                    .orElse(null);
-
-            if (selectedMenuItem == null) {
+            if (spreadsheet == null) {
                 System.out.println("No sheet selected to delete.");
                 return;
             }
-
-            String sheetName = selectedMenuItem.getText();
-
-            // Get the publisher of the selected sheet
-            Menu publisherMenu = (Menu) selectedMenuItem.getParentMenu();
-            String publisher = publisherMenu.getText();
-
             // Send a request to delete the sheet from the server
-            spreadsheetManager.deleteSpreadsheet(publisher, sheetName);
+            spreadsheetManager.deleteSpreadsheet();
 
             // Refresh the "Open Recent" menu after deletion
             addItemsToOpenRecentMenu();
 
             // Optionally, you can update the UI to reflect the changes
+            spreadsheet = null;
+            clearTable();
         } catch (APICallException e) {
             e.printStackTrace();
             // Handle API call exception
@@ -297,20 +287,30 @@ public class HelloController implements Initializable {
     }
 
 
+    @FXML
     private void createSheet() {
         try {
-            // Delete all existing sheets first
-            deleteAllSheets();
+            String sheetName = promptSheet.getText();
 
-            // Send a request to create a new sheet with the name "Sheet1"
-            spreadsheetManager.createSpreadsheet("Sheet134134");
+            if(sheetName == null || sheetName.trim().isEmpty()) {
+                System.out.println("Sheet name cannot be empty!");
+                return;
+            }
+
+            // Delete all existing sheets first
+            // deleteAllSheets();
+
+            // Send a request to create a new sheet with the name from TextField
+            spreadsheet = spreadsheetManager.createSpreadsheet(sheetName);
 
             // Refresh the "Open Recent" menu after creation
             addItemsToOpenRecentMenu();
 
             // Optionally, you can update the UI to reflect the changes
+            promptSheet.setText("");
+            promptSheet.setVisible(false);
+            setupTable();
         } catch (Exception e) {
-
             e.printStackTrace();
         }
     }
@@ -325,7 +325,7 @@ public class HelloController implements Initializable {
                 List<String> sheets = spreadsheetManager.getAvailableSheets(publisher);
                 // Delete each sheet
                 for (String sheet : sheets) {
-                    spreadsheetManager.deleteSpreadsheet(publisher, sheet);
+                    spreadsheetManager.deleteSpreadsheet();
                 }
             }
         } catch (APICallException e) {
@@ -387,7 +387,13 @@ public class HelloController implements Initializable {
                 }
             };
             cell.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
-            //cell.getTextField().addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
+            var tf = cell.getTextField();
+            tf.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);
+            tf.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    tf.setText(list.get(cell.getIndex()).get(columnNumber).getPlaintext());
+                }
+            });
             return cell;
         });
             //TextFieldTableCell.forTableColumn(new DefaultStringConverter()));

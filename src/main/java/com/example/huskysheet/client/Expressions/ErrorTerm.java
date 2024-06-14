@@ -5,20 +5,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class ErrorTerm extends AbstractValueTerm {
-    private final String plaintext;
-
     public ErrorTerm(String plaintext) {
-        this.plaintext = plaintext;
+        super(plaintext);
     }
 
     @Override
     public String getResult() {
         return "Error invalid input.";
-    }
-
-    @Override
-    public String toString() {
-        return plaintext;
     }
 
     @Override
