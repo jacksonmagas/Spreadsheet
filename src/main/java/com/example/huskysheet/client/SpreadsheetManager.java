@@ -18,9 +18,12 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import javafx.util.Pair;
 
 /**
@@ -38,6 +41,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     private String currentSheetPublisher;
     private String currentSheetName;
     private CompletableFuture<Result> lastUpdateFuture;
+    private List<String> lastCallPublishers;
+    private Map<String, List<String>> lastCallSheets;
     private Result lastUpdate;
 
     /**
@@ -54,6 +59,11 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         this.serverUrl = serverUrl;
         new URI(serverUrl); // test that serverURL is well formed
         authHeader = "Basic " + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+        lastCallSheets = new HashMap<>();
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     /**
@@ -124,6 +134,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         });
     }
 
+
     private static Result handleResponse(HttpResponse<String> response) throws IOException {
         System.out.println("Response: " + response.toString());
         System.out.println("Response Body: " + response.body());
@@ -192,12 +203,27 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         try {
             Result result = callAPI(Endpoint.getPublishers);
             if (result.success) {
-                return result.value().stream()
+                lastCallPublishers = result.value().stream()
                     .map(Argument::publisher)
                     .toList();
+                return lastCallPublishers;
             } else {
                 throw new APICallException(result.message);
             }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
+    }
+
+    public List<String> tryGetPublishers() throws APICallException {
+        try {
+            var publishers = callAPIAsync(Endpoint.getPublishers, new Argument("", "", "", ""));
+            if (publishers.isDone()) {
+                lastCallPublishers = publishers.get().value().stream()
+                    .map(Argument::publisher)
+                    .toList();
+            }
+            return lastCallPublishers;
         } catch (Exception e) {
             throw new APICallException(e);
         }
@@ -220,6 +246,20 @@ public class SpreadsheetManager implements ISpreadsheetListener {
             } else {
                 throw new APICallException(result.message);
             }
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
+    }
+
+    public List<String> tryGetAvailableSheets(String publisher) throws APICallException {
+        try {
+            var publishers = callAPIAsync(Endpoint.getSheets, new Argument(publisher, "", "", ""));
+            if (publishers.isDone()) {
+                lastCallSheets.put(publisher, publishers.get().value().stream()
+                    .map(Argument::sheet)
+                    .toList());
+            }
+            return lastCallSheets.getOrDefault(publisher, List.of());
         } catch (Exception e) {
             throw new APICallException(e);
         }
@@ -391,7 +431,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
             Result result;
 
             //todo
-            if (false && currentSheetPublisher.equals(userName)) {
+            if (currentSheetPublisher.equals(userName)) {
                 result = callAPI(Endpoint.updatePublished,
                     new Argument(currentSheetPublisher,
                         currentSheetName,

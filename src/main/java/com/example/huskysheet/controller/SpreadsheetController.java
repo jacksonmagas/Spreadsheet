@@ -327,7 +327,7 @@ public class SpreadsheetController {
 
         for (String update : updates) {
           String[] parts = update.split(",", 2);
-          combinedPayload.append(parts[1]).append("\n");
+          combinedPayload.append(parts[1]);
           lastId = Integer.parseInt(parts[0]);
         }
 
@@ -417,7 +417,7 @@ public class SpreadsheetController {
 
         for (String update : updateRequests) {
           String[] parts = update.split(",", 2);
-          combinedPayload.append(parts[1]).append("\n");
+          combinedPayload.append(parts[1]);
           lastId = Integer.parseInt(parts[0]);
         }
 
