@@ -2,6 +2,7 @@ package com.example.huskysheet.config;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
@@ -42,10 +43,16 @@ public class WebSecurityConfig {
    */
   private List<Pair<String, String>> userDetailsFromFile(String fileName)
       throws FileNotFoundException {
-    //TODO read from file
-    return List.of(new Pair<>("alice", "ert*hdu4GGwkw89"), new Pair<>("bob", "2V56$*BBBB1}mkrl"), new Pair<>("admin", "admin123"));
 
-    //Scanner sc = new Scanner(new File(fileName));
+    List<Pair<String, String>> userDetails = new ArrayList<>();
+    Scanner sc = new Scanner(new File(fileName));
+    while (sc.hasNextLine()) {
+      String line = sc.nextLine();
+      String username = line.split(":")[0];
+      String password = line.split(":")[1];
+      userDetails.add(new Pair<>(username, password));
+    }
+    return userDetails;
   }
 
   @Bean
