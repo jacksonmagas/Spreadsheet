@@ -136,6 +136,14 @@ public class HelloController implements Initializable {
         }));
         updates.setCycleCount(Timeline.INDEFINITE);
         updates.playFrom(new Duration(updateDelaySeconds * 1000 - 500));
+
+        var menuUpdates = new Timeline();
+        int menuUpdateDelaySeconds = 6;
+        menuUpdates.getKeyFrames().add(new KeyFrame(new Duration(menuUpdateDelaySeconds * 1000), event -> {
+            addItemsToOpenRecentMenu();
+        }));
+        menuUpdates.setCycleCount(Timeline.INDEFINITE);
+        menuUpdates.playFrom(new Duration(menuUpdateDelaySeconds * 1000 - 500));
         promptSheet.setOnAction(event -> createSheet());
     }
 
