@@ -124,7 +124,8 @@ public class HelloController implements Initializable {
 
         // set timer for updating the sheet from the server
         var updates = new Timeline();
-        int updateDelaySeconds = 1;
+        int updateDelaySeconds = 5;//TODO back to 1 second after testing
+
         updates.getKeyFrames().add(new KeyFrame(new Duration(updateDelaySeconds * 1000), event -> {
             try {
                 if (spreadsheet != null && spreadsheetManager.tryGetUpdates()) {
@@ -138,7 +139,7 @@ public class HelloController implements Initializable {
         updates.playFrom(new Duration(updateDelaySeconds * 1000 - 500));
 
         var menuUpdates = new Timeline();
-        int menuUpdateDelaySeconds = 6;
+        int menuUpdateDelaySeconds = 15;
         menuUpdates.getKeyFrames().add(new KeyFrame(new Duration(menuUpdateDelaySeconds * 1000), event -> {
             addItemsToOpenRecentMenu();
         }));
@@ -321,6 +322,7 @@ public class HelloController implements Initializable {
             promptSheet.setText("");
             promptSheet.setVisible(false);
             setupTable();
+            setCurrentDisplay(spreadsheetManager.getUserName(), sheetName);
         } catch (Exception e) {
             e.printStackTrace();
         }

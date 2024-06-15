@@ -7,6 +7,9 @@ run_local_client:
 	timeout 5
 	gradlew :run --args='--name=admin --url=http://localhost:8090 --password=admin123'
 
+run_local_alice:
+	gradlew :run --args='--name=alice --url=http://localhost:8090 --password=ert*hdu4GGwkw89'
+
 run_server:
 	gradlew :runServer
 

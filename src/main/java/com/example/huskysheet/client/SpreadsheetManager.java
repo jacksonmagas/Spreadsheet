@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 import javafx.util.Pair;
 
 /**
@@ -44,6 +43,9 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     private List<String> lastCallPublishers;
     private Map<String, List<String>> lastCallSheets;
     private Result lastUpdate;
+    // a map from published sheet name to id
+    private Map<String, String> lastSubscriberUpdateId;
+    private Map<String, CompletableFuture<Result>> publishedSheetsFuture;
 
     /**
      * Create a new spreadsheet manager.
@@ -60,6 +62,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         new URI(serverUrl); // test that serverURL is well formed
         authHeader = "Basic " + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
         lastCallSheets = new HashMap<>();
+        lastSubscriberUpdateId = new HashMap<>();
+        publishedSheetsFuture = new HashMap<>();
     }
 
     public String getUserName() {
@@ -275,11 +279,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     public ISpreadsheet getSpreadsheet(String publisher, String sheetName) throws APICallException {
         try {
             Result result;
-            if (publisher.equals(userName)) {
-                result = callAPI(Endpoint.getUpdatesForPublished, new Argument(publisher, sheetName, "0", ""));
-            } else {
-                result = callAPI(Endpoint.getUpdatesForSubscription, new Argument(publisher, sheetName, "0", ""));
-            }
+            result = callAPI(Endpoint.getUpdatesForSubscription, new Argument(publisher, sheetName, "0", ""));
             if (result.success) {
                 if (currentSpreadsheet != null) {
                     currentSpreadsheet.unregisterListener(this);
@@ -344,6 +344,11 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      * @author Jackson Magas
      */
     public boolean tryGetUpdates() throws APICallException {
+        try {
+            updatePublished();
+        } catch (Exception e) {
+            throw new APICallException(e);
+        }
         boolean sheetChanged = false;
         if (lastUpdateFuture != null && lastUpdateFuture.isDone()) {
             try {
@@ -362,20 +367,35 @@ public class SpreadsheetManager implements ISpreadsheetListener {
 
         if (lastUpdateFuture == null || lastUpdateFuture.isDone()) {
             try {
-                if (currentSheetPublisher.equals(userName)) {
-                    lastUpdateFuture = callAPIAsync(Endpoint.getUpdatesForPublished,
-                        new Argument(userName, currentSheetName, Integer.toString(currentID), ""));
-                } else {
-                    lastUpdateFuture = callAPIAsync(Endpoint.getUpdatesForSubscription,
+                lastUpdateFuture = callAPIAsync(Endpoint.getUpdatesForSubscription,
                         new Argument(currentSheetPublisher, currentSheetName,
                             Integer.toString(currentID), ""));
-                }
             } catch (Exception e) {
                 throw new APICallException(e);
             }
         }
 
         return sheetChanged;
+    }
+
+    private void updatePublished() throws Exception {
+        var published = getAvailableSheets(userName);
+        for (var sheet : published) {
+            boolean done = publishedSheetsFuture.containsKey(sheet) && publishedSheetsFuture.get(sheet).isDone();
+            if (done) {
+                var result = publishedSheetsFuture.get(sheet).get();
+                var pairs = parsePayload(result.value.getFirst().payload);
+                for (var pair : pairs) {
+                    handleUpdate(pair.getKey(), pair.getValue());
+                }
+                lastSubscriberUpdateId.put(currentSheetName, result.value.getFirst().id());
+            }
+            if (done || !publishedSheetsFuture.containsKey(sheet)) {
+                publishedSheetsFuture.put(sheet,
+                    callAPIAsync(Endpoint.getUpdatesForPublished,
+                        new Argument(userName, sheet, lastSubscriberUpdateId.getOrDefault(sheet, "0"), "")));
+            }
+        }
     }
 
     /**
@@ -390,6 +410,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     public ISpreadsheet createSpreadsheet(String sheetName) throws APICallException {
         try {
             Result result = callAPI(Endpoint.createSheet, new Argument(userName, sheetName, "", ""));
+            lastSubscriberUpdateId.put(sheetName, "0");
             if (result.success) {
                 return getSpreadsheet(userName, sheetName);
             } else {
@@ -409,6 +430,7 @@ public class SpreadsheetManager implements ISpreadsheetListener {
     public void deleteSpreadsheet() throws APICallException {
         try {
             Result result = callAPI(Endpoint.deleteSheet, new Argument(currentSheetPublisher, currentSheetName, "", ""));
+            lastSubscriberUpdateId.remove(currentSheetName);
             if (!result.success) {
                 throw new APICallException(result.message);
             }
@@ -430,18 +452,17 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         try {
             Result result;
 
-            //todo
             if (currentSheetPublisher.equals(userName)) {
                 result = callAPI(Endpoint.updatePublished,
                     new Argument(currentSheetPublisher,
                         currentSheetName,
-                        Integer.toString(currentID),
+                        "",
                         coordinate.toString() + " " + update));
             } else {
                 result = callAPI(Endpoint.updateSubscription,
                     new Argument(currentSheetPublisher,
                         currentSheetName,
-                        Integer.toString(currentID),
+                        "",
                         coordinate.toString() + " " + update));
             }
             if (!result.success) {
