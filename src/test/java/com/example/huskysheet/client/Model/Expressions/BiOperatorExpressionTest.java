@@ -174,7 +174,8 @@ public class BiOperatorExpressionTest {
     }
 
     /*
-     * Tests operations between number terms and non-number terms
+     * Assures that operations between number terms, and terms incompatible with number
+     * terms, return error values.
      */
     @Test
     public void BiOpInvalidTypeTest() {
