@@ -7,6 +7,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * Test class for the Argument model.
+ * Contains unit tests to verify the functionality of the Argument class's getter and setter methods.
+ *
+ * @author Julia Ouritskaya
+ */
 public class ArgumentTest {
 
   @Test

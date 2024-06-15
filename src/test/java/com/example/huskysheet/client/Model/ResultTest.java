@@ -15,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test class for the Result model.
+ * Contains unit tests to verify the functionality of the Result class's getter and setter methods.
+ *
+ * @author Julia Ouritskaya
+ */
 public class ResultTest {
 
   private Result result;

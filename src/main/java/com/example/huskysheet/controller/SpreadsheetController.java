@@ -26,18 +26,30 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Controller for handling spreadsheet-related requests.
+ * This class provides endpoints for registering users, managing publishers, and handling spreadsheets.
+ *
+ * @author Julia Ouritskaya
+ */
 @RestController
 @RequestMapping("/api/v1")
 public class SpreadsheetController {
   private final Publishers publishers;
 
-
+  /**
+   * Constructor for SpreadsheetController.
+   * Initializes the publishers instance.
+   */
   public SpreadsheetController() {
     this.publishers = Publishers.getInstance();
   }
 
-
+  /**
+   * Registers a new publisher.
+   *
+   * @return a Result object indicating the success of the operation
+   */
   @GetMapping("/register")
   public Result register() {
     // Get the authenticated client name from the security context
@@ -55,7 +67,11 @@ public class SpreadsheetController {
     return result;
   }
 
-
+  /**
+   * Retrieves all publishers.
+   *
+   * @return a Result object containing the list of all publishers
+   */
   @GetMapping("/getPublishers")
   public Result getPublisher() {
     List<Publisher> allPublishers = publishers.getAllPublishers();
@@ -83,7 +99,12 @@ public class SpreadsheetController {
     return result;
   }
 
-
+  /**
+   * Creates a new spreadsheet.
+   *
+   * @param request the CreateSheetRequest object containing the publisher and sheet details
+   * @return a ResponseEntity containing a Result object indicating the success or failure of the operation
+   */
   @PostMapping("/createSheet")
   public ResponseEntity<Result> createSheet(@RequestBody CreateSheetRequest request) {
     Result result = new Result();
@@ -161,7 +182,12 @@ public class SpreadsheetController {
     }
   }
 
-
+  /**
+   * Retrieves all sheets for a given publisher.
+   *
+   * @param request the GetSheetRequest object containing the publisher details
+   * @return a ResponseEntity containing a Result object with the list of sheets
+   */
   @PostMapping("/getSheets")
   public ResponseEntity<Result> getSheets(@RequestBody GetSheetRequest request) {
     Result result = new Result();
@@ -202,7 +228,12 @@ public class SpreadsheetController {
     }
   }
 
-
+  /**
+   * Deletes a spreadsheet for a given publisher.
+   *
+   * @param request the DeleteSheetRequest object containing the publisher and sheet details
+   * @return a ResponseEntity containing a Result object indicating the success or failure of the operation
+   */
   @PostMapping("/deleteSheet")
   public ResponseEntity<Result> deleteSheet(@RequestBody DeleteSheetRequest request) {
     Result result = new Result();
@@ -276,7 +307,12 @@ public class SpreadsheetController {
     }
   }
 
-
+  /**
+   * Retrieves updates for a subscribed spreadsheet.
+   *
+   * @param request the GetUpdatesRequest object containing the publisher, sheet, and id details
+   * @return a ResponseEntity containing a Result object with the updates
+   */
   @PostMapping("/getUpdatesForSubscription")
   public ResponseEntity<Result> getUpdatesForSubscription(@RequestBody GetUpdatesRequest request) {
     Result result = new Result();
@@ -358,6 +394,12 @@ public class SpreadsheetController {
     }
   }
 
+  /**
+   * Retrieves update requests for a published spreadsheet.
+   *
+   * @param request the GetUpdatesRequest object containing the publisher, sheet, and id details
+   * @return a ResponseEntity containing a Result object with the update requests
+   */
   @PostMapping("/getUpdatesForPublished")
   public ResponseEntity<Result> getUpdatesForPublished(@RequestBody GetUpdatesRequest request) {
     Result result = new Result();
@@ -448,6 +490,12 @@ public class SpreadsheetController {
     }
   }
 
+  /**
+   * Updates a published spreadsheet.
+   *
+   * @param request the UpdateRequest object containing the publisher, sheet, and payload details
+   * @return a ResponseEntity containing a Result object indicating the success or failure of the operation
+   */
   @PostMapping("/updatePublished")
   public ResponseEntity<Result> updatePublished(@RequestBody UpdateRequest request) {
     Result result = new Result();
@@ -523,7 +571,12 @@ public class SpreadsheetController {
     }
   }
 
-
+  /**
+   * Updates a subscription for a spreadsheet.
+   *
+   * @param request the UpdateRequest object containing the publisher, sheet, and payload details
+   * @return a ResponseEntity containing a Result object
+   */
   @PostMapping("/updateSubscription")
   public ResponseEntity<Result> updateSubscription(@RequestBody UpdateRequest request) {
     Result result = new Result();
