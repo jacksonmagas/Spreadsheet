@@ -16,8 +16,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+/**
+ * Web security configuration class.
+ * This class configures the security settings for the application.
+ *
+ * @autor Julia Ouritskaya
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -55,6 +59,13 @@ public class WebSecurityConfig {
     return userDetails;
   }
 
+  /**
+   * Configures the security filter chain.
+   *
+   * @param http the HttpSecurity
+   * @return the SecurityFilterChain
+   * @throws Exception if an error occurs during configuration
+   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
@@ -75,5 +86,21 @@ public class WebSecurityConfig {
             .httpBasic(withDefaults());
 
     return http.build();
+  }
+
+  /**
+   * Configures the authentication manager with details about the user.
+   *
+   * @author katie w
+   */
+  @Bean
+  public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService)
+          throws Exception {
+    AuthenticationManagerBuilder authenticationManagerBuilder =
+            http.getSharedObject(AuthenticationManagerBuilder.class);
+    authenticationManagerBuilder
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder);
+    return authenticationManagerBuilder.build();
   }
 }
