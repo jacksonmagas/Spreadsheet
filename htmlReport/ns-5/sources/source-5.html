@@ -1,0 +1,116 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ISpreadsheet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.client.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: ISpreadsheet (com.example.huskysheet.client.Model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ISpreadsheet</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;
+&nbsp;package com.example.huskysheet.client.Model;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.Utils.Coordinate;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;public interface ISpreadsheet {
+&nbsp;    // Return the cell at the given coordinates, creating a new cell object if the cell is empty.
+&nbsp;    ICell getCell(Coordinate coordinate);
+&nbsp;
+&nbsp;    int numRows();
+&nbsp;
+&nbsp;    int numColumns();
+&nbsp;
+&nbsp;
+&nbsp;    List&lt;ICell&gt; getRow(int rowNum);
+&nbsp;
+&nbsp;    List&lt;ICell&gt; getColumn(int colNum);
+&nbsp;
+&nbsp;    // Update the cell at each coordinate to the given string
+&nbsp;    boolean updateSheet(List&lt;Pair&lt;Coordinate, String&gt;&gt; update);
+&nbsp;
+&nbsp;    // register a new listener for changes to this spreadsheet
+&nbsp;    void registerListener(ISpreadsheetListener listener);
+&nbsp;
+&nbsp;    // unregister a given listener if it is registered
+&nbsp;    void unregisterListener(ISpreadsheetListener listener);
+&nbsp;
+&nbsp;    // notify listeners of a change to the spreadsheet
+&nbsp;    void notifyListeners(Coordinate coordinate, String update);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Set a format option for a row or column
+&nbsp;     * TODO
+&nbsp;     */
+&nbsp;
+&nbsp;    /*
+&nbsp;    void setRowColor(int row);
+&nbsp;
+&nbsp;    void setColumnColor(int col);
+&nbsp;
+&nbsp;    void setRowFont(int row);
+&nbsp;
+&nbsp;    void setColumnFont(int col);
+&nbsp;     */
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

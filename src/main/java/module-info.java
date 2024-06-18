@@ -19,9 +19,12 @@ module com.example.huskysheet {
   requires com.google.gson;
   requires javafx.base;
   requires jakarta.persistence;
+    requires spring.data.jpa;
+    requires org.slf4j;
+    requires spring.security.crypto;
 
 
-  opens com.example.huskysheet to javafx.fxml, spring.core;
+    opens com.example.huskysheet to javafx.fxml, spring.core;
   exports com.example.huskysheet;
 
   opens com.example.huskysheet.client to com.google.gson;

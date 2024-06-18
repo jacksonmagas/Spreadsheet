@@ -1,0 +1,457 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FunctionExpression</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.client.Expressions</a>
+</div>
+
+<h1>Coverage Summary for Class: FunctionExpression (com.example.huskysheet.client.Expressions)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FunctionExpression</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.8%
+  </span>
+  <span class="absValue">
+    (15/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.1%
+  </span>
+  <span class="absValue">
+    (57/64)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94.4%
+  </span>
+  <span class="absValue">
+    (118/125)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FunctionExpression$FunctionType</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    94.4%
+  </span>
+  <span class="absValue">
+    (17/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.1%
+  </span>
+  <span class="absValue">
+    (57/64)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94.5%
+  </span>
+  <span class="absValue">
+    (120/127)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.client.Expressions;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.Utils.Conversions;
+&nbsp;import com.example.huskysheet.client.Utils.Coordinate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.OptionalDouble;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents an expression that is a function of some list of arguments, including range args.
+&nbsp; */
+&nbsp;public class FunctionExpression extends AbstractExpression {
+<b class="fc">&nbsp;    private final List&lt;ITerm&gt; args = new ArrayList&lt;&gt;();</b>
+&nbsp;    private final FunctionType type;
+&nbsp;    private ResultType resultType;
+&nbsp;
+<b class="fc">&nbsp;    public enum FunctionType {</b>
+<b class="fc">&nbsp;        IF, SUM, MAX, MIN, AVG, CONCAT, DEBUG, COPY</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create a new function object from a function and its arguments
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param type the enum type of the function
+&nbsp;     * @param parameters The terms to use as arguments for the function
+&nbsp;     *                   RangeExpressions can be provided as a parameter
+&nbsp;     */
+&nbsp;    public FunctionExpression(FunctionType type, List&lt;ITerm&gt; parameters) {
+<b class="fc">&nbsp;        super(buildPlaintext(type, parameters));</b>
+<b class="fc">&nbsp;        this.type = type;</b>
+<b class="fc">&nbsp;        for (ITerm arg : parameters) {</b>
+&nbsp;            // Coupling is annoying but would need a major refactor to fix
+<b class="fc">&nbsp;            if (arg.resultType() == ResultType.range) {</b>
+<b class="fc">&nbsp;                args.addAll(arg.getMultipleResults());</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                args.add(arg);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        recalculate();</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private static String buildPlaintext(FunctionType type, List&lt;ITerm&gt; parameters) {
+<b class="fc">&nbsp;        StringBuilder plaintext = new StringBuilder().append(type).append(&quot;(&quot;);</b>
+<b class="fc">&nbsp;        for (ITerm arg : parameters) {</b>
+<b class="fc">&nbsp;            plaintext.append(arg.toString()).append(&quot;, &quot;);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="pc">&nbsp;        if (plaintext.charAt(plaintext.length() - 2) == &#39;,&#39;) {</b>
+<b class="fc">&nbsp;            plaintext.delete(plaintext.length() - 2, plaintext.length());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return plaintext.append(&quot;)&quot;).toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Coordinate&gt; references() {
+<b class="fc">&nbsp;        return args.stream().map(ITerm::references).flatMap(List::stream).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public ResultType resultType() {
+<b class="fc">&nbsp;        return resultType;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A function is never considered empty
+&nbsp;     * @return false
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recalculate the value of this function based on its dependencies and function type
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void recalculate() {
+<b class="fc">&nbsp;        List&lt;String&gt; emptyRemoved = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (ITerm arg : args) {</b>
+<b class="fc">&nbsp;            arg.recalculate();</b>
+<b class="fc">&nbsp;            if (arg.resultType() != ResultType.empty) {</b>
+<b class="fc">&nbsp;                emptyRemoved.add(arg.getResult());</b>
+&nbsp;            }
+&nbsp;            // if an argument is an error this is that error too
+<b class="fc">&nbsp;            if (arg.resultType() == ResultType.error) {</b>
+<b class="fc">&nbsp;                resultType = ResultType.error;</b>
+<b class="fc">&nbsp;                value = arg.getResult();</b>
+<b class="fc">&nbsp;                return;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="pc">&nbsp;        switch (type) {</b>
+&nbsp;            case IF -&gt; {
+&nbsp;                // if does not ignore empty
+<b class="fc">&nbsp;                value = calculateIf();</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case SUM -&gt; {
+<b class="fc">&nbsp;                value = calculateSum(emptyRemoved);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case MAX -&gt; {
+<b class="fc">&nbsp;                value = calculateMax(emptyRemoved);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case MIN -&gt; {
+<b class="fc">&nbsp;                value = calculateMin(emptyRemoved);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case AVG -&gt; {
+<b class="fc">&nbsp;                value = calculateAvg(emptyRemoved);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case CONCAT -&gt; {
+<b class="fc">&nbsp;                value = calculateConcat(emptyRemoved);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case DEBUG -&gt; {
+&nbsp;                // debug does not ignore empty
+<b class="fc">&nbsp;                value = calculateDebug();</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case COPY -&gt; {
+<b class="fc">&nbsp;                value = calculateCopy();</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private String calculateCopy() {
+<b class="pc">&nbsp;        if (args.size() == 2</b>
+<b class="pc">&nbsp;            &amp;&amp; (args.getFirst() instanceof ReferenceExpression)</b>
+<b class="fc">&nbsp;            &amp;&amp; (args.getLast().resultType() == ResultType.string)</b>
+<b class="fc">&nbsp;            &amp;&amp; Conversions.isValidRef(args.getLast().getResult())) {</b>
+&nbsp;            // the implementation of expressions which don&#39;t know what spreadsheet they are part of
+&nbsp;            // died here (it probably wasn&#39;t the best idea anyway)
+<b class="fc">&nbsp;            ((ReferenceExpression) args.getFirst()).getSpreadsheet()</b>
+<b class="fc">&nbsp;                .getCell(Conversions.stringToCoordinate(args.getLast().getResult()))</b>
+<b class="fc">&nbsp;                .updateCell(&quot;=&quot;+args.getFirst().toString());</b>
+<b class="fc">&nbsp;            resultType = args.getFirst().resultType();</b>
+<b class="fc">&nbsp;            return args.getFirst().getResult();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            resultType = ResultType.error;</b>
+<b class="fc">&nbsp;            return VALUE_ERROR;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean dependsOn(Coordinate cellLoc) {
+<b class="fc">&nbsp;        return args.stream().anyMatch(arg -&gt; arg.dependsOn(cellLoc));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Causes this expression to mirror its argument and print it to stdout
+&nbsp;     * errors if there is not exactly one argument
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @return the result of the argument
+&nbsp;     */
+&nbsp;    private String calculateDebug() {
+<b class="fc">&nbsp;        if (args.size() != 1) {</b>
+<b class="fc">&nbsp;            resultType = ResultType.error;</b>
+<b class="fc">&nbsp;            return VALUE_ERROR;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        resultType = args.getFirst().resultType();</b>
+<b class="fc">&nbsp;        String result = args.getFirst().getResult();</b>
+<b class="fc">&nbsp;        System.out.println(result);</b>
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Concatenate string arguments
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param args the strings to concatenate
+&nbsp;     * @return the result of concatenating the arguments
+&nbsp;     */
+&nbsp;    private String calculateConcat(List&lt;String&gt; args) {
+<b class="fc">&nbsp;        for (String arg : args) {</b>
+<b class="fc">&nbsp;            if (isNumber(arg)) {</b>
+<b class="fc">&nbsp;                resultType = ResultType.error;</b>
+<b class="fc">&nbsp;                return VALUE_ERROR;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        resultType = ResultType.string;</b>
+<b class="fc">&nbsp;        return args.stream().reduce(&quot;&quot;, (a, b) -&gt; a + b);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the average value of the arguments
+&nbsp;     * If any arguments are not numbers or if there are no arguments return VALUE_ERROR
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param args the arguments to average
+&nbsp;     * @return AVG(args) or VALUE_ERROR
+&nbsp;     */
+&nbsp;    private String calculateAvg(List&lt;String&gt; args) {
+<b class="fc">&nbsp;        for (String arg : args) {</b>
+<b class="fc">&nbsp;            if (!isNumber(arg)) {</b>
+<b class="fc">&nbsp;                resultType = ResultType.error;</b>
+<b class="fc">&nbsp;                return VALUE_ERROR;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        OptionalDouble result = args.stream().mapToDouble(Double::parseDouble).average();</b>
+<b class="pc">&nbsp;        if (result.isPresent()) {</b>
+<b class="fc">&nbsp;            resultType = ResultType.number;</b>
+<b class="fc">&nbsp;            return format(result.getAsDouble());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            resultType = ResultType.error;</b>
+<b class="nc">&nbsp;            return VALUE_ERROR;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the min value of the arguments.
+&nbsp;     * If any arguments are not numbers, or if there are no arguments return value error
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param args stringified arguments to use
+&nbsp;     * @return MIN(args) or VALUE_ERROR
+&nbsp;     */
+&nbsp;    private String calculateMin(List&lt;String&gt; args) {
+<b class="fc">&nbsp;        for (String arg : args) {</b>
+<b class="fc">&nbsp;            if (!isNumber(arg)) {</b>
+<b class="fc">&nbsp;                resultType = ResultType.error;</b>
+<b class="fc">&nbsp;                return VALUE_ERROR;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        OptionalDouble result = args.stream().mapToDouble(Double::parseDouble).min();</b>
+<b class="pc">&nbsp;        if (result.isPresent()) {</b>
+<b class="fc">&nbsp;            resultType = ResultType.number;</b>
+<b class="fc">&nbsp;            return format(result.getAsDouble());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            resultType = ResultType.error;</b>
+<b class="nc">&nbsp;            return VALUE_ERROR;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the max value of the arguments.
+&nbsp;     * If any arguments are not numbers, or if there are no arguments return value error
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param args stringified arguments to use
+&nbsp;     * @return MAX(args) or VALUE_ERROR
+&nbsp;     */
+&nbsp;    private String calculateMax(List&lt;String&gt; args) {
+<b class="fc">&nbsp;        for (String arg : args) {</b>
+<b class="fc">&nbsp;            if (!isNumber(arg)) {</b>
+<b class="fc">&nbsp;                resultType = ResultType.error;</b>
+<b class="fc">&nbsp;                return VALUE_ERROR;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        OptionalDouble result = args.stream().mapToDouble(Double::parseDouble).max();</b>
+<b class="pc">&nbsp;        if (result.isPresent()) {</b>
+<b class="fc">&nbsp;            resultType = ResultType.number;</b>
+<b class="fc">&nbsp;            return format(result.getAsDouble());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            resultType = ResultType.error;</b>
+<b class="nc">&nbsp;            return VALUE_ERROR;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calculate the sum of the arguments to this function.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @return the sum of the args or VALUE_ERROR if they are not all numbers
+&nbsp;     */
+&nbsp;    private String calculateSum(List&lt;String&gt; args) {
+<b class="fc">&nbsp;       for (String arg : args) {</b>
+<b class="fc">&nbsp;           if (!isNumber(arg)) {</b>
+<b class="fc">&nbsp;               resultType = ResultType.error;</b>
+<b class="fc">&nbsp;               return VALUE_ERROR;</b>
+&nbsp;           }
+<b class="fc">&nbsp;       }</b>
+&nbsp;
+<b class="fc">&nbsp;       resultType = ResultType.number;</b>
+<b class="fc">&nbsp;       return format(args.stream().mapToDouble(Double::parseDouble).sum());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * check if the string is a number
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param s the potential number to check
+&nbsp;     * @return true if the string can be parsed to a double
+&nbsp;     */
+&nbsp;    private boolean isNumber(String s) {
+&nbsp;        try {
+<b class="fc">&nbsp;            Double.parseDouble(s);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Set the value of this function to the value of IF on its args
+&nbsp;     * IF needs 3 args with the first being a number
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @return the value of IF(arg[1], arg[2], arg[3])
+&nbsp;     */
+&nbsp;    private String calculateIf() {
+<b class="pc">&nbsp;        if (args.size() == 3 &amp;&amp; isNumber(args.getFirst().getResult())) {</b>
+<b class="fc">&nbsp;            if (args.getFirst().getResult().equals(&quot;0&quot;)) {</b>
+<b class="fc">&nbsp;                resultType = args.get(2).resultType();</b>
+<b class="fc">&nbsp;                return args.get(2).getResult();</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                resultType = args.get(1).resultType();</b>
+<b class="fc">&nbsp;                return args.get(1).getResult();</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="fc">&nbsp;            resultType = ResultType.error;</b>
+<b class="fc">&nbsp;            return VALUE_ERROR;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

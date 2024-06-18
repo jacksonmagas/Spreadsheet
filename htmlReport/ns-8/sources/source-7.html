@@ -1,0 +1,761 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SpreadsheetController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: SpreadsheetController (com.example.huskysheet.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SpreadsheetController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    32.3%
+  </span>
+  <span class="absValue">
+    (31/96)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.4%
+  </span>
+  <span class="absValue">
+    (137/376)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.controller;
+&nbsp;
+&nbsp;
+&nbsp;import com.example.huskysheet.api.Server.CreateSheetRequest;
+&nbsp;import com.example.huskysheet.api.Server.DeleteSheetRequest;
+&nbsp;import com.example.huskysheet.api.Server.GetSheetRequest;
+&nbsp;import com.example.huskysheet.api.Server.GetUpdatesRequest;
+&nbsp;import com.example.huskysheet.api.Server.UpdateRequest;
+&nbsp;import com.example.huskysheet.model.Argument;
+&nbsp;import com.example.huskysheet.model.Publisher;
+&nbsp;import com.example.huskysheet.model.Publishers;
+&nbsp;import com.example.huskysheet.model.Result;
+&nbsp;import com.example.huskysheet.model.Spreadsheet;
+&nbsp;
+&nbsp;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.security.core.context.SecurityContextHolder;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Controller for handling spreadsheet-related requests.
+&nbsp; * This class provides endpoints for registering users, managing publishers, and handling spreadsheets.
+&nbsp; *
+&nbsp; * @author Julia Ouritskaya
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1&quot;)
+&nbsp;public class SpreadsheetController {
+&nbsp;  private final Publishers publishers;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Constructor for SpreadsheetController.
+&nbsp;   * Initializes the publishers instance.
+&nbsp;   */
+<b class="fc">&nbsp;  public SpreadsheetController() {</b>
+<b class="fc">&nbsp;    this.publishers = Publishers.getInstance();</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Registers a new publisher.
+&nbsp;   *
+&nbsp;   * @return a Result object indicating the success of the operation
+&nbsp;   */
+&nbsp;  @GetMapping(&quot;/register&quot;)
+&nbsp;  public Result register() {
+&nbsp;    // Get the authenticated client name from the security context
+<b class="fc">&nbsp;    String clientName = SecurityContextHolder.getContext().getAuthentication().getName();</b>
+<b class="fc">&nbsp;    publishers.registerNewPublisher(clientName);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    Result result = new Result();</b>
+<b class="fc">&nbsp;    result.setSuccess(true);</b>
+<b class="fc">&nbsp;    result.setMessage(null);</b>
+<b class="fc">&nbsp;    result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;    result.setTime(System.currentTimeMillis());</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    return result;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves all publishers.
+&nbsp;   *
+&nbsp;   * @return a Result object containing the list of all publishers
+&nbsp;   */
+&nbsp;  @GetMapping(&quot;/getPublishers&quot;)
+&nbsp;  public Result getPublisher() {
+<b class="fc">&nbsp;    List&lt;Publisher&gt; allPublishers = publishers.getAllPublishers();</b>
+<b class="fc">&nbsp;    List&lt;Argument&gt; publisherArguments = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    for (Publisher publisher : allPublishers) {</b>
+<b class="fc">&nbsp;      Argument arg = new Argument();</b>
+<b class="fc">&nbsp;      arg.setPublisher(publisher.getName());</b>
+<b class="fc">&nbsp;      arg.setSheet(null);</b>
+<b class="fc">&nbsp;      arg.setId(null);</b>
+<b class="fc">&nbsp;      arg.setPayload(null);</b>
+<b class="fc">&nbsp;      publisherArguments.add(arg);</b>
+<b class="fc">&nbsp;      System.out.println(&quot;Publisher in list: &quot; + publisher.getName());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    Result result = new Result();</b>
+<b class="fc">&nbsp;    result.setSuccess(true);</b>
+<b class="fc">&nbsp;    result.setMessage(null);</b>
+<b class="fc">&nbsp;    result.setValue(publisherArguments);</b>
+<b class="fc">&nbsp;    result.setTime(System.currentTimeMillis());</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    return result;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Creates a new spreadsheet.
+&nbsp;   *
+&nbsp;   * @param request the CreateSheetRequest object containing the publisher and sheet details
+&nbsp;   * @return a ResponseEntity containing a Result object indicating the success or failure of the operation
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/createSheet&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; createSheet(@RequestBody CreateSheetRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+<b class="pc">&nbsp;    if (request.getSheet() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Sheet is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    try {
+&nbsp;      // Get the authenticated username
+<b class="fc">&nbsp;      String clientName = SecurityContextHolder.getContext().getAuthentication().getName();</b>
+&nbsp;      // Check if the authenticated user matches the publisher in the request
+<b class="fc">&nbsp;      if (!request.getPublisher().equals(clientName)) {</b>
+<b class="fc">&nbsp;        result.setSuccess(false);</b>
+<b class="fc">&nbsp;        result.setMessage(&quot;Unauthorized: sender is not owner of sheet&quot;);</b>
+<b class="fc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.UNAUTHORIZED);</b>
+&nbsp;      }
+&nbsp;
+&nbsp;
+&nbsp;      // Retrieve the publisher by username
+<b class="fc">&nbsp;      Publisher publisher = publishers.getPublisherByUsername(request.getPublisher());</b>
+<b class="pc">&nbsp;      if (publisher == null) {</b>
+<b class="fc">&nbsp;        result.setSuccess(false);</b>
+<b class="fc">&nbsp;        result.setMessage(&quot;Unauthorized: sender is not owner of sheet&quot;);</b>
+<b class="fc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;      }
+&nbsp;
+&nbsp;
+&nbsp;      // Check if the sheet already exists
+<b class="nc">&nbsp;      for (Spreadsheet sheet : publisher.getSpreadsheets()) {</b>
+<b class="nc">&nbsp;        if (sheet.getSheetName().equals(request.getSheet())) {</b>
+<b class="nc">&nbsp;          result.setSuccess(false);</b>
+<b class="nc">&nbsp;          result.setMessage(&quot;Sheet already exists: &quot; + request.getSheet());</b>
+<b class="nc">&nbsp;          result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;          result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;          return new ResponseEntity&lt;&gt;(result, HttpStatus.CONFLICT);</b>
+&nbsp;        }
+<b class="nc">&nbsp;      }</b>
+&nbsp;
+&nbsp;
+&nbsp;      // Create a new sheet and add it to the publisher
+<b class="nc">&nbsp;      Spreadsheet newSheet = new Spreadsheet(publisher, request.getSheet());</b>
+<b class="nc">&nbsp;      publisher.addSpreadsheet(newSheet);</b>
+<b class="nc">&nbsp;      result.setSuccess(true);</b>
+<b class="nc">&nbsp;      result.setMessage(null);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+<b class="nc">&nbsp;    } catch (Exception e) {</b>
+<b class="nc">&nbsp;      e.printStackTrace();</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(e.getMessage());</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves all sheets for a given publisher.
+&nbsp;   *
+&nbsp;   * @param request the GetSheetRequest object containing the publisher details
+&nbsp;   * @return a ResponseEntity containing a Result object with the list of sheets
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/getSheets&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; getSheets(@RequestBody GetSheetRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    Publisher publisher = publishers.getPublisherByUsername(request.getPublisher());</b>
+&nbsp;
+&nbsp;
+<b class="pc">&nbsp;    if (publisher != null) {</b>
+<b class="nc">&nbsp;      List&lt;Spreadsheet&gt; spreadsheets = publisher.getSpreadsheets();</b>
+<b class="nc">&nbsp;      List&lt;Argument&gt; arguments = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;      for (Spreadsheet spreadsheet : spreadsheets) {</b>
+<b class="nc">&nbsp;        Argument arg = new Argument();</b>
+<b class="nc">&nbsp;        arg.setPublisher(request.getPublisher());</b>
+<b class="nc">&nbsp;        arg.setSheet(spreadsheet.getSheetName());</b>
+<b class="nc">&nbsp;        arguments.add(arg);</b>
+<b class="nc">&nbsp;      }</b>
+<b class="nc">&nbsp;      result.setSuccess(true);</b>
+<b class="nc">&nbsp;      result.setMessage(null);</b>
+<b class="nc">&nbsp;      result.setValue(arguments);</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+&nbsp;    } else {
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Publisher not found: &quot; + request.getPublisher());</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Deletes a spreadsheet for a given publisher.
+&nbsp;   *
+&nbsp;   * @param request the DeleteSheetRequest object containing the publisher and sheet details
+&nbsp;   * @return a ResponseEntity containing a Result object indicating the success or failure of the operation
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/deleteSheet&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; deleteSheet(@RequestBody DeleteSheetRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+<b class="pc">&nbsp;    if (request.getSheet() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Sheet is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    try {
+&nbsp;      // Get the authenticated username
+<b class="fc">&nbsp;      String clientName = SecurityContextHolder.getContext().getAuthentication().getName();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;      Publisher publisherObj = publishers.getPublisherByUsername(request.getPublisher());</b>
+&nbsp;
+&nbsp;
+<b class="pc">&nbsp;      if (!request.getPublisher().equals(clientName)) {</b>
+<b class="nc">&nbsp;        result.setSuccess(false);</b>
+<b class="nc">&nbsp;        result.setMessage(&quot;Unauthorized: sender is not owner of sheet&quot;);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.UNAUTHORIZED);</b>
+&nbsp;      }
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;      Spreadsheet sheetToRemove = null;</b>
+<b class="pc">&nbsp;      for (Spreadsheet s : publisherObj.getSpreadsheets()) {</b>
+<b class="nc">&nbsp;        if (s.getSheetName().equals(request.getSheet())) {</b>
+<b class="nc">&nbsp;          sheetToRemove = s;</b>
+<b class="nc">&nbsp;          break;</b>
+&nbsp;        }
+<b class="nc">&nbsp;      }</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;      if (sheetToRemove != null) {</b>
+<b class="nc">&nbsp;        publisherObj.removeSpreadsheet(sheetToRemove);</b>
+<b class="nc">&nbsp;        result.setSuccess(true);</b>
+<b class="nc">&nbsp;        result.setMessage(null);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+&nbsp;      } else {
+<b class="nc">&nbsp;        result.setSuccess(false);</b>
+<b class="nc">&nbsp;        result.setMessage(&quot;Sheet does not exist: &quot; + request.getSheet());</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;      }
+<b class="fc">&nbsp;    } catch (Exception e) {</b>
+<b class="fc">&nbsp;      e.printStackTrace();</b>
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(e.getMessage());</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves updates for a subscribed spreadsheet.
+&nbsp;   *
+&nbsp;   * @param request the GetUpdatesRequest object containing the publisher, sheet, and id details
+&nbsp;   * @return a ResponseEntity containing a Result object with the updates
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/getUpdatesForSubscription&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; getUpdatesForSubscription(@RequestBody GetUpdatesRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getSheet() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Sheet is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getId() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Id is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    String publisherName = request.getPublisher();</b>
+<b class="fc">&nbsp;    String sheetName = request.getSheet();</b>
+<b class="fc">&nbsp;    String id = request.getId();</b>
+&nbsp;
+<b class="fc">&nbsp;    Publisher publisherObj = publishers.getPublisherByUsername(publisherName);</b>
+&nbsp;
+<b class="pc">&nbsp;    if (publisherObj != null) {</b>
+<b class="nc">&nbsp;      Spreadsheet sheetToUpdate = null;</b>
+<b class="nc">&nbsp;      for (Spreadsheet s : publisherObj.getSpreadsheets()) {</b>
+<b class="nc">&nbsp;        if (s.getSheetName().equals(sheetName)) {</b>
+<b class="nc">&nbsp;          sheetToUpdate = s;</b>
+<b class="nc">&nbsp;          break;</b>
+&nbsp;        }
+<b class="nc">&nbsp;      }</b>
+&nbsp;
+<b class="nc">&nbsp;      if (sheetToUpdate != null) {</b>
+<b class="nc">&nbsp;        List&lt;String&gt; updates = sheetToUpdate.getUpdatesAfterId(id);</b>
+<b class="nc">&nbsp;        StringBuilder combinedPayload = new StringBuilder();</b>
+<b class="nc">&nbsp;        int lastId = Integer.parseInt(id);</b>
+&nbsp;
+<b class="nc">&nbsp;        for (String update : updates) {</b>
+<b class="nc">&nbsp;          String[] parts = update.split(&quot;,&quot;, 2);</b>
+<b class="nc">&nbsp;          combinedPayload.append(parts[1]);</b>
+<b class="nc">&nbsp;          lastId = Integer.parseInt(parts[0]);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        Argument arg = new Argument();</b>
+<b class="nc">&nbsp;        arg.setPublisher(publisherName);</b>
+<b class="nc">&nbsp;        arg.setSheet(sheetName);</b>
+<b class="nc">&nbsp;        arg.setId(String.valueOf(lastId));</b>
+<b class="nc">&nbsp;        arg.setPayload(combinedPayload.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;        result.setSuccess(true);</b>
+<b class="nc">&nbsp;        result.setMessage(null);</b>
+<b class="nc">&nbsp;        result.setValue(List.of(arg));</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+&nbsp;      } else {
+<b class="nc">&nbsp;        result.setSuccess(false);</b>
+<b class="nc">&nbsp;        result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;      }
+&nbsp;    } else {
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves update requests for a published spreadsheet.
+&nbsp;   *
+&nbsp;   * @param request the GetUpdatesRequest object containing the publisher, sheet, and id details
+&nbsp;   * @return a ResponseEntity containing a Result object with the update requests
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/getUpdatesForPublished&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; getUpdatesForPublished(@RequestBody GetUpdatesRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getSheet() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Sheet is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getId() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Id is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    String clientName = SecurityContextHolder.getContext().getAuthentication().getName();</b>
+<b class="fc">&nbsp;    String publisherName = request.getPublisher();</b>
+<b class="fc">&nbsp;    String sheetName = request.getSheet();</b>
+<b class="fc">&nbsp;    String id = request.getId();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (!publisherName.equals(clientName)) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Unauthorized: sender is not owner of sheet&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.UNAUTHORIZED);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    Publisher publisherObj = publishers.getPublisherByUsername(publisherName);</b>
+&nbsp;
+<b class="pc">&nbsp;    if (publisherObj != null) {</b>
+<b class="nc">&nbsp;      Spreadsheet sheetToUpdate = null;</b>
+<b class="nc">&nbsp;      for (Spreadsheet s : publisherObj.getSpreadsheets()) {</b>
+<b class="nc">&nbsp;        if (s.getSheetName().equals(sheetName)) {</b>
+<b class="nc">&nbsp;          sheetToUpdate = s;</b>
+<b class="nc">&nbsp;          break;</b>
+&nbsp;        }
+<b class="nc">&nbsp;      }</b>
+&nbsp;
+<b class="nc">&nbsp;      if (sheetToUpdate != null) {</b>
+<b class="nc">&nbsp;        List&lt;String&gt; updateRequests = sheetToUpdate.getUpdateRequestsAfterId(id);</b>
+<b class="nc">&nbsp;        StringBuilder combinedPayload = new StringBuilder();</b>
+<b class="nc">&nbsp;        int lastId = Integer.parseInt(id);</b>
+&nbsp;
+<b class="nc">&nbsp;        for (String update : updateRequests) {</b>
+<b class="nc">&nbsp;          String[] parts = update.split(&quot;,&quot;, 2);</b>
+<b class="nc">&nbsp;          combinedPayload.append(parts[1]);</b>
+<b class="nc">&nbsp;          lastId = Integer.parseInt(parts[0]);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        Argument arg = new Argument();</b>
+<b class="nc">&nbsp;        arg.setPublisher(publisherName);</b>
+<b class="nc">&nbsp;        arg.setSheet(sheetName);</b>
+<b class="nc">&nbsp;        arg.setId(String.valueOf(lastId));</b>
+<b class="nc">&nbsp;        arg.setPayload(combinedPayload.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;        result.setSuccess(true);</b>
+<b class="nc">&nbsp;        result.setMessage(null);</b>
+<b class="nc">&nbsp;        result.setValue(List.of(arg));</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+&nbsp;      } else {
+<b class="nc">&nbsp;        result.setSuccess(false);</b>
+<b class="nc">&nbsp;        result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;      }
+&nbsp;    } else {
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Updates a published spreadsheet.
+&nbsp;   *
+&nbsp;   * @param request the UpdateRequest object containing the publisher, sheet, and payload details
+&nbsp;   * @return a ResponseEntity containing a Result object indicating the success or failure of the operation
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/updatePublished&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; updatePublished(@RequestBody UpdateRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getSheet() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Sheet is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPayload() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Payload is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    String clientName = SecurityContextHolder.getContext().getAuthentication().getName();</b>
+<b class="fc">&nbsp;    String publisherName = request.getPublisher();</b>
+<b class="fc">&nbsp;    String sheetName = request.getSheet();</b>
+<b class="fc">&nbsp;    String payload = request.getPayload();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (!publisherName.equals(clientName)) {</b>
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Unauthorized: sender is not owner of sheet&quot;);</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.UNAUTHORIZED);</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    Publisher publisherObj = publishers.getPublisherByUsername(publisherName);</b>
+&nbsp;
+<b class="nc">&nbsp;    if (publisherObj != null) {</b>
+<b class="nc">&nbsp;      Spreadsheet sheetToUpdate = null;</b>
+<b class="nc">&nbsp;      for (Spreadsheet s : publisherObj.getSpreadsheets()) {</b>
+<b class="nc">&nbsp;        if (s.getSheetName().equals(sheetName)) {</b>
+<b class="nc">&nbsp;          sheetToUpdate = s;</b>
+<b class="nc">&nbsp;          break;</b>
+&nbsp;        }
+<b class="nc">&nbsp;      }</b>
+&nbsp;
+<b class="nc">&nbsp;      if (sheetToUpdate != null) {</b>
+<b class="nc">&nbsp;        sheetToUpdate.addPublishedUpdate(payload);</b>
+<b class="nc">&nbsp;        result.setSuccess(true);</b>
+<b class="nc">&nbsp;        result.setMessage(null);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+&nbsp;      } else {
+<b class="nc">&nbsp;        result.setSuccess(false);</b>
+<b class="nc">&nbsp;        result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;      }
+&nbsp;    } else {
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Updates a subscription for a spreadsheet.
+&nbsp;   *
+&nbsp;   * @param request the UpdateRequest object containing the publisher, sheet, and payload details
+&nbsp;   * @return a ResponseEntity containing a Result object
+&nbsp;   */
+&nbsp;  @PostMapping(&quot;/updateSubscription&quot;)
+&nbsp;  public ResponseEntity&lt;Result&gt; updateSubscription(@RequestBody UpdateRequest request) {
+<b class="fc">&nbsp;    Result result = new Result();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPublisher() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Publisher is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getSheet() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Sheet is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (request.getPayload() == null) {</b>
+<b class="nc">&nbsp;      result.setSuccess(false);</b>
+<b class="nc">&nbsp;      result.setMessage(&quot;Payload is null&quot;);</b>
+<b class="nc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    String publisherName = request.getPublisher();</b>
+<b class="fc">&nbsp;    String sheetName = request.getSheet();</b>
+<b class="fc">&nbsp;    String payload = request.getPayload();</b>
+&nbsp;
+<b class="fc">&nbsp;    Publisher publisherObj = publishers.getPublisherByUsername(publisherName);</b>
+&nbsp;
+<b class="pc">&nbsp;    if (publisherObj != null) {</b>
+<b class="nc">&nbsp;      Spreadsheet sheetToUpdate = null;</b>
+<b class="nc">&nbsp;      for (Spreadsheet s : publisherObj.getSpreadsheets()) {</b>
+<b class="nc">&nbsp;        if (s.getSheetName().equals(sheetName)) {</b>
+<b class="nc">&nbsp;          sheetToUpdate = s;</b>
+<b class="nc">&nbsp;          break;</b>
+&nbsp;        }
+<b class="nc">&nbsp;      }</b>
+&nbsp;
+<b class="nc">&nbsp;      if (sheetToUpdate != null) {</b>
+<b class="nc">&nbsp;        sheetToUpdate.addSubscriptionUpdate(payload);</b>
+<b class="nc">&nbsp;        result.setSuccess(true);</b>
+<b class="nc">&nbsp;        result.setMessage(null);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</b>
+&nbsp;      } else {
+<b class="nc">&nbsp;        result.setSuccess(false);</b>
+<b class="nc">&nbsp;        result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="nc">&nbsp;        result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="nc">&nbsp;        result.setTime(System.currentTimeMillis());</b>
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;      }
+&nbsp;    } else {
+<b class="fc">&nbsp;      result.setSuccess(false);</b>
+<b class="fc">&nbsp;      result.setMessage(&quot;Not found: &quot; + publisherName + &quot;/&quot; + sheetName);</b>
+<b class="fc">&nbsp;      result.setValue(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      result.setTime(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;      return new ResponseEntity&lt;&gt;(result, HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

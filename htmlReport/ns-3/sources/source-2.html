@@ -1,0 +1,667 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SpreadsheetManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.client</a>
+</div>
+
+<h1>Coverage Summary for Class: SpreadsheetManager (com.example.huskysheet.client)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SpreadsheetManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.4%
+  </span>
+  <span class="absValue">
+    (19/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    59.7%
+  </span>
+  <span class="absValue">
+    (37/62)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    67.6%
+  </span>
+  <span class="absValue">
+    (115/170)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SpreadsheetManager$Argument</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SpreadsheetManager$Endpoint</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SpreadsheetManager$Result</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    88.5%
+  </span>
+  <span class="absValue">
+    (23/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    59.7%
+  </span>
+  <span class="absValue">
+    (37/62)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    68.6%
+  </span>
+  <span class="absValue">
+    (120/175)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.client;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.Model.ISpreadsheet;
+&nbsp;import com.example.huskysheet.client.Model.ISpreadsheetListener;
+&nbsp;import com.example.huskysheet.client.Model.Spreadsheet;
+&nbsp;import com.example.huskysheet.client.Utils.Conversions;
+&nbsp;import com.example.huskysheet.client.Utils.Coordinate;
+&nbsp;import com.google.gson.Gson;
+&nbsp;import com.google.gson.JsonSyntaxException;
+&nbsp;import java.io.IOException;
+&nbsp;import java.net.URI;
+&nbsp;import java.net.URISyntaxException;
+&nbsp;import java.net.http.HttpClient;
+&nbsp;import java.net.http.HttpRequest;
+&nbsp;import java.net.http.HttpRequest.BodyPublishers;
+&nbsp;import java.net.http.HttpResponse;
+&nbsp;import java.net.http.HttpResponse.BodyHandlers;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.concurrent.CompletableFuture;
+&nbsp;import java.util.concurrent.CompletionException;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;/**
+&nbsp; * Class to produce spreadsheets from the remote database and ensure the remote is properly updated.
+&nbsp; * TODO add caching where possible, make methods unblocking where possible, possibly by
+&nbsp; * TODO using futures and returning cached values for now
+&nbsp; */
+&nbsp;public class SpreadsheetManager implements ISpreadsheetListener {
+&nbsp;    private final HttpClient client;
+&nbsp;    private final String authHeader;
+&nbsp;    private final String serverUrl;
+&nbsp;    private final String userName;
+&nbsp;    private int currentID;
+&nbsp;    private ISpreadsheet currentSpreadsheet;
+&nbsp;    private String currentSheetPublisher;
+&nbsp;    private String currentSheetName;
+&nbsp;    private CompletableFuture&lt;Result&gt; lastUpdateFuture;
+&nbsp;    private List&lt;String&gt; lastCallPublishers;
+&nbsp;    private Map&lt;String, List&lt;String&gt;&gt; lastCallSheets;
+&nbsp;    private Result lastUpdate;
+&nbsp;    // a map from published sheet name to id
+&nbsp;    private Map&lt;String, String&gt; lastSubscriberUpdateId;
+&nbsp;    private Map&lt;String, CompletableFuture&lt;Result&gt;&gt; publishedSheetsFuture;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create a new spreadsheet manager.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param serverUrl the URL that the server is hosted at, not including the /api/v1
+&nbsp;     * @param userName the username to contact the server with
+&nbsp;     * @param password the password to contact the server with (username/password are immediately encoded)
+&nbsp;     */
+&nbsp;    public SpreadsheetManager(String serverUrl, String userName, String password)
+<b class="fc">&nbsp;        throws URISyntaxException {</b>
+<b class="fc">&nbsp;        this.client = HttpClient.newHttpClient();</b>
+<b class="fc">&nbsp;        this.userName = userName;</b>
+<b class="fc">&nbsp;        this.serverUrl = serverUrl;</b>
+<b class="fc">&nbsp;        new URI(serverUrl); // test that serverURL is well formed</b>
+<b class="fc">&nbsp;        authHeader = &quot;Basic &quot; + Base64.getEncoder().encodeToString((userName + &quot;:&quot; + password).getBytes());</b>
+<b class="fc">&nbsp;        lastCallSheets = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        lastSubscriberUpdateId = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        publishedSheetsFuture = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    public String getUserName() {
+<b class="nc">&nbsp;        return userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Represents all available API endpoints from the server
+&nbsp;     */
+<b class="fc">&nbsp;    private enum Endpoint {</b>
+<b class="fc">&nbsp;        register, getPublishers, createSheet, getSheets, deleteSheet,</b>
+<b class="fc">&nbsp;        getUpdatesForSubscription, getUpdatesForPublished, updatePublished, updateSubscription</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Represents a result object from an API call
+&nbsp;     * @param success if the call was a success
+&nbsp;     * @param message failure message if the call failed
+&nbsp;     * @param value A list of arguments containing relevant information to answer a request
+&nbsp;     */
+<b class="fc">&nbsp;    private record Result(boolean success, String message, List&lt;Argument&gt; value) {};</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Represents an argument to an API call
+&nbsp;     * @param publisher the publisher of the relevant sheet
+&nbsp;     * @param sheet the name of the relevant sheet
+&nbsp;     * @param id the id of the sheet
+&nbsp;     * @param payload the list of updates to the sheet
+&nbsp;     */
+<b class="fc">&nbsp;    private record Argument(String publisher, String sheet, String id, String payload) {};</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Call the specified endpoint with no argument
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param target the endpoint to call
+&nbsp;     * @return The result of the API call as a result record
+&nbsp;     * @throws JsonSyntaxException if the response is not the correct format
+&nbsp;     * @throws IOException if an IO error occurs
+&nbsp;     * @throws InterruptedException if the API call is interrupted
+&nbsp;     */
+&nbsp;    private Result callAPI(Endpoint target)
+&nbsp;        throws JsonSyntaxException, IOException, InterruptedException {
+<b class="fc">&nbsp;        return callAPI(target, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Call the specified endpoint with the given argument, or null if no argument is needed
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param target the endpoint to call
+&nbsp;     * @param arg the argument to call the endpoint with
+&nbsp;     * @return The result of the API call as a result record
+&nbsp;     * @throws JsonSyntaxException if the response is not the correct format
+&nbsp;     * @throws IOException if an IO error occurs
+&nbsp;     * @throws InterruptedException if the API call is interrupted
+&nbsp;     */
+&nbsp;    private Result callAPI(Endpoint target, Argument arg)
+&nbsp;        throws JsonSyntaxException, IOException, InterruptedException {
+<b class="fc">&nbsp;        var request = BuildRequest(target, arg);</b>
+<b class="fc">&nbsp;        var response = client.send(request, BodyHandlers.ofString());</b>
+<b class="fc">&nbsp;        return handleResponse(response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private CompletableFuture&lt;Result&gt; callAPIAsync(Endpoint target, Argument arg) {
+<b class="fc">&nbsp;        var request = BuildRequest(target, arg);</b>
+<b class="fc">&nbsp;        var response = client.sendAsync(request, BodyHandlers.ofString());</b>
+<b class="fc">&nbsp;        return response.thenApply(r -&gt; {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                return handleResponse(r);</b>
+<b class="nc">&nbsp;            } catch (IOException e) {</b>
+<b class="nc">&nbsp;                throw new CompletionException(e);</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private static Result handleResponse(HttpResponse&lt;String&gt; response) throws IOException {
+<b class="fc">&nbsp;        System.out.println(&quot;Response: &quot; + response.toString());</b>
+<b class="fc">&nbsp;        System.out.println(&quot;Response Body: &quot; + response.body());</b>
+<b class="pc">&nbsp;        switch(response.statusCode()) {</b>
+&nbsp;            case 200, 201 -&gt; {
+<b class="fc">&nbsp;                return new Gson().fromJson(response.body(), Result.class);</b>
+&nbsp;            }
+&nbsp;            case 401 -&gt; {
+<b class="nc">&nbsp;                throw new IOException(&quot;Request error: &quot; + response.statusCode());</b>
+&nbsp;            }
+&nbsp;            case 409 -&gt; {
+<b class="nc">&nbsp;                throw new IOException(&quot;Conflict Error: &quot; + response.statusCode());</b>
+&nbsp;            }
+&nbsp;            case 500 -&gt; {
+<b class="nc">&nbsp;                throw new IOException(&quot;Internal server error: &quot; + response.statusCode());</b>
+&nbsp;            }
+&nbsp;            default -&gt; {
+<b class="nc">&nbsp;                throw new IOException(&quot;Unexpected status code: &quot; + response);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private HttpRequest BuildRequest(Endpoint target, Argument arg) {
+<b class="fc">&nbsp;        var requestBuilder = HttpRequest.newBuilder()</b>
+<b class="fc">&nbsp;            .header(&quot;Authorization&quot;, authHeader)</b>
+<b class="fc">&nbsp;            .header(&quot;Content-Type&quot;, &quot;application/json&quot;);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            requestBuilder.uri(new URI(serverUrl + &quot;/api/v1/&quot; + target.name()));</b>
+<b class="nc">&nbsp;        } catch(URISyntaxException ignored) {</b>
+&nbsp;            // the uri syntax can&#39;t error because serverUrl is checked in the compiler
+<b class="fc">&nbsp;        }</b>
+<b class="pc">&nbsp;        switch (target) {</b>
+&nbsp;            case register, getPublishers -&gt; {
+<b class="fc">&nbsp;                requestBuilder.GET();</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            case createSheet, getSheets, deleteSheet, getUpdatesForSubscription,
+&nbsp;                 getUpdatesForPublished, updatePublished, updateSubscription -&gt; {
+<b class="fc">&nbsp;                requestBuilder.POST(BodyPublishers.ofString(new Gson().toJson(arg)));</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        var request = requestBuilder.build();</b>
+<b class="fc">&nbsp;        System.out.println(&quot;Request: &quot; + request.toString());</b>
+<b class="fc">&nbsp;        System.out.println(&quot;Request Body: &quot; + new Gson().toJson(arg));</b>
+<b class="fc">&nbsp;        return request;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Register with the server using the username and password
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @return true if the request is successful
+&nbsp;     */
+&nbsp;    public boolean register() {
+&nbsp;        try {
+<b class="fc">&nbsp;            return callAPI(Endpoint.register).success();</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a list of publishers on this server.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @return A list of all publisher names, or an empty optional if the request fails
+&nbsp;     */
+&nbsp;    public List&lt;String&gt; getPublishers() throws APICallException {
+&nbsp;        try {
+<b class="fc">&nbsp;            Result result = callAPI(Endpoint.getPublishers);</b>
+<b class="pc">&nbsp;            if (result.success) {</b>
+<b class="fc">&nbsp;                lastCallPublishers = result.value().stream()</b>
+<b class="fc">&nbsp;                    .map(Argument::publisher)</b>
+<b class="fc">&nbsp;                    .toList();</b>
+<b class="fc">&nbsp;                return lastCallPublishers;</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                throw new APICallException(result.message);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;String&gt; tryGetPublishers() throws APICallException {
+&nbsp;        try {
+<b class="nc">&nbsp;            var publishers = callAPIAsync(Endpoint.getPublishers, new Argument(&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;));</b>
+<b class="nc">&nbsp;            if (publishers.isDone()) {</b>
+<b class="nc">&nbsp;                lastCallPublishers = publishers.get().value().stream()</b>
+<b class="nc">&nbsp;                    .map(Argument::publisher)</b>
+<b class="nc">&nbsp;                    .toList();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return lastCallPublishers;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a list of available spreadsheets from the server.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @return An optional containing the list of sheets if the request was successful, otherwise an
+&nbsp;     * empty optional
+&nbsp;     */
+&nbsp;    public List&lt;String&gt; getAvailableSheets(String publisher) throws APICallException {
+&nbsp;        try {
+<b class="fc">&nbsp;            Result result = callAPI(Endpoint.getSheets, new Argument(publisher, &quot;&quot;, &quot;&quot;, &quot;&quot;));</b>
+<b class="pc">&nbsp;            if (result.success()) {</b>
+<b class="fc">&nbsp;                return result</b>
+<b class="fc">&nbsp;                    .value().stream()</b>
+<b class="fc">&nbsp;                    .map(Argument::sheet)</b>
+<b class="fc">&nbsp;                    .toList();</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                throw new APICallException(result.message);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;String&gt; tryGetAvailableSheets(String publisher) throws APICallException {
+&nbsp;        try {
+<b class="nc">&nbsp;            var publishers = callAPIAsync(Endpoint.getSheets, new Argument(publisher, &quot;&quot;, &quot;&quot;, &quot;&quot;));</b>
+<b class="nc">&nbsp;            if (publishers.isDone()) {</b>
+<b class="nc">&nbsp;                lastCallSheets.put(publisher, publishers.get().value().stream()</b>
+<b class="nc">&nbsp;                    .map(Argument::sheet)</b>
+<b class="nc">&nbsp;                    .toList());</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return lastCallSheets.getOrDefault(publisher, List.of());</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets a specific spreadsheet from the server and set it as the current spreadsheet.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param sheetName the sheet to get
+&nbsp;     * @return An optional containing the spreadsheet if the request was successful, and an
+&nbsp;     * empty optional otherwise
+&nbsp;     */
+&nbsp;    public ISpreadsheet getSpreadsheet(String publisher, String sheetName) throws APICallException {
+&nbsp;        try {
+&nbsp;            Result result;
+<b class="fc">&nbsp;            result = callAPI(Endpoint.getUpdatesForSubscription, new Argument(publisher, sheetName, &quot;0&quot;, &quot;&quot;));</b>
+<b class="pc">&nbsp;            if (result.success) {</b>
+<b class="fc">&nbsp;                if (currentSpreadsheet != null) {</b>
+<b class="fc">&nbsp;                    currentSpreadsheet.unregisterListener(this);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                currentSpreadsheet = new Spreadsheet();</b>
+<b class="fc">&nbsp;                currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));</b>
+<b class="fc">&nbsp;                currentSpreadsheet.registerListener(this);</b>
+<b class="fc">&nbsp;                currentSheetName = sheetName;</b>
+<b class="fc">&nbsp;                currentID = Integer.parseInt(result.value.getFirst().id());</b>
+<b class="fc">&nbsp;                currentSheetPublisher = result.value.getFirst().publisher();</b>
+<b class="fc">&nbsp;                return currentSpreadsheet;</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                throw new APICallException(result.message);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parse the string into a list of coordinate update pairs.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param payload the string to parse
+&nbsp;     * @return A list of updates to make to a spreadsheet
+&nbsp;     * @throws IllegalArgumentException if each line of the string does not start with a reference
+&nbsp;     *                                  such as $A1 or $b2
+&nbsp;     */
+&nbsp;    private List&lt;Pair&lt;Coordinate, String&gt;&gt; parsePayload(String payload) throws IllegalArgumentException {
+<b class="fc">&nbsp;        if (payload.isEmpty()) {</b>
+<b class="fc">&nbsp;            return new ArrayList&lt;&gt;();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return Arrays.stream(payload.split(&quot;\n&quot;))</b>
+<b class="fc">&nbsp;            .map(s -&gt; s.split(&quot; &quot;, 2))</b>
+<b class="fc">&nbsp;            .filter(s -&gt; s.length == 2)</b>
+<b class="fc">&nbsp;            .map(s -&gt; new Pair&lt;&gt;(Conversions.stringToCoordinate(s[0]), s[1]))</b>
+<b class="fc">&nbsp;            .toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get all updates for the current sheet from the server and apply them to the current spreadsheet.
+&nbsp;     * This method blocks until the update is received.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @throws APICallException if the API call fails
+&nbsp;     */
+&nbsp;    public void getUpdates() throws APICallException {
+&nbsp;        try {
+<b class="fc">&nbsp;            tryGetUpdates();</b>
+<b class="fc">&nbsp;            lastUpdateFuture.get();</b>
+<b class="fc">&nbsp;            tryGetUpdates();</b>
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="fc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Check if the result of the last get updates api call has been received, and if it has been
+&nbsp;     * received update the current sheet with the results of that call then make a new get updates
+&nbsp;     * call.
+&nbsp;     * Also makes a new call if there has not been one yet.
+&nbsp;     * @return true if the update attempt changed the sheet
+&nbsp;     * @throws APICallException If the api call fails, or the future fails with exception.
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    public boolean tryGetUpdates() throws APICallException {
+&nbsp;        try {
+<b class="fc">&nbsp;            updatePublished();</b>
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="fc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        boolean sheetChanged = false;</b>
+<b class="pc">&nbsp;        if (lastUpdateFuture != null &amp;&amp; lastUpdateFuture.isDone()) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                var result = lastUpdateFuture.get();</b>
+<b class="nc">&nbsp;                if (result.success) {</b>
+<b class="nc">&nbsp;                    sheetChanged = currentSpreadsheet.updateSheet(parsePayload(result.value.getFirst().payload));</b>
+<b class="nc">&nbsp;                    currentID = Integer.parseInt(result.value.getFirst().id());</b>
+<b class="nc">&nbsp;                    lastUpdate = result;</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    throw new APICallException(result.message);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            } catch (Exception e) {</b>
+<b class="nc">&nbsp;                throw new APICallException(e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (lastUpdateFuture == null || lastUpdateFuture.isDone()) {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                lastUpdateFuture = callAPIAsync(Endpoint.getUpdatesForSubscription,</b>
+&nbsp;                        new Argument(currentSheetPublisher, currentSheetName,
+<b class="fc">&nbsp;                            Integer.toString(currentID), &quot;&quot;));</b>
+<b class="nc">&nbsp;            } catch (Exception e) {</b>
+<b class="nc">&nbsp;                throw new APICallException(e);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return sheetChanged;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void updatePublished() throws Exception {
+<b class="fc">&nbsp;        var published = getAvailableSheets(userName);</b>
+<b class="fc">&nbsp;        for (var sheet : published) {</b>
+<b class="pc">&nbsp;            boolean done = publishedSheetsFuture.containsKey(sheet) &amp;&amp; publishedSheetsFuture.get(sheet).isDone();</b>
+<b class="fc">&nbsp;            if (done) {</b>
+<b class="fc">&nbsp;                var result = publishedSheetsFuture.get(sheet).get();</b>
+<b class="fc">&nbsp;                var pairs = parsePayload(result.value.getFirst().payload);</b>
+<b class="fc">&nbsp;                for (var pair : pairs) {</b>
+<b class="fc">&nbsp;                    handleUpdate(pair.getKey(), pair.getValue());</b>
+<b class="fc">&nbsp;                }</b>
+<b class="fc">&nbsp;                lastSubscriberUpdateId.put(currentSheetName, result.value.getFirst().id());</b>
+&nbsp;            }
+<b class="pc">&nbsp;            if (done || !publishedSheetsFuture.containsKey(sheet)) {</b>
+<b class="fc">&nbsp;                publishedSheetsFuture.put(sheet,</b>
+<b class="fc">&nbsp;                    callAPIAsync(Endpoint.getUpdatesForPublished,</b>
+<b class="fc">&nbsp;                        new Argument(userName, sheet, lastSubscriberUpdateId.getOrDefault(sheet, &quot;0&quot;), &quot;&quot;)));</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Publish a new spreadsheet with the given name on the server Set the current spreadsheet to
+&nbsp;     * that sheet
+&nbsp;     *
+&nbsp;     * @param sheetName the name of the new sheet to create
+&nbsp;     * @return the created sheet
+&nbsp;     * @throws APICallException if the API call fails
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    public ISpreadsheet createSpreadsheet(String sheetName) throws APICallException {
+&nbsp;        try {
+<b class="fc">&nbsp;            Result result = callAPI(Endpoint.createSheet, new Argument(userName, sheetName, &quot;&quot;, &quot;&quot;));</b>
+<b class="fc">&nbsp;            lastSubscriberUpdateId.put(sheetName, &quot;0&quot;);</b>
+<b class="pc">&nbsp;            if (result.success) {</b>
+<b class="fc">&nbsp;                return getSpreadsheet(userName, sheetName);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                throw new APICallException(result.message);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Delete the spreadsheet with the given name from the server.
+&nbsp;     *
+&nbsp;     * @throws APICallException if the API call fails
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    public void deleteSpreadsheet() throws APICallException {
+&nbsp;        try {
+<b class="fc">&nbsp;            Result result = callAPI(Endpoint.deleteSheet, new Argument(currentSheetPublisher, currentSheetName, &quot;&quot;, &quot;&quot;));</b>
+<b class="fc">&nbsp;            lastSubscriberUpdateId.remove(currentSheetName);</b>
+<b class="fc">&nbsp;            if (!result.success) {</b>
+<b class="fc">&nbsp;                throw new APICallException(result.message);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="fc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update the current sheet on the server based on the new spreadsheet update.
+&nbsp;     * @author Jackson Magas
+&nbsp;     * @param coordinate the coordinate of the cell to update
+&nbsp;     * @param update the string entered by the user in the cell
+&nbsp;     *
+&nbsp;     * @throws APICallException if the API call to update the sheet fails
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void handleUpdate(Coordinate coordinate, String update) throws Exception {
+<b class="fc">&nbsp;        makeUpdate(currentSheetPublisher, currentSheetName, coordinate, update);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private void makeUpdate(String publisher, String name, Coordinate coordinate, String update) throws APICallException {
+&nbsp;        try {
+&nbsp;            Result result;
+&nbsp;
+<b class="pc">&nbsp;            if (publisher.equals(userName)) {</b>
+<b class="fc">&nbsp;                result = callAPI(Endpoint.updatePublished,</b>
+&nbsp;                    new Argument(publisher,
+&nbsp;                        name,
+&nbsp;                        &quot;&quot;,
+<b class="fc">&nbsp;                        coordinate.toString() + &quot; &quot; + update + &quot;\n&quot;));</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                result = callAPI(Endpoint.updateSubscription,</b>
+&nbsp;                    new Argument(publisher,
+&nbsp;                        name,
+&nbsp;                        &quot;&quot;,
+<b class="nc">&nbsp;                        coordinate.toString() + &quot; &quot; + update));</b>
+&nbsp;            }
+<b class="pc">&nbsp;            if (!result.success) {</b>
+<b class="nc">&nbsp;                throw new APICallException(result.message);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            throw new APICallException(e);</b>
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

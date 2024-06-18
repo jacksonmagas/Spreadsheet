@@ -127,7 +127,7 @@ public class FunctionExpression extends AbstractExpression {
             // died here (it probably wasn't the best idea anyway)
             ((ReferenceExpression) args.getFirst()).getSpreadsheet()
                 .getCell(Conversions.stringToCoordinate(args.getLast().getResult()))
-                .updateCell(args.getFirst().toString());
+                .updateCell("="+args.getFirst().toString());
             resultType = args.getFirst().resultType();
             return args.getFirst().getResult();
         } else {

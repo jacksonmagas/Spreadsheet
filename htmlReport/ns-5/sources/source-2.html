@@ -1,0 +1,836 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Spreadsheet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.client.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: Spreadsheet (com.example.huskysheet.client.Model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Spreadsheet</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.9%
+  </span>
+  <span class="absValue">
+    (39/42)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Spreadsheet$FormulaParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.2%
+  </span>
+  <span class="absValue">
+    (119/143)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.8%
+  </span>
+  <span class="absValue">
+    (154/166)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Spreadsheet$FormulaParser$Token</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Spreadsheet$FormulaParser$TokenType</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Spreadsheet$SpreadsheetCell</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (14/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (15/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (40/44)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    86.5%
+  </span>
+  <span class="absValue">
+    (32/37)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.6%
+  </span>
+  <span class="absValue">
+    (143/171)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (239/259)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.client.Model;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.Expressions.AbstractExpression;
+&nbsp;import com.example.huskysheet.client.Expressions.BiOperatorExpression;
+&nbsp;import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
+&nbsp;import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
+&nbsp;import com.example.huskysheet.client.Expressions.CircularErrorTerm;
+&nbsp;import com.example.huskysheet.client.Utils.CellFormatDetails;
+&nbsp;import com.example.huskysheet.client.Utils.Conversions;
+&nbsp;import com.example.huskysheet.client.Utils.Coordinate;
+&nbsp;import com.example.huskysheet.client.Expressions.EmptyTerm;
+&nbsp;import com.example.huskysheet.client.Expressions.ErrorTerm;
+&nbsp;import com.example.huskysheet.client.Expressions.FunctionExpression;
+&nbsp;import com.example.huskysheet.client.Expressions.ITerm;
+&nbsp;import com.example.huskysheet.client.Expressions.ITerm.ResultType;
+&nbsp;import com.example.huskysheet.client.Expressions.NumberTerm;
+&nbsp;import com.example.huskysheet.client.Expressions.ParenExpression;
+&nbsp;import com.example.huskysheet.client.Expressions.RangeExpression;
+&nbsp;import com.example.huskysheet.client.Expressions.ReferenceExpression;
+&nbsp;import com.example.huskysheet.client.Expressions.StringTerm;
+&nbsp;import java.text.ParseException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;import java.util.Set;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;public class Spreadsheet implements ISpreadsheet {
+&nbsp;    private final HashMap&lt;Coordinate, SpreadsheetCell&gt; cells;
+&nbsp;    private final Set&lt;ISpreadsheetListener&gt; listeners;
+&nbsp;    private final CellFormatDetails defaultFormat;
+&nbsp;    private final HashMap&lt;Integer, CellFormatDetails&gt; rowDefaults;
+&nbsp;    private final HashMap&lt;Integer, CellFormatDetails&gt; columnDefaults;
+&nbsp;    private final FormulaParser parser;
+&nbsp;    private boolean updatingFromServer;
+&nbsp;    int numRows;
+&nbsp;    int numColumns;
+&nbsp;
+<b class="fc">&nbsp;    public Spreadsheet() {</b>
+<b class="fc">&nbsp;        this.cells = new HashMap&lt;&gt;();</b>
+&nbsp;        // TODO implement methods for setting default color/font/etc for a row/col
+<b class="fc">&nbsp;        rowDefaults = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        columnDefaults = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.listeners = new HashSet&lt;&gt;();</b>
+&nbsp;        // TODO set default formatting options
+<b class="fc">&nbsp;        defaultFormat = new CellFormatDetails();</b>
+&nbsp;
+<b class="fc">&nbsp;        this.parser = new FormulaParser();</b>
+<b class="fc">&nbsp;        this.updatingFromServer = false;</b>
+<b class="fc">&nbsp;        numRows = 0;</b>
+<b class="fc">&nbsp;        numColumns = 0;</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public ICell getCell(Coordinate coordinate) {
+<b class="fc">&nbsp;        if (!cells.containsKey(coordinate)) {</b>
+<b class="fc">&nbsp;            cells.put(coordinate, new SpreadsheetCell(coordinate));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        numRows = Math.max(numRows, coordinate.getRow());</b>
+<b class="fc">&nbsp;        numColumns = Math.max(numColumns, coordinate.getColumn());</b>
+<b class="fc">&nbsp;        return cells.get(coordinate);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int numRows() {
+<b class="fc">&nbsp;        return numRows;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int numColumns() {
+<b class="fc">&nbsp;        return numColumns;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;ICell&gt; getRow(int rowNum) {
+<b class="nc">&nbsp;        return new SpreadsheetSliceView(this, Direction.row, rowNum);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;ICell&gt; getColumn(int colNum) {
+<b class="nc">&nbsp;        return new SpreadsheetSliceView(this, Direction.column, colNum);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update the sheet based on a list of cells and new data for those cells
+&nbsp;     *
+&nbsp;     * @param updates A list of coordinate, text pairs to update the sheet with
+&nbsp;     * @return true if the update changed this sheet
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean updateSheet(List&lt;Pair&lt;Coordinate, String&gt;&gt; updates) {
+<b class="fc">&nbsp;        boolean changed = false;</b>
+<b class="fc">&nbsp;        updatingFromServer = true;</b>
+<b class="fc">&nbsp;        for (Pair&lt;Coordinate, String&gt; pair : updates) {</b>
+<b class="pc">&nbsp;            if (getCell(pair.getKey()).updateCell(pair.getValue())) {</b>
+<b class="fc">&nbsp;                changed = true;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        updatingFromServer = false;</b>
+<b class="fc">&nbsp;        return changed;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void registerListener(ISpreadsheetListener listener) {
+<b class="fc">&nbsp;        listeners.add(listener);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void unregisterListener(ISpreadsheetListener listener) {
+<b class="fc">&nbsp;        listeners.remove(listener);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+<b class="fc">&nbsp;    private String cachedUpdate = &quot;&quot;;</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void notifyListeners(Coordinate coordinate, String update) {
+<b class="fc">&nbsp;        if (!updatingFromServer) {</b>
+<b class="fc">&nbsp;            cachedUpdate += update + &quot;\n&quot;;</b>
+<b class="fc">&nbsp;            for (ISpreadsheetListener listener : listeners) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    listener.handleUpdate(coordinate, cachedUpdate);</b>
+<b class="fc">&nbsp;                    cachedUpdate = &quot;&quot;;</b>
+<b class="nc">&nbsp;                } catch (Exception e) {</b>
+&nbsp;                    // when handleUpdate fails the current update is kept in the cache
+<b class="fc">&nbsp;                }</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Class implementing formula parsing for this spreadsheet including looking up references.
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+<b class="fc">&nbsp;     protected class FormulaParser {</b>
+<b class="fc">&nbsp;        List&lt;String&gt; operators = Arrays.asList(&quot;+&quot;, &quot;-&quot;, &quot;*&quot;, &quot;/&quot;, &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;=&quot;, &quot;&lt;&gt;&quot;, &quot;&amp;&quot;, &quot;|&quot;, &quot;:&quot;);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; functions = Arrays.asList(&quot;IF&quot;, &quot;SUM&quot;, &quot;MAX&quot;, &quot;MIN&quot;, &quot;AVG&quot;, &quot;CONCAT&quot;, &quot;DEBUG&quot;, &quot;COPY&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        private enum TokenType {</b>
+<b class="fc">&nbsp;            string, number, operator, function, reference, parenthesis, comma</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * A token has a type and possibly a value.
+&nbsp;         * type        : string value
+&nbsp;         * string      : contents of the string
+&nbsp;         * number      : numerical value as a string
+&nbsp;         * operator    : which operator it is
+&nbsp;         * function    : function name
+&nbsp;         * reference   : cell location in $A1 format
+&nbsp;         * parenthesis : ( or )
+&nbsp;         * comma       : ,
+&nbsp;         */
+&nbsp;        private static class Token {
+&nbsp;            TokenType type;
+&nbsp;            String strValue;
+&nbsp;
+<b class="fc">&nbsp;            Token(TokenType type, String strValue) {</b>
+<b class="fc">&nbsp;                this.type = type;</b>
+<b class="fc">&nbsp;                this.strValue = strValue;</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;
+&nbsp;            @Override
+&nbsp;            public String toString() {
+<b class="nc">&nbsp;                return strValue;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        public ITerm parse(String formula) {
+<b class="fc">&nbsp;            if (formula.isEmpty()) {</b>
+<b class="fc">&nbsp;                return new EmptyTerm();</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            List&lt;Token&gt; tokens;
+&nbsp;            try {
+<b class="fc">&nbsp;                tokens = tokenize(formula);</b>
+<b class="fc">&nbsp;            } catch (ParseException e) {</b>
+<b class="fc">&nbsp;                return new ErrorTerm(formula);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // special case of just text or a number
+<b class="fc">&nbsp;            if (tokens.size() == 1) {</b>
+<b class="fc">&nbsp;                if (tokens.getFirst().type == TokenType.string) {</b>
+<b class="fc">&nbsp;                    return new StringTerm(tokens.getFirst().strValue);</b>
+<b class="pc">&nbsp;                } else if (tokens.getFirst().type == TokenType.number) {</b>
+<b class="fc">&nbsp;                    return new NumberTerm(Double.parseDouble(tokens.getFirst().strValue));</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    return new ErrorTerm(formula);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // not text or a number must start with =
+<b class="pc">&nbsp;            if (tokens.getFirst().type != TokenType.operator</b>
+<b class="pc">&nbsp;                || !tokens.getFirst().strValue.equals(&quot;=&quot;)) {</b>
+<b class="nc">&nbsp;                return new ErrorTerm(formula);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            try {
+&nbsp;                // already parsed the =
+<b class="fc">&nbsp;                return parse(tokens.subList(1, tokens.size()));</b>
+<b class="fc">&nbsp;            } catch (ParseException e) {</b>
+<b class="fc">&nbsp;                return new ErrorTerm(formula);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        private ITerm parse(List&lt;Token&gt; tokens) throws ParseException {
+<b class="pc">&nbsp;            if (tokens.isEmpty()) {</b>
+<b class="nc">&nbsp;                return new EmptyTerm();</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            switch (tokens.getFirst().type) {</b>
+&nbsp;                case TokenType.function -&gt; {
+<b class="fc">&nbsp;                    int parenIdx = 1;</b>
+<b class="fc">&nbsp;                    if (tokens.size() &gt;= 3</b>
+<b class="pc">&nbsp;                        &amp;&amp; tokens.get(parenIdx).type == TokenType.parenthesis</b>
+<b class="pc">&nbsp;                        &amp;&amp; tokens.get(parenIdx).strValue.equals(&quot;(&quot;)) {</b>
+<b class="pc">&nbsp;                        if(closeParenIndex(tokens, parenIdx) == tokens.size() - 1){</b>
+<b class="fc">&nbsp;                            List&lt;List&lt;Token&gt;&gt; args = splitByCommas(tokens.subList(parenIdx + 1, tokens.size() - 1));</b>
+<b class="fc">&nbsp;                            List&lt;ITerm&gt; parsedArgs = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;                            for (List&lt;Token&gt; arg : args) {</b>
+<b class="fc">&nbsp;                                ITerm parse = parse(arg);</b>
+<b class="fc">&nbsp;                                parsedArgs.add(parse);</b>
+<b class="fc">&nbsp;                            }</b>
+<b class="fc">&nbsp;                            return new FunctionExpression(FunctionExpression.FunctionType.valueOf(tokens.getFirst().strValue), parsedArgs);</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            throw new ParseException(&quot;Illegal tokens after close parenthesis&quot;, 0);</b>
+&nbsp;                        }
+&nbsp;                    } else {
+<b class="fc">&nbsp;                        throw new ParseException(&quot;Function no open parenthesis&quot;, 0);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;                case TokenType.string -&gt; {
+<b class="fc">&nbsp;                    if (tokens.size() == 1) {</b>
+<b class="fc">&nbsp;                        return new StringTerm(tokens.getFirst().strValue);</b>
+&nbsp;                    } else {
+<b class="fc">&nbsp;                        return parseOperator(tokens);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;                case TokenType.number -&gt; {
+<b class="fc">&nbsp;                    if (tokens.size() == 1) {</b>
+<b class="fc">&nbsp;                        return new NumberTerm(Double.parseDouble(tokens.getFirst().strValue));</b>
+&nbsp;                    } else {
+<b class="fc">&nbsp;                        return parseOperator(tokens);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;                case TokenType.operator -&gt; {
+<b class="nc">&nbsp;                    throw new ParseException(&quot;illegal leading operator&quot;, 0);</b>
+&nbsp;                }
+&nbsp;                case TokenType.parenthesis -&gt; {
+<b class="fc">&nbsp;                    int match = closeParenIndex(tokens, 0);</b>
+<b class="pc">&nbsp;                    if (match == tokens.size() - 1) {</b>
+<b class="fc">&nbsp;                        return new ParenExpression(parse(tokens.subList(1, tokens.size() - 1)));</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        return parseOperator(tokens);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;                case TokenType.reference -&gt; {
+&nbsp;                    // TODO implement ranges properly
+<b class="fc">&nbsp;                    if (tokens.size() == 1) {</b>
+<b class="fc">&nbsp;                        Coordinate referenced = Conversions.stringToCoordinate(tokens.getFirst().strValue);</b>
+<b class="fc">&nbsp;                        ICell cell = getCell(referenced);</b>
+<b class="fc">&nbsp;                        return new ReferenceExpression(cell);</b>
+&nbsp;                    } else {
+<b class="fc">&nbsp;                        return parseOperator(tokens);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;                case TokenType.comma -&gt; {
+<b class="nc">&nbsp;                    throw new ParseException(&quot;illegal leading comma&quot;, 0);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            throw new ParseException(&quot;Reached the end of parse function without parsing&quot;, 0);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        private ITerm parseOperator(List&lt;Token&gt; tokens) throws ParseException {
+<b class="fc">&nbsp;            int operatorIndex = 0;</b>
+<b class="fc">&nbsp;            int oParenCount = 0;</b>
+<b class="fc">&nbsp;            for (Token token : tokens) {</b>
+<b class="pc">&nbsp;                if (token.type == TokenType.parenthesis) {</b>
+<b class="nc">&nbsp;                    oParenCount += token.strValue.equals(&quot;(&quot;) ? 1 : -1;</b>
+&nbsp;                }
+<b class="pc">&nbsp;                if (token.type == TokenType.operator &amp;&amp; oParenCount == 0) {</b>
+<b class="pc">&nbsp;                    if (operatorIndex == tokens.size() - 1) {</b>
+<b class="nc">&nbsp;                        throw new ParseException(&quot;Nothing after operator&quot;, 0);</b>
+<b class="fc">&nbsp;                    } else if (token.strValue.equals(&quot;:&quot;)) {</b>
+<b class="pc">&nbsp;                        if (tokens.size() != 3) {</b>
+<b class="nc">&nbsp;                            throw new ParseException(&quot;Invalid range&quot;, 0);</b>
+&nbsp;                        }
+<b class="fc">&nbsp;                        Token left = tokens.get(operatorIndex - 1);</b>
+<b class="fc">&nbsp;                        Token right = tokens.get(operatorIndex + 1);</b>
+<b class="pc">&nbsp;                        if (left.type == TokenType.reference</b>
+&nbsp;                            &amp;&amp; right.type == TokenType.reference
+<b class="fc">&nbsp;                            &amp;&amp; Conversions.stringToCoordinate(left.strValue)</b>
+<b class="pc">&nbsp;                                .compareTo(Conversions</b>
+<b class="fc">&nbsp;                                    .stringToCoordinate(right.strValue)) == -1) {</b>
+<b class="fc">&nbsp;                            return new RangeExpression(Conversions.stringToCoordinate(left.strValue)</b>
+<b class="fc">&nbsp;                                .getRange(Conversions.stringToCoordinate((right.strValue))).stream()</b>
+<b class="fc">&nbsp;                                .map(Spreadsheet.this::getCell).toList());</b>
+&nbsp;                        }
+<b class="fc">&nbsp;                    } else {</b>
+<b class="fc">&nbsp;                        return new BiOperatorExpression(token.strValue,</b>
+<b class="fc">&nbsp;                            parse(tokens.subList(0, operatorIndex)),</b>
+<b class="fc">&nbsp;                            parse(tokens.subList(operatorIndex + 1, tokens.size())));</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="fc">&nbsp;                ++operatorIndex;</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;            throw new ParseException(&quot;Illegal leading value&quot;, 0);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        private List&lt;List&lt;Token&gt;&gt; splitByCommas(List&lt;Token&gt; tokens) {
+<b class="fc">&nbsp;            List&lt;List&lt;Token&gt;&gt; result = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            result.add(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;            int i = 0;</b>
+<b class="fc">&nbsp;            int parenDepth = 0;</b>
+<b class="fc">&nbsp;            for (Token token : tokens) {</b>
+<b class="fc">&nbsp;                if (token.type == TokenType.parenthesis) {</b>
+<b class="fc">&nbsp;                    parenDepth += Objects.equals(token.strValue, &quot;(&quot;) ? 1 : -1;</b>
+&nbsp;                }
+<b class="fc">&nbsp;                if (token.type == TokenType.comma &amp;&amp; parenDepth == 0) {</b>
+<b class="fc">&nbsp;                    ++i;</b>
+<b class="fc">&nbsp;                    result.add(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;                    continue;</b>
+&nbsp;                }
+<b class="fc">&nbsp;                result.get(i).add(token);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;
+<b class="fc">&nbsp;            return result;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        private int closeParenIndex(List&lt;Token&gt; tokens, int startIndex) throws ParseException {
+<b class="fc">&nbsp;            int oParenCount = 0;</b>
+<b class="pc">&nbsp;            for (; startIndex &lt; tokens.size(); startIndex++) {</b>
+<b class="fc">&nbsp;                Token token = tokens.get(startIndex);</b>
+<b class="fc">&nbsp;                if (token.type == TokenType.parenthesis) {</b>
+<b class="fc">&nbsp;                    if (token.strValue.equals(&quot;(&quot;)) {</b>
+<b class="fc">&nbsp;                        oParenCount++;</b>
+<b class="pc">&nbsp;                    } else if (token.strValue.equals(&quot;)&quot;)) {</b>
+<b class="fc">&nbsp;                        oParenCount--;</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="fc">&nbsp;                if (oParenCount == 0) {</b>
+<b class="fc">&nbsp;                    return startIndex;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            throw new ParseException(&quot;unclosed parenthesis&quot;, 0);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        private List&lt;Token&gt; tokenize(String input) throws ParseException {
+<b class="fc">&nbsp;            List&lt;Token&gt; tokens = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            if (input.chars().allMatch(Character::isAlphabetic)) {</b>
+<b class="fc">&nbsp;                tokens.add(new Token(TokenType.string, input));</b>
+<b class="fc">&nbsp;                return tokens;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            String tok = &quot;&quot;;</b>
+<b class="fc">&nbsp;            int idx = 0;</b>
+<b class="fc">&nbsp;            boolean escaped = false;</b>
+<b class="fc">&nbsp;            for (char c : input.toCharArray()) {</b>
+<b class="fc">&nbsp;                if (c == &#39; &#39; &amp;&amp; !tok.startsWith(&quot;\&quot;&quot;)) {</b>
+<b class="fc">&nbsp;                    ++idx;</b>
+<b class="fc">&nbsp;                    continue;</b>
+&nbsp;                }
+<b class="fc">&nbsp;                if (c == &#39;\\&#39;) {</b>
+<b class="fc">&nbsp;                    escaped = true;</b>
+&nbsp;                }
+<b class="fc">&nbsp;                tok += c;</b>
+<b class="fc">&nbsp;                if (operators.contains(tok)) {</b>
+&nbsp;                    // check if + or - is part of a number
+&nbsp;                    // it is part of a number when it is followed by a number and preceded by
+&nbsp;                    // nothing, an operator, a comma, or an open paren
+<b class="fc">&nbsp;                    if (&quot;+-&quot;.contains(tok)</b>
+<b class="pc">&nbsp;                        &amp;&amp; idx &lt; input.length() - 1 &amp;&amp; Character.isDigit(input.charAt(idx + 1))</b>
+<b class="pc">&nbsp;                        &amp;&amp; (tokens.isEmpty() || tokens.getLast().type == TokenType.operator</b>
+<b class="fc">&nbsp;                            || tokens.getLast().type == TokenType.comma</b>
+<b class="fc">&nbsp;                            || (tokens.getLast().type == TokenType.parenthesis</b>
+<b class="pc">&nbsp;                                &amp;&amp; tokens.getLast().strValue.equals(&quot;(&quot;)))) {</b>
+<b class="fc">&nbsp;                        ++idx;</b>
+<b class="fc">&nbsp;                        continue;</b>
+&nbsp;                    }
+&nbsp;                    // check if &lt; is part of &lt;&gt;
+<b class="pc">&nbsp;                    if (tok.equals(&quot;&lt;&quot;) &amp;&amp; idx &lt; input.length() - 1 &amp;&amp; input.charAt(idx + 1) == &#39;&gt;&#39;) {</b>
+<b class="fc">&nbsp;                        ++idx;</b>
+<b class="fc">&nbsp;                        continue;</b>
+&nbsp;                    }
+<b class="fc">&nbsp;                    tokens.add(new Token(TokenType.operator, tok));</b>
+<b class="fc">&nbsp;                    tok = &quot;&quot;;</b>
+<b class="fc">&nbsp;                } else if (functions.contains(tok.toUpperCase())) {</b>
+<b class="fc">&nbsp;                    tokens.add(new Token(TokenType.function, tok));</b>
+<b class="fc">&nbsp;                    tok = &quot;&quot;;</b>
+<b class="fc">&nbsp;                } else if (Conversions.isValidRef(tok)) {</b>
+<b class="fc">&nbsp;                    if (idx &lt; input.length() - 1 &amp;&amp; Character.isDigit(input.charAt(idx + 1))) {</b>
+<b class="fc">&nbsp;                        idx++;</b>
+<b class="fc">&nbsp;                        continue;</b>
+&nbsp;                    }
+<b class="fc">&nbsp;                    tokens.add(new Token(TokenType.reference, tok));</b>
+<b class="fc">&nbsp;                    tok = &quot;&quot;;</b>
+<b class="fc">&nbsp;                } else if (&quot;()&quot;.contains(tok))  {</b>
+<b class="fc">&nbsp;                    tokens.add(new Token(TokenType.parenthesis, tok));</b>
+<b class="fc">&nbsp;                    tok = &quot;&quot;;</b>
+<b class="fc">&nbsp;                } else if (tok.equals(&quot;,&quot;)) {</b>
+<b class="fc">&nbsp;                    tokens.add(new Token(TokenType.comma, tok));</b>
+<b class="fc">&nbsp;                    tok = &quot;&quot;;</b>
+&nbsp;                } else {
+&nbsp;                    try {
+<b class="fc">&nbsp;                        double doubleVal = Double.parseDouble(tok);</b>
+<b class="fc">&nbsp;                        if (idx == input.length() - 1</b>
+<b class="fc">&nbsp;                            || !(Character.isDigit(input.charAt(idx + 1)) || input.charAt(idx + 1) == &#39;.&#39;)) {</b>
+<b class="fc">&nbsp;                            tokens.add(new Token(TokenType.number, tok));</b>
+<b class="fc">&nbsp;                            tok = &quot;&quot;;</b>
+&nbsp;                        }
+<b class="fc">&nbsp;                    } catch (NumberFormatException e) {</b>
+<b class="fc">&nbsp;                        if (tok.length() &gt; 1 &amp;&amp; tok.startsWith(&quot;\&quot;&quot;) &amp;&amp; tok.endsWith(&quot;\&quot;&quot;)) {</b>
+<b class="fc">&nbsp;                            if (!escaped) {</b>
+<b class="fc">&nbsp;                                tokens.add(new Token(TokenType.string, tok));</b>
+<b class="fc">&nbsp;                                tok = &quot;&quot;;</b>
+&nbsp;                            } else {
+<b class="fc">&nbsp;                                escaped = false;</b>
+&nbsp;                            }
+&nbsp;                        }
+<b class="fc">&nbsp;                    }</b>
+&nbsp;                }
+<b class="fc">&nbsp;                ++idx;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if (!tok.isEmpty()) {</b>
+<b class="fc">&nbsp;                throw new ParseException(&quot;Failed to parse&quot;, 0);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return tokens;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cell class for this spreadsheet
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    private class SpreadsheetCell implements ICell {
+&nbsp;        private final Coordinate coordinate;
+&nbsp;        private final Set&lt;ICellListener&gt; valueListeners;
+&nbsp;        private ITerm term;
+&nbsp;        private CellFormatDetails format;
+&nbsp;
+<b class="fc">&nbsp;        SpreadsheetCell(Coordinate coordinate) {</b>
+<b class="fc">&nbsp;            this.coordinate = coordinate;</b>
+<b class="fc">&nbsp;            this.valueListeners = new HashSet&lt;&gt;();</b>
+<b class="fc">&nbsp;            this.format = initFormat();</b>
+<b class="fc">&nbsp;            this.term = new EmptyTerm();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Set the format of this cell to the default format.
+&nbsp;         * Prioritizes row format, then column format, then default format.
+&nbsp;         * @author Jackson Magas
+&nbsp;         * @return The format of the cell
+&nbsp;         */
+&nbsp;        private CellFormatDetails initFormat() {
+<b class="pc">&nbsp;            if (rowDefaults.containsKey(coordinate.getRow())) {</b>
+<b class="nc">&nbsp;                return rowDefaults.get(coordinate.getRow());</b>
+&nbsp;            } else
+<b class="fc">&nbsp;                return columnDefaults.getOrDefault(coordinate.getColumn(), defaultFormat);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Update this cell with new user input. Registers as a listener to all direct dependencies
+&nbsp;         * and
+&nbsp;         *
+&nbsp;         * @param data the user input to parse
+&nbsp;         * @return true if this cell changed from the update
+&nbsp;         * @author Jackson Magas
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public boolean updateCell(String data) {
+<b class="fc">&nbsp;            if (data.equals(getPlaintext())) {</b>
+<b class="fc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            term = parser.parse(data);</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                for (Coordinate refLoc : term.references()) {</b>
+<b class="fc">&nbsp;                    getCell(refLoc).registerListener(this);</b>
+<b class="fc">&nbsp;                }</b>
+<b class="fc">&nbsp;            } catch (IllegalStateException e) {</b>
+<b class="fc">&nbsp;                term = new CircularErrorTerm(this.getPlaintext());</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;            Spreadsheet.this.notifyListeners(getCoordinate(), data);</b>
+<b class="fc">&nbsp;            handleValueChange();</b>
+<b class="fc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Get the location of this cell.
+&nbsp;         * @author Jackson Magas
+&nbsp;         * @return the location of this cell
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public Coordinate getCoordinate() {
+<b class="fc">&nbsp;            return coordinate;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Get the result of evaluating this cell.
+&nbsp;         * @author Jackson Magas
+&nbsp;         * @return the result of evaluating this cell as a string
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public String getData() {
+<b class="fc">&nbsp;            return term.getResult();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Get the exact input from the user in this cell
+&nbsp;         * @author Jackson Magas
+&nbsp;         * @return the user input to this cell
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public String getPlaintext() {
+<b class="fc">&nbsp;            String prepend = term instanceof AbstractExpression ? &quot;=&quot; : &quot;&quot;;</b>
+<b class="fc">&nbsp;            return prepend + term.toString();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Get the format object with details about this cell&#39;s formatting
+&nbsp;         * @author Jackson Magas
+&nbsp;         * @return the format object
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public CellFormatDetails getFormatting() {
+<b class="nc">&nbsp;            return format;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Does this cell have data
+&nbsp;         * @author Jackson Magas
+&nbsp;         * @return true if this cell is empty
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public boolean isEmpty() {
+<b class="fc">&nbsp;            return term.isEmpty();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * When a cell this depends on changes recalculate this
+&nbsp;         * cell and all cells that depend on it
+&nbsp;         * @author Jackson Magas
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public void handleValueChange() {
+<b class="fc">&nbsp;            term.recalculate();</b>
+<b class="fc">&nbsp;            notifyListeners();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Register the given listener as a listener for updates to this cell.
+&nbsp;         * @throws IllegalStateException if this depends on the given listener
+&nbsp;         * @param listener the listener to register
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public void registerListener(ICellListener listener) {
+<b class="pc">&nbsp;            if (listener instanceof ICell &amp;&amp; this.dependsOn(((ICell) listener).getCoordinate())) {</b>
+<b class="fc">&nbsp;                throw new IllegalStateException(&quot;Circular reference detected&quot;);</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                valueListeners.add(listener);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public void notifyListeners() {
+<b class="fc">&nbsp;            for (ICellListener listener : valueListeners) {</b>
+<b class="fc">&nbsp;                listener.handleValueChange();</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public void setFormatting(CellFormatDetails formatting) {
+<b class="nc">&nbsp;            this.format = formatting;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public ResultType dataType() {
+<b class="fc">&nbsp;            return term.resultType();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Get the spreadsheet this cell belongs to.
+&nbsp;         *
+&nbsp;         * @return the spreadsheet this cell is a part of
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public ISpreadsheet getSpreadsheet() {
+<b class="fc">&nbsp;            return Spreadsheet.this;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Get the term of the data for this spreadsheet
+&nbsp;         *
+&nbsp;         * @return the term for this spreadsheet
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public ITerm getTerm() {
+<b class="fc">&nbsp;            return term;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Every cell depends on itself
+&nbsp;         * @param cellLoc the cell to search the dependency tree for
+&nbsp;         * @return true if this cell depends on the given cell
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public boolean dependsOn(Coordinate cellLoc) {
+<b class="pc">&nbsp;            return getCoordinate().equals(cellLoc) || term.dependsOn(cellLoc);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

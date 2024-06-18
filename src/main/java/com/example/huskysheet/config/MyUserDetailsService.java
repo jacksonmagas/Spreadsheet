@@ -3,12 +3,10 @@ package com.example.huskysheet.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 /**
  * This class keeps tracks of user information for the UserRepository. It is able
@@ -18,14 +16,12 @@ import org.springframework.stereotype.Service;
  * @author Katie w
  */
 
-@Service
 public class MyUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private static final Logger logger = LoggerFactory.getLogger(MyUserDetailsService.class);
 
-  @Autowired
   public MyUserDetailsService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;

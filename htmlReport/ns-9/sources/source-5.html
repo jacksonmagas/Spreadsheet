@@ -1,0 +1,192 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Result</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.model</a>
+</div>
+
+<h1>Coverage Summary for Class: Result (com.example.huskysheet.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Result</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.model;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents the result of an operation, containing information about its success,
+&nbsp; * a message, the resulting value, and the time of the operation.
+&nbsp; *
+&nbsp; * @author Julia Ouritskaya
+&nbsp; */
+<b class="fc">&nbsp;public class Result {</b>
+&nbsp;  private boolean success;
+&nbsp;  private String message;
+&nbsp;  private List&lt;Argument&gt; value;
+&nbsp;  private long time;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Checks if the operation was successful.
+&nbsp;   *
+&nbsp;   * @return true if the operation was successful, false otherwise
+&nbsp;   */
+&nbsp;  public boolean isSuccess() {
+<b class="fc">&nbsp;    return success;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the success status of the operation.
+&nbsp;   *
+&nbsp;   * @param success true if the operation was successful, false otherwise
+&nbsp;   */
+&nbsp;  public void setSuccess(boolean success) {
+<b class="fc">&nbsp;    this.success = success;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Gets the message associated with the result.
+&nbsp;   *
+&nbsp;   * @return the message
+&nbsp;   */
+&nbsp;  public String getMessage() {
+<b class="fc">&nbsp;    return message;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the message associated with the result.
+&nbsp;   *
+&nbsp;   * @param message the message to set
+&nbsp;   */
+&nbsp;  public void setMessage(String message) {
+<b class="fc">&nbsp;    this.message = message;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Gets the value resulting from the operation.
+&nbsp;   *
+&nbsp;   * @return a list of arguments representing the value
+&nbsp;   */
+&nbsp;  public List&lt;Argument&gt; getValue() {
+<b class="fc">&nbsp;    return value;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the value resulting from the operation.
+&nbsp;   *
+&nbsp;   * @param value a list of arguments representing the value
+&nbsp;   */
+&nbsp;  public void setValue(List&lt;Argument&gt; value) {
+<b class="fc">&nbsp;    this.value = value;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Gets the time of the operation.
+&nbsp;   *
+&nbsp;   * @return the time in milliseconds
+&nbsp;   */
+&nbsp;  public long getTime() {
+<b class="fc">&nbsp;    return time;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the time of the operation.
+&nbsp;   *
+&nbsp;   * @param time the time in milliseconds
+&nbsp;   */
+&nbsp;  public void setTime(long time) {
+<b class="fc">&nbsp;    this.time = time;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

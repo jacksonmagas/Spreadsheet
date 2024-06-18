@@ -1,0 +1,607 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HelloController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: HelloController (com.example.huskysheet.controller)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HelloController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/143)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HelloController$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HelloController$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/60)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/160)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.controller;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.APICallException;
+&nbsp;import com.example.huskysheet.client.Model.ISpreadsheet;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.SpreadsheetManager;
+&nbsp;import com.example.huskysheet.client.Utils.Conversions;
+&nbsp;import com.example.huskysheet.client.Utils.SpreadsheetSliceView;
+&nbsp;import com.example.huskysheet.client.Utils.SpreadsheetSliceView.Direction;
+&nbsp;import java.util.List;
+&nbsp;import javafx.animation.KeyFrame;
+&nbsp;import javafx.animation.Timeline;
+&nbsp;import javafx.application.Platform;
+&nbsp;import javafx.beans.property.SimpleStringProperty;
+&nbsp;import javafx.collections.FXCollections;
+&nbsp;import javafx.collections.ListChangeListener;
+&nbsp;import javafx.collections.ObservableList;
+&nbsp;import javafx.event.EventHandler;
+&nbsp;import javafx.fxml.FXML;
+&nbsp;import javafx.fxml.Initializable;
+&nbsp;import javafx.scene.control.Button;
+&nbsp;import javafx.scene.control.Label;
+&nbsp;import javafx.scene.control.Menu;
+&nbsp;import javafx.scene.control.MenuBar;
+&nbsp;import javafx.scene.control.MenuItem;
+&nbsp;import javafx.scene.control.TableCell;
+&nbsp;import javafx.scene.control.TablePosition;
+&nbsp;import javafx.scene.control.TableView;
+&nbsp;import javafx.scene.control.TableColumn;
+&nbsp;import javafx.scene.control.TextField;
+&nbsp;import javafx.scene.input.KeyCode;
+&nbsp;import javafx.scene.input.KeyCodeCombination;
+&nbsp;import javafx.scene.input.KeyCombination;
+&nbsp;import javafx.scene.input.KeyEvent;
+&nbsp;import javafx.util.Callback;
+&nbsp;
+&nbsp;import java.net.URL;
+&nbsp;import java.util.ResourceBundle;
+&nbsp;import javafx.util.Duration;
+&nbsp;
+<b class="nc">&nbsp;public class HelloController implements Initializable {</b>
+&nbsp;    @FXML
+&nbsp;    public Label currentSheetInfo;
+&nbsp;    @FXML
+&nbsp;    private TableView&lt;SpreadsheetSliceView&gt; table;
+&nbsp;    @FXML
+&nbsp;    private TableColumn&lt;SpreadsheetSliceView, String&gt; rowNumbers;
+&nbsp;    @FXML
+&nbsp;    private Button newColumnButton;
+&nbsp;    @FXML
+&nbsp;    private Button newRowButton;
+&nbsp;    @FXML
+&nbsp;    private Menu openRecentMenu;
+&nbsp;    @FXML
+&nbsp;    private MenuBar menuBar;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private MenuItem newSheetMenuItem;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private MenuItem deleteSheetMenuItem;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private TextField promptSheet;
+&nbsp;
+&nbsp;    private SpreadsheetManager spreadsheetManager;
+&nbsp;
+&nbsp;    private String copyBuffer;
+&nbsp;
+&nbsp;    // Define the number of rows and columns
+&nbsp;    private static final int INITIAL_ROW_NUM = 8;
+&nbsp;    private static final int INITIAL_COLUMN_NUM = 8;
+&nbsp;    private int numRows;
+&nbsp;    private int numCols;
+&nbsp;    private ISpreadsheet spreadsheet;
+&nbsp;
+<b class="nc">&nbsp;    ObservableList&lt;SpreadsheetSliceView&gt; list = FXCollections.observableArrayList();</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void initialize(URL url, ResourceBundle resourceBundle) {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initialize spreadsheet manager with username, url, and password from args.
+&nbsp;     * Create table from initial sheet if provided.
+&nbsp;     * @author Nikita Clark
+&nbsp;     */
+&nbsp;    public void init(String url, String userName, String password,
+&nbsp;        String initialSheetPublisher, String initialSheetName) {
+&nbsp;        // Check if necessary fields are set
+<b class="nc">&nbsp;        if (url == null || userName == null || password == null) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;URL, username, or password not set!&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+&nbsp;        // Initialize the SpreadsheetManager with server URL, username, and password
+&nbsp;        try {
+<b class="nc">&nbsp;            spreadsheetManager = new SpreadsheetManager(url, userName, password);</b>
+&nbsp;            // Register the user
+<b class="nc">&nbsp;            spreadsheetManager.register();</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (initialSheetPublisher != null &amp;&amp; initialSheetName != null) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                spreadsheetManager.getSpreadsheet(initialSheetPublisher, initialSheetName);</b>
+<b class="nc">&nbsp;            } catch (APICallException e) {</b>
+<b class="nc">&nbsp;                System.err.println(&quot;Failed to load initial sheet&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // setup initial table
+<b class="nc">&nbsp;        setupTable();</b>
+&nbsp;
+&nbsp;        // Dynamically add items to the &quot;Open Recent&quot; submenu
+<b class="nc">&nbsp;        addItemsToOpenRecentMenu();</b>
+&nbsp;
+&nbsp;        // Set event handlers for the menu items
+<b class="nc">&nbsp;        newSheetMenuItem.setOnAction(event -&gt; promptSheet.setVisible(true));</b>
+<b class="nc">&nbsp;        deleteSheetMenuItem.setOnAction(event -&gt; deleteSheet());</b>
+&nbsp;
+&nbsp;        // set timer for updating the sheet from the server
+<b class="nc">&nbsp;        var updates = new Timeline();</b>
+<b class="nc">&nbsp;        int updateDelaySeconds = 1;</b>
+&nbsp;
+<b class="nc">&nbsp;        updates.getKeyFrames().add(new KeyFrame(new Duration(updateDelaySeconds * 1000), event -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                if (spreadsheet != null &amp;&amp; spreadsheetManager.tryGetUpdates()) {</b>
+<b class="nc">&nbsp;                    table.refresh();</b>
+&nbsp;                }
+<b class="nc">&nbsp;            } catch (APICallException e) {</b>
+<b class="nc">&nbsp;                System.err.println(&quot;Failed to load updates: &quot; + e.getMessage());</b>
+&nbsp;            }
+&nbsp;        }));
+<b class="nc">&nbsp;        updates.setCycleCount(Timeline.INDEFINITE);</b>
+<b class="nc">&nbsp;        updates.playFrom(new Duration(updateDelaySeconds * 1000 - 500));</b>
+&nbsp;
+<b class="nc">&nbsp;        var menuUpdates = new Timeline();</b>
+<b class="nc">&nbsp;        int menuUpdateDelaySeconds = 15;</b>
+<b class="nc">&nbsp;        menuUpdates.getKeyFrames().add(new KeyFrame(new Duration(menuUpdateDelaySeconds * 1000), event -&gt; {</b>
+<b class="nc">&nbsp;            addItemsToOpenRecentMenu();</b>
+&nbsp;        }));
+<b class="nc">&nbsp;        menuUpdates.setCycleCount(Timeline.INDEFINITE);</b>
+<b class="nc">&nbsp;        menuUpdates.playFrom(new Duration(menuUpdateDelaySeconds * 1000 - 500));</b>
+<b class="nc">&nbsp;        promptSheet.setOnAction(event -&gt; createSheet());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Clear the current columns of the table then initialize the table based on the current spreadsheet.
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    private void setupTable() {
+&nbsp;        // check that there is a spreadsheet
+<b class="nc">&nbsp;        if (spreadsheet == null) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+&nbsp;        // clear current table
+<b class="nc">&nbsp;        clearTable();</b>
+&nbsp;
+<b class="nc">&nbsp;        table.setEditable(true);</b>
+<b class="nc">&nbsp;        String headerStyle = &quot;-fx-background-color: -fx-body-color; -fx-font-weight: bold; -fx-text-alignment: center;&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        table.getSelectionModel().setCellSelectionEnabled(true);</b>
+<b class="nc">&nbsp;        Callback&lt;TableColumn&lt;SpreadsheetSliceView, String&gt;, TableCell&lt;SpreadsheetSliceView, String&gt;&gt; rowNumFactory =</b>
+<b class="nc">&nbsp;                (tv) -&gt; new TableCell&lt;&gt;() {</b>
+&nbsp;                    @Override
+&nbsp;                    protected void updateItem(String item, boolean empty) {
+<b class="nc">&nbsp;                        super.updateItem(item, empty);</b>
+<b class="nc">&nbsp;                        if (empty) {</b>
+<b class="nc">&nbsp;                            setText(&quot;&quot;);</b>
+<b class="nc">&nbsp;                            setStyle(headerStyle);</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            setText(item);</b>
+<b class="nc">&nbsp;                            setStyle(headerStyle);</b>
+&nbsp;                        }
+&nbsp;                        // Prevent cell from being selectable
+<b class="nc">&nbsp;                        setMouseTransparent(true);</b>
+<b class="nc">&nbsp;                        setFocusTraversable(false);</b>
+&nbsp;                    }
+&nbsp;                };
+&nbsp;        // Add a listener to the selection model
+<b class="nc">&nbsp;        table.getSelectionModel().getSelectedCells().addListener(</b>
+<b class="nc">&nbsp;                new ListChangeListener&lt;&gt;() {</b>
+&nbsp;                    @Override
+&nbsp;                    public void onChanged(Change&lt;? extends TablePosition&gt; c) {
+<b class="nc">&nbsp;                        if (c.next()</b>
+<b class="nc">&nbsp;                                &amp;&amp; !c.getAddedSubList().isEmpty()</b>
+<b class="nc">&nbsp;                                &amp;&amp; c.getAddedSubList().getFirst().getColumn() == 0) {</b>
+<b class="nc">&nbsp;                            int row = c.getAddedSubList().getFirst().getRow();</b>
+<b class="nc">&nbsp;                            int col = c.getAddedSubList().getFirst().getColumn() + 1;</b>
+<b class="nc">&nbsp;                            Platform.runLater(() -&gt; table.getSelectionModel().clearSelection());</b>
+<b class="nc">&nbsp;                            Platform.runLater(() -&gt; table.getSelectionModel().select(row, table.getColumns().get(col)));</b>
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;                });
+<b class="nc">&nbsp;        rowNumbers.setCellFactory(rowNumFactory);</b>
+<b class="nc">&nbsp;        rowNumbers.setCellValueFactory(cellData -&gt;</b>
+<b class="nc">&nbsp;                new SimpleStringProperty(Integer.toString(cellData.getValue().getRowColNumber())));</b>
+<b class="nc">&nbsp;        rowNumbers.setPrefWidth(50);</b>
+<b class="nc">&nbsp;        rowNumbers.setResizable(false);</b>
+<b class="nc">&nbsp;        rowNumbers.setEditable(false);</b>
+<b class="nc">&nbsp;        rowNumbers.setSortable(false);</b>
+<b class="nc">&nbsp;        table.getColumns().add(rowNumbers);</b>
+&nbsp;
+&nbsp;        // Create the table columns dynamically
+<b class="nc">&nbsp;        for (int i = 1; i &lt;= Math.max(spreadsheet != null ? spreadsheet.numColumns() : 0, INITIAL_COLUMN_NUM); i++) {</b>
+<b class="nc">&nbsp;            newColumn();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Populate the table with rows of the spreadsheet
+<b class="nc">&nbsp;        for (int row = 1; row &lt;= Math.max(spreadsheet != null ? spreadsheet.numRows() : 0, INITIAL_ROW_NUM); row++) {</b>
+<b class="nc">&nbsp;            newRow();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        newColumnButton.setOnAction(event -&gt; {newColumn();});</b>
+<b class="nc">&nbsp;        newRowButton.setOnAction(event -&gt; {newRow();});</b>
+&nbsp;
+<b class="nc">&nbsp;        table.setItems(list);</b>
+&nbsp;        // add copy paste when cell isn&#39;t focused
+<b class="nc">&nbsp;        table.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -&gt; {</b>
+<b class="nc">&nbsp;            if (new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN).match(keyEvent)) {</b>
+<b class="nc">&nbsp;                copyBuffer = table.getSelectionModel().getSelectedItem().get(table.getSelectionModel().getSelectedIndex() + 1).getPlaintext();</b>
+<b class="nc">&nbsp;                keyEvent.consume();</b>
+<b class="nc">&nbsp;            } else if (new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN).match(keyEvent)</b>
+&nbsp;                &amp;&amp; copyBuffer != null) {
+<b class="nc">&nbsp;                table.getSelectionModel().getSelectedItem().get(table.getSelectionModel().getSelectedIndex() + 1).updateCell(copyBuffer);</b>
+<b class="nc">&nbsp;                keyEvent.consume();</b>
+<b class="nc">&nbsp;                table.refresh();</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    private void clearTable() {
+<b class="nc">&nbsp;        table.getColumns().clear();</b>
+<b class="nc">&nbsp;        table.getItems().clear();</b>
+<b class="nc">&nbsp;        numCols = 0;</b>
+<b class="nc">&nbsp;        numRows = 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void addItemsToOpenRecentMenu() {
+&nbsp;        try {
+&nbsp;            // Get the list of publishers
+<b class="nc">&nbsp;            List&lt;String&gt; publishers = spreadsheetManager.getPublishers();</b>
+<b class="nc">&nbsp;            openRecentMenu.getItems().clear();</b>
+<b class="nc">&nbsp;            for (String publisher : publishers) {</b>
+&nbsp;                // Get the list of sheets for each publisher
+<b class="nc">&nbsp;                List&lt;String&gt; sheets = spreadsheetManager.getAvailableSheets(publisher);</b>
+&nbsp;                // Create a submenu for each publisher
+<b class="nc">&nbsp;                Menu publisherMenu = new Menu(publisher);</b>
+<b class="nc">&nbsp;                for (String sheet : sheets) {</b>
+&nbsp;                    // Add a menu item for each sheet
+<b class="nc">&nbsp;                    MenuItem sheetItem = new MenuItem(sheet);</b>
+<b class="nc">&nbsp;                    sheetItem.setOnAction((event) -&gt; {</b>
+<b class="nc">&nbsp;                        setSpreadsheet(publisher, sheet);</b>
+&nbsp;                    });
+<b class="nc">&nbsp;                    publisherMenu.getItems().add(sheetItem);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                openRecentMenu.getItems().add(publisherMenu);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void setSpreadsheet(String publisher, String sheet) {
+&nbsp;        try {
+<b class="nc">&nbsp;            spreadsheet = spreadsheetManager.getSpreadsheet(publisher, sheet);</b>
+<b class="nc">&nbsp;        } catch (APICallException e) {</b>
+&nbsp;            //todo probably display message to user instead
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        setCurrentDisplay(publisher, sheet);</b>
+<b class="nc">&nbsp;        setupTable();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void deleteSheet() {
+&nbsp;        try {
+<b class="nc">&nbsp;            if (spreadsheet == null) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;No sheet selected to delete.&quot;);</b>
+&nbsp;                return;
+&nbsp;            }
+&nbsp;            // Send a request to delete the sheet from the server
+<b class="nc">&nbsp;            spreadsheetManager.deleteSpreadsheet();</b>
+&nbsp;
+&nbsp;            // Refresh the &quot;Open Recent&quot; menu after deletion
+<b class="nc">&nbsp;            addItemsToOpenRecentMenu();</b>
+&nbsp;
+&nbsp;            // Optionally, you can update the UI to reflect the changes
+<b class="nc">&nbsp;            spreadsheet = null;</b>
+<b class="nc">&nbsp;            clearTable();</b>
+<b class="nc">&nbsp;        } catch (APICallException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;            // Handle API call exception
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private void createSheet() {
+&nbsp;        try {
+<b class="nc">&nbsp;            String sheetName = promptSheet.getText();</b>
+&nbsp;
+<b class="nc">&nbsp;            if(sheetName == null || sheetName.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Sheet name cannot be empty!&quot;);</b>
+&nbsp;                return;
+&nbsp;            }
+&nbsp;
+&nbsp;            // Delete all existing sheets first
+&nbsp;            // deleteAllSheets();
+&nbsp;
+&nbsp;            // Send a request to create a new sheet with the name from TextField
+<b class="nc">&nbsp;            spreadsheet = spreadsheetManager.createSpreadsheet(sheetName);</b>
+&nbsp;
+&nbsp;            // Refresh the &quot;Open Recent&quot; menu after creation
+<b class="nc">&nbsp;            addItemsToOpenRecentMenu();</b>
+&nbsp;
+&nbsp;            // Optionally, you can update the UI to reflect the changes
+<b class="nc">&nbsp;            promptSheet.setText(&quot;&quot;);</b>
+<b class="nc">&nbsp;            promptSheet.setVisible(false);</b>
+<b class="nc">&nbsp;            setupTable();</b>
+<b class="nc">&nbsp;            setCurrentDisplay(spreadsheetManager.getUserName(), sheetName);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private void deleteAllSheets() {
+&nbsp;        try {
+&nbsp;            // Get the list of publishers
+<b class="nc">&nbsp;            List&lt;String&gt; publishers = spreadsheetManager.getPublishers();</b>
+<b class="nc">&nbsp;            for (String publisher : publishers) {</b>
+&nbsp;                // Get the list of sheets for each publisher
+<b class="nc">&nbsp;                List&lt;String&gt; sheets = spreadsheetManager.getAvailableSheets(publisher);</b>
+&nbsp;                // Delete each sheet
+<b class="nc">&nbsp;                for (String sheet : sheets) {</b>
+<b class="nc">&nbsp;                    spreadsheetManager.deleteSpreadsheet();</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (APICallException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;            // Handle API call exception
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private void setCurrentDisplay(String publisher, String sheet) {
+<b class="nc">&nbsp;        currentSheetInfo.setText(publisher + &quot; : &quot; + sheet);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Add a new row to the table at the end of the rows.
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    private void newRow() {
+<b class="nc">&nbsp;        list.add(new SpreadsheetSliceView(spreadsheet, Direction.row, numRows + 1));</b>
+<b class="nc">&nbsp;        ++numRows;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create a new column and add it to the table.
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    private void newColumn() {
+<b class="nc">&nbsp;        TableColumn&lt;SpreadsheetSliceView, String&gt; column = new TableColumn&lt;&gt;(Conversions.columnToString(numCols + 1));</b>
+<b class="nc">&nbsp;        column.setPrefWidth(100);</b>
+<b class="nc">&nbsp;        setupColumn(column, numCols + 1);</b>
+<b class="nc">&nbsp;        table.getColumns().add(column);</b>
+<b class="nc">&nbsp;        ++numCols;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Set up a column of the spreadsheet.
+&nbsp;     * Create a cell value factory which gets the data from the cell at that row/column.
+&nbsp;     * Create a cell factory which sets each cell as an editable cell.
+&nbsp;     * Set the callback so edits to cells in this column are reflected in the data.
+&nbsp;     * @param column the column to set up
+&nbsp;     * @param columnNumber the column number
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    private void setupColumn(TableColumn&lt;SpreadsheetSliceView, String&gt; column, int columnNumber) {
+<b class="nc">&nbsp;        column.setCellValueFactory(cellData -&gt; new SimpleStringProperty(cellData.getValue().get(columnNumber).getData()));</b>
+<b class="nc">&nbsp;        column.setEditable(true);</b>
+<b class="nc">&nbsp;        column.setCellFactory(tc -&gt; {</b>
+<b class="nc">&nbsp;            var cell = new EditingCell();</b>
+&nbsp;            // add copy and paste functionality when cell selected
+<b class="nc">&nbsp;            EventHandler&lt;KeyEvent&gt; copyPaste = keyEvent -&gt; {</b>
+<b class="nc">&nbsp;                if (new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN).match(keyEvent)) {</b>
+<b class="nc">&nbsp;                    copyBuffer = list.get(cell.getIndex()).get(columnNumber).getPlaintext();</b>
+<b class="nc">&nbsp;                    keyEvent.consume();</b>
+<b class="nc">&nbsp;                } else if (new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN).match(keyEvent)</b>
+&nbsp;                    &amp;&amp; copyBuffer != null) {
+<b class="nc">&nbsp;                    cell.commitEdit(copyBuffer);</b>
+<b class="nc">&nbsp;                    keyEvent.consume();</b>
+<b class="nc">&nbsp;                    table.refresh();</b>
+&nbsp;                }
+&nbsp;            };
+<b class="nc">&nbsp;            cell.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);</b>
+<b class="nc">&nbsp;            var tf = cell.getTextField();</b>
+<b class="nc">&nbsp;            tf.addEventFilter(KeyEvent.KEY_PRESSED, copyPaste);</b>
+<b class="nc">&nbsp;            tf.focusedProperty().addListener((observable, oldValue, newValue) -&gt; {</b>
+<b class="nc">&nbsp;                if (newValue) {</b>
+<b class="nc">&nbsp;                    tf.setText(list.get(cell.getIndex()).get(columnNumber).getPlaintext());</b>
+&nbsp;                }
+&nbsp;            });
+<b class="nc">&nbsp;            return cell;</b>
+&nbsp;        });
+&nbsp;            //TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+<b class="nc">&nbsp;        column.setOnEditCommit(event -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                event.getRowValue().get(columnNumber).updateCell(event.getNewValue());</b>
+<b class="nc">&nbsp;            } catch (NullPointerException ignored) {</b>
+&nbsp;                // the event system ends up sending a null event every other time
+&nbsp;            }
+<b class="nc">&nbsp;            table.refresh();</b>
+&nbsp;        });
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

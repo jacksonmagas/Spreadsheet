@@ -1,0 +1,145 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UpdatePayload</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.model</a>
+</div>
+
+<h1>Coverage Summary for Class: UpdatePayload (com.example.huskysheet.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UpdatePayload</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.model;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents the payload containing a list of updates for a spreadsheet.
+&nbsp; * Provides methods to get and set the updates.
+&nbsp; * Ensures the updates are properly managed and accessible.
+&nbsp; *
+&nbsp; * @author Julia
+&nbsp; */
+&nbsp;public class UpdatePayload {
+&nbsp;  private List&lt;String&gt; updates;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Constructs an UpdatePayload with the specified list of updates.
+&nbsp;   *
+&nbsp;   * @param updates the list of updates
+&nbsp;   */
+<b class="fc">&nbsp;  public UpdatePayload(List&lt;String&gt; updates) {</b>
+<b class="fc">&nbsp;    this.updates = updates;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Returns the list of updates.
+&nbsp;   *
+&nbsp;   * @return the list of updates
+&nbsp;   */
+&nbsp;  public List&lt;String&gt; getUpdates() {
+<b class="fc">&nbsp;    return updates;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the list of updates.
+&nbsp;   *
+&nbsp;   * @param updates the list of updates to set
+&nbsp;   */
+&nbsp;  public void setUpdates(List&lt;String&gt; updates) {
+<b class="fc">&nbsp;    this.updates = updates;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

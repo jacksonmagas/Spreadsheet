@@ -1,5 +1,6 @@
 plugins {
   id 'java'
+  id 'jacoco'
   id 'application'
   id 'org.javamodularity.moduleplugin' version '1.8.12'
   id 'org.openjfx.javafxplugin' version '0.0.13'
@@ -8,24 +9,33 @@ plugins {
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-
 group 'com.example'
 version '1.0-SNAPSHOT'
 
+jacoco {
+  toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+  dependsOn test
+
+  reports {
+    xml.required.set(true)
+    html.required.set(true)
+    csv.required.set(false)
+  }
+}
 
 repositories {
   mavenCentral()
 }
 
-
 ext {
   junitVersion = '5.10.0'
 }
 
-
 sourceCompatibility = '21'
 targetCompatibility = '21'
-
 
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
@@ -36,52 +46,41 @@ tasks.register('runServer', JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 }
 
-
 application {
   mainModule = 'com.example.huskysheet'
   mainClass = 'com.example.huskysheet.HelloApplication'
 }
-
 
 javafx {
   version = '21'
   modules = ['javafx.controls', 'javafx.fxml']
 }
 
-
 dependencies {
   implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
   implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
   implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
-
   implementation 'org.springframework.boot:spring-boot-starter'
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'org.springframework.boot:spring-boot-starter-security'
-
-
-  implementation('jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1'){
+  implementation('jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1') {
     exclude group: 'jakarta.el', module: 'jakarta.el-api'
   }
-  // used for tests/client
-  implementation("com.google.code.gson:gson:2.11.0")
+  implementation 'com.google.code.gson:gson:2.11.0'
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
   testImplementation 'org.mockito:mockito-core:4.8.0'
   testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
   testImplementation 'org.mockito:mockito-inline:4.8.0'
-
   implementation 'mysql:mysql-connector-java:8.0.28'
   implementation 'com.h2database:h2:1.4.200'
 }
 
-
 test {
   useJUnitPlatform()
   jvmArgs += "-Dnet.bytebuddy.experimental=true"
-
 }
-
 
 jlink {
   imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
@@ -91,16 +90,13 @@ jlink {
   }
 }
 
-
 jlinkZip {
   group = 'distribution'
 }
 
-
 java {
   modularity.inferModulePath = true
 }
-
 
 run {
   jvmArgs += [
@@ -109,11 +105,9 @@ run {
   ]
 }
 
-
 tasks.withType(JavaExec) {
   jvmArgs += '--add-opens=java.base/java.lang=ALL-UNNAMED'
 }
-
 
 sourceSets {
   main {
@@ -127,6 +121,3 @@ sourceSets {
     }
   }
 }
-
-
-

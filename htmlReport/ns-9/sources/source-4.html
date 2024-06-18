@@ -1,0 +1,220 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Publishers</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.model</a>
+</div>
+
+<h1>Coverage Summary for Class: Publishers (com.example.huskysheet.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Publishers</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70%
+  </span>
+  <span class="absValue">
+    (7/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (20/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.model;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * Singleton class managing a collection of publishers and their associated spreadsheets.
+&nbsp; * This class provides methods to register new publishers, retrieve publishers by username,
+&nbsp; * and manage spreadsheets for each publisher.
+&nbsp; *
+&nbsp; * @author Julia Ouritskaya
+&nbsp; */
+&nbsp;public class Publishers {
+&nbsp;  private static Publishers instance;
+&nbsp;  private Map&lt;Publisher, List&lt;Spreadsheet&gt;&gt; publisherMap;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Private constructor to prevent instantiation.
+&nbsp;   */
+<b class="fc">&nbsp;  private Publishers() {</b>
+<b class="fc">&nbsp;    publisherMap = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Returns the singleton instance of Publishers.
+&nbsp;   *
+&nbsp;   * @return the singleton instance
+&nbsp;   */
+&nbsp;  public static Publishers getInstance() {
+<b class="fc">&nbsp;    if (instance == null) {</b>
+<b class="fc">&nbsp;      instance = new Publishers();</b>
+&nbsp;    }
+<b class="fc">&nbsp;    return instance;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves a publisher by their username.
+&nbsp;   *
+&nbsp;   * @param username the username of the publisher
+&nbsp;   * @return the publisher with the specified username, or null if not found
+&nbsp;   */
+&nbsp;  public Publisher getPublisherByUsername(String username) {
+<b class="fc">&nbsp;    for (Publisher publisher : publisherMap.keySet()) {</b>
+<b class="fc">&nbsp;      if (publisher.getName().equals(username)) {</b>
+<b class="fc">&nbsp;        return publisher;</b>
+&nbsp;      }
+<b class="fc">&nbsp;    }</b>
+<b class="fc">&nbsp;    return null;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Adds a new publisher to the collection.
+&nbsp;   *
+&nbsp;   * @param publisher the publisher to add
+&nbsp;   */
+&nbsp;  public void addPublisher(Publisher publisher) {
+<b class="fc">&nbsp;    publisherMap.put(publisher, new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Registers a new publisher if they do not already exist in the collection.
+&nbsp;   *
+&nbsp;   * @param clientName the name of the client to register as a publisher
+&nbsp;   */
+&nbsp;  public void registerNewPublisher(String clientName) {
+<b class="pc">&nbsp;    if (getPublisherByUsername(clientName) == null) {</b>
+<b class="fc">&nbsp;      Publisher publisher = new Publisher(clientName, new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      publisherMap.put(publisher, new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;      System.out.println(&quot;Publisher registered: &quot; + clientName);</b>
+&nbsp;    }
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves the list of spreadsheets associated with a publisher.
+&nbsp;   *
+&nbsp;   * @param publisher the publisher whose spreadsheets to retrieve
+&nbsp;   * @return the list of spreadsheets for the specified publisher
+&nbsp;   */
+&nbsp;  public List&lt;Spreadsheet&gt; getSpreadsheetsForPublisher(Publisher publisher) {
+<b class="fc">&nbsp;    return publisherMap.getOrDefault(publisher, new ArrayList&lt;&gt;());</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves all publishers in the collection.
+&nbsp;   *
+&nbsp;   * @return a list of all publishers
+&nbsp;   */
+&nbsp;  public List&lt;Publisher&gt; getAllPublishers() {
+<b class="fc">&nbsp;    return new ArrayList&lt;&gt;(publisherMap.keySet());</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Prints the names of all publishers in the collection to the console.
+&nbsp;   */
+&nbsp;  public void printPublishers() {
+<b class="nc">&nbsp;    for (Publisher publisher : publisherMap.keySet()) {</b>
+<b class="nc">&nbsp;      System.out.println(&quot;Publisher: &quot; + publisher.getName());</b>
+<b class="nc">&nbsp;    }</b>
+<b class="nc">&nbsp;  }</b>
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

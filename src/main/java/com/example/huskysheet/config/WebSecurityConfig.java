@@ -8,13 +8,16 @@ import java.util.Scanner;
 import javafx.util.Pair;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
  * Web security configuration class.
@@ -88,19 +91,4 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-  /**
-   * Configures the authentication manager with details about the user.
-   *
-   * @author katie w
-   */
-  @Bean
-  public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService)
-          throws Exception {
-    AuthenticationManagerBuilder authenticationManagerBuilder =
-            http.getSharedObject(AuthenticationManagerBuilder.class);
-    authenticationManagerBuilder
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder);
-    return authenticationManagerBuilder.build();
-  }
 }

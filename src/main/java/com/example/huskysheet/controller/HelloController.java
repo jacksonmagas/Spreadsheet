@@ -124,7 +124,7 @@ public class HelloController implements Initializable {
 
         // set timer for updating the sheet from the server
         var updates = new Timeline();
-        int updateDelaySeconds = 5;//TODO back to 1 second after testing
+        int updateDelaySeconds = 1;
 
         updates.getKeyFrames().add(new KeyFrame(new Duration(updateDelaySeconds * 1000), event -> {
             try {

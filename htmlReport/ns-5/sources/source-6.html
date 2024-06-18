@@ -1,0 +1,151 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ICell</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.client.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: ICell (com.example.huskysheet.client.Model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">ICell$MockitoMock$E4QsWh0w</td>
+  </tr>
+  <tr>
+    <td class="name">ICell$MockitoMock$E4QsWh0w$auxiliary$4OvRNVZO</td>
+  </tr>
+  <tr>
+    <td class="name">ICell$MockitoMock$E4QsWh0w$auxiliary$egab75gS</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.client.Model;
+&nbsp;
+&nbsp;import com.example.huskysheet.client.Expressions.ITerm;
+&nbsp;import com.example.huskysheet.client.Utils.CellFormatDetails;
+&nbsp;import com.example.huskysheet.client.Expressions.ITerm.ResultType;
+&nbsp;import com.example.huskysheet.client.Utils.Coordinate;
+&nbsp;
+&nbsp;/**
+&nbsp; * An ICell is a rectangular cell in a spreadsheet with a term of data
+&nbsp; * and formatting details
+&nbsp; * @author Jackson Magas
+&nbsp; */
+&nbsp;public interface ICell extends ICellListener {
+&nbsp;    // Set the contents of this cell to the given data
+&nbsp;    boolean updateCell(String data);
+&nbsp;
+&nbsp;    // get the coordinates of this cell
+&nbsp;    Coordinate getCoordinate();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the value of the user input in this cell once parsed and evaluated
+&nbsp;     * @return The value of the user input as a string
+&nbsp;     */
+&nbsp;    String getData();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the verbatim text the user entered into this cell
+&nbsp;     * @return The user entered text as a string
+&nbsp;     */
+&nbsp;    String getPlaintext();
+&nbsp;
+&nbsp;    // returns an object containing details about the formatting of the cell
+&nbsp;    CellFormatDetails getFormatting();
+&nbsp;
+&nbsp;    // returns true if the cell is empty
+&nbsp;    boolean isEmpty();
+&nbsp;
+&nbsp;    // Recalculates the value of the cell in response to a cell
+&nbsp;    // this depends on changes
+&nbsp;    void handleValueChange();
+&nbsp;
+&nbsp;    // Register as a listener for changes to the value of this cell including changes to underlying
+&nbsp;    // referenced cells
+&nbsp;    void registerListener(ICellListener listener);
+&nbsp;
+&nbsp;    // Notify all references to this cell that the cell has changed
+&nbsp;    void notifyListeners();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Set the formatting of the cell to the new formatting
+&nbsp;     * @param formatting formatting
+&nbsp;     */
+&nbsp;
+&nbsp;    void setFormatting(CellFormatDetails formatting);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the type of data held by this cell either string, number, or empty
+&nbsp;     * @return the data type
+&nbsp;     */
+&nbsp;    ResultType dataType();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the spreadsheet this cell belongs to.
+&nbsp;     * @return the spreadsheet this cell is a part of
+&nbsp;     */
+&nbsp;    ISpreadsheet getSpreadsheet();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the term of the data for this spreadsheet
+&nbsp;     *
+&nbsp;     * @return the term for this spreadsheet
+&nbsp;     */
+&nbsp;    ITerm getTerm();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

@@ -449,19 +449,23 @@ public class SpreadsheetManager implements ISpreadsheetListener {
      */
     @Override
     public void handleUpdate(Coordinate coordinate, String update) throws Exception {
+        makeUpdate(currentSheetPublisher, currentSheetName, coordinate, update);
+    }
+
+    private void makeUpdate(String publisher, String name, Coordinate coordinate, String update) throws APICallException {
         try {
             Result result;
 
-            if (currentSheetPublisher.equals(userName)) {
+            if (publisher.equals(userName)) {
                 result = callAPI(Endpoint.updatePublished,
-                    new Argument(currentSheetPublisher,
-                        currentSheetName,
+                    new Argument(publisher,
+                        name,
                         "",
-                        coordinate.toString() + " " + update));
+                        coordinate.toString() + " " + update + "\n"));
             } else {
                 result = callAPI(Endpoint.updateSubscription,
-                    new Argument(currentSheetPublisher,
-                        currentSheetName,
+                    new Argument(publisher,
+                        name,
                         "",
                         coordinate.toString() + " " + update));
             }

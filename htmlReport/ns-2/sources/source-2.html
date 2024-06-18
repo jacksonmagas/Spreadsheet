@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DeleteSheetRequest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.api.Server</a>
+</div>
+
+<h1>Coverage Summary for Class: DeleteSheetRequest (com.example.huskysheet.api.Server)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DeleteSheetRequest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (7/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.api.Server;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a request to delete a sheet.
+&nbsp; * This class holds the details of the publisher and the sheet to be deleted.
+&nbsp; *
+&nbsp; * @author Julia Ouritskaya
+&nbsp; */
+&nbsp;public class DeleteSheetRequest {
+&nbsp;  private String publisher;
+&nbsp;  private String sheet;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Default constructor for DeleteSheetRequest.
+&nbsp;   */
+<b class="fc">&nbsp;  public DeleteSheetRequest() {}</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Parameterized constructor for DeleteSheetRequest.
+&nbsp;   *
+&nbsp;   * @param publisher the name of the publisher
+&nbsp;   * @param sheet the name or content of the sheet to be deleted
+&nbsp;   */
+<b class="nc">&nbsp;  public DeleteSheetRequest(String publisher, String sheet) {</b>
+<b class="nc">&nbsp;    this.publisher = publisher;</b>
+<b class="nc">&nbsp;    this.sheet = sheet;</b>
+<b class="nc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Gets the publisher of the sheet.
+&nbsp;   *
+&nbsp;   * @return the publisher name
+&nbsp;   */
+&nbsp;  public String getPublisher() {
+<b class="fc">&nbsp;    return publisher;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the publisher of the sheet.
+&nbsp;   *
+&nbsp;   * @param publisher the name of the publisher
+&nbsp;   */
+&nbsp;  public void setPublisher(String publisher) {
+<b class="fc">&nbsp;    this.publisher = publisher;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Gets the sheet name or content.
+&nbsp;   *
+&nbsp;   * @return the sheet name or content
+&nbsp;   */
+&nbsp;  public String getSheet() {
+<b class="fc">&nbsp;    return sheet;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Sets the sheet name or content.
+&nbsp;   *
+&nbsp;   * @param sheet the name or content of the sheet to be deleted
+&nbsp;   */
+&nbsp;  public void setSheet(String sheet) {
+<b class="fc">&nbsp;    this.sheet = sheet;</b>
+<b class="fc">&nbsp;  }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,210 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WebSecurityConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.config</a>
+</div>
+
+<h1>Coverage Summary for Class: WebSecurityConfig (com.example.huskysheet.config)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WebSecurityConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.config;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileNotFoundException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Scanner;
+&nbsp;import javafx.util.Pair;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.security.config.Customizer;
+&nbsp;import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+&nbsp;import org.springframework.security.core.userdetails.User;
+&nbsp;import org.springframework.security.core.userdetails.UserDetails;
+&nbsp;import org.springframework.security.core.userdetails.UserDetailsService;
+&nbsp;import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+&nbsp;import org.springframework.security.web.SecurityFilterChain;
+&nbsp;import static org.springframework.security.config.Customizer.withDefaults;
+&nbsp;
+&nbsp;/**
+&nbsp; * Web security configuration class.
+&nbsp; * This class configures the security settings for the application.
+&nbsp; *
+&nbsp; * @autor Julia Ouritskaya
+&nbsp; */
+&nbsp;@Configuration
+&nbsp;@EnableWebSecurity
+<b class="nc">&nbsp;public class WebSecurityConfig {</b>
+&nbsp;
+&nbsp;  @Bean
+&nbsp;  public UserDetailsService userDetailsService() throws FileNotFoundException {
+<b class="nc">&nbsp;    String fileName = &quot;src/main/resources/UsernamePasswords.txt&quot;;</b>
+<b class="nc">&nbsp;    List&lt;Pair&lt;String, String&gt;&gt; userDetails = userDetailsFromFile(fileName);</b>
+<b class="nc">&nbsp;    UserDetails[] users = userDetails.stream()</b>
+<b class="nc">&nbsp;        .map(p -&gt; User.withDefaultPasswordEncoder()</b>
+<b class="nc">&nbsp;            .username(p.getKey())</b>
+<b class="nc">&nbsp;            .password(p.getValue())</b>
+<b class="nc">&nbsp;            .roles(&quot;USER&quot;)</b>
+<b class="nc">&nbsp;            .build()).toArray(UserDetails[]::new);</b>
+<b class="nc">&nbsp;    return new InMemoryUserDetailsManager(users);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Read the usernames and passwords from file
+&nbsp;   * @author Jackson Magas
+&nbsp;   * @param fileName
+&nbsp;   * @return
+&nbsp;   */
+&nbsp;  private List&lt;Pair&lt;String, String&gt;&gt; userDetailsFromFile(String fileName)
+&nbsp;      throws FileNotFoundException {
+&nbsp;
+<b class="nc">&nbsp;    List&lt;Pair&lt;String, String&gt;&gt; userDetails = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;    Scanner sc = new Scanner(new File(fileName));</b>
+<b class="nc">&nbsp;    while (sc.hasNextLine()) {</b>
+<b class="nc">&nbsp;      String line = sc.nextLine();</b>
+<b class="nc">&nbsp;      String username = line.split(&quot;:&quot;)[0];</b>
+<b class="nc">&nbsp;      String password = line.split(&quot;:&quot;)[1];</b>
+<b class="nc">&nbsp;      userDetails.add(new Pair&lt;&gt;(username, password));</b>
+&nbsp;    }
+<b class="nc">&nbsp;    return userDetails;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Configures the security filter chain.
+&nbsp;   *
+&nbsp;   * @param http the HttpSecurity
+&nbsp;   * @return the SecurityFilterChain
+&nbsp;   * @throws Exception if an error occurs during configuration
+&nbsp;   */
+&nbsp;  @Bean
+&nbsp;  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<b class="nc">&nbsp;    http</b>
+<b class="nc">&nbsp;            .csrf(csrf -&gt; csrf.disable()) // Disable CSRF protection in Spring Security 6.1+</b>
+<b class="nc">&nbsp;            .authorizeHttpRequests(authorizeRequests -&gt;</b>
+&nbsp;                    authorizeRequests
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/register&quot;).permitAll()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/getPublishers&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/createSheet&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/getSheets&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/deleteSheet&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/getUpdatesForSubscription&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/getUpdatesForPublished&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/updatePublished&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .requestMatchers(&quot;/api/v1/updateSubscription&quot;).authenticated()</b>
+<b class="nc">&nbsp;                            .anyRequest().authenticated()</b>
+&nbsp;            )
+<b class="nc">&nbsp;            .httpBasic(withDefaults());</b>
+&nbsp;
+<b class="nc">&nbsp;    return http.build();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>

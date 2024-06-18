@@ -1,0 +1,210 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Conversions</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.huskysheet.client.Utils</a>
+</div>
+
+<h1>Coverage Summary for Class: Conversions (com.example.huskysheet.client.Utils)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Conversions</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (12/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.7%
+  </span>
+  <span class="absValue">
+    (33/36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.huskysheet.client.Utils;
+&nbsp;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;
+&nbsp;import java.util.regex.Matcher;
+<b class="nc">&nbsp;public final class Conversions {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Check if the string is a reference of the proper form
+&nbsp;     * @param ref the string reference to a cell in the form &quot;$A1&quot; for first column first row
+&nbsp;     * @return True if the string is a reference of the proper form
+&nbsp;     */
+&nbsp;    public static boolean isValidRef(String ref) {
+<b class="fc">&nbsp;        Pattern validRef = Pattern.compile(&quot;^\\$[a-zA-Z]+\\d+$&quot;, Pattern.MULTILINE);</b>
+<b class="fc">&nbsp;        return validRef.matcher(ref).matches();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the row number of the reference string.
+&nbsp;     * @param reference the string reference to a cell in the form &quot;$A1&quot; for first column first row
+&nbsp;     * @throws IllegalArgumentException if the string is not a reference
+&nbsp;     * @return The 1 indexed row number
+&nbsp;     */
+&nbsp;    public static int row(String reference) {
+<b class="fc">&nbsp;        if (!isValidRef(reference)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(reference + &quot; is not a valid Reference.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Pattern p = Pattern.compile(&quot;^\\$[a-zA-Z]+(\\d+)$&quot;, Pattern.MULTILINE);</b>
+<b class="fc">&nbsp;        Matcher m = p.matcher(reference);</b>
+<b class="pc">&nbsp;        if (m.matches()) {</b>
+<b class="fc">&nbsp;            String rowPart = m.group(1);</b>
+<b class="fc">&nbsp;            return Integer.parseInt(rowPart);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;Valid reference didn&#39;t match any numbers&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the column number of the reference string.
+&nbsp;     * @param reference the string reference to a cell in the form &quot;$A1&quot; for first column first row
+&nbsp;     * @throws IllegalArgumentException if the string is not a reference
+&nbsp;     * @return The 1 indexed column number
+&nbsp;     */
+&nbsp;    public static int column(String reference) {
+<b class="fc">&nbsp;        if (!isValidRef(reference)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(reference + &quot; is not a valid Reference.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Pattern p = Pattern.compile(&quot;^\\$([a-zA-Z]+)\\d+$&quot;);</b>
+<b class="fc">&nbsp;        Matcher m = p.matcher(reference);</b>
+<b class="pc">&nbsp;        if (m.matches()) {</b>
+&nbsp;            // From $AbC1 gets [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]
+<b class="fc">&nbsp;            char[] columnPart = m.group(1).toUpperCase().toCharArray();</b>
+<b class="fc">&nbsp;            int column = 0;</b>
+<b class="fc">&nbsp;            int multiplier = 1;</b>
+&nbsp;            // loop in reverse order from least to most significant letter
+<b class="fc">&nbsp;            for (int i = columnPart.length - 1; i &gt;= 0; --i) {</b>
+&nbsp;                // convert ascii letters to their alphabet position, so a=1, z=26
+<b class="fc">&nbsp;                int val = (int) columnPart[i] - 64;</b>
+<b class="fc">&nbsp;                column += multiplier * val;</b>
+<b class="fc">&nbsp;                multiplier *= 26;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return column;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;How did this happen&quot;); // Unreachable</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String columnToString(int column) {
+<b class="fc">&nbsp;        if (column &lt;= 0) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Column must be greater than zero&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        StringBuilder columnString = new StringBuilder();</b>
+<b class="fc">&nbsp;        while (column &gt; 0) {</b>
+<b class="fc">&nbsp;            int remainder = (column - 1) % 26;</b>
+<b class="fc">&nbsp;            char digit = (char) (remainder + &#39;A&#39;);</b>
+<b class="fc">&nbsp;            columnString.insert(0, digit);</b>
+<b class="fc">&nbsp;            column = (column - 1) / 26;</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return columnString.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Convert a string of the form $A1 to a coordinate object
+&nbsp;     * @param input the string to convert to coordinates
+&nbsp;     * @return the coordinate object at that string location
+&nbsp;     * @throws IllegalArgumentException if the string is not of the proper form
+&nbsp;     * @author Jackson Magas
+&nbsp;     */
+&nbsp;    public static Coordinate stringToCoordinate(String input) throws IllegalArgumentException {
+<b class="fc">&nbsp;        return new Coordinate(row(input), column(input));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-16 09:00</div>
+</div>
+</body>
+</html>
