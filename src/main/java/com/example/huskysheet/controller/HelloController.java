@@ -105,11 +105,7 @@ public class HelloController implements Initializable {
         }
 
         if (initialSheetPublisher != null && initialSheetName != null) {
-            try {
-                spreadsheetManager.getSpreadsheet(initialSheetPublisher, initialSheetName);
-            } catch (APICallException e) {
-                System.err.println("Failed to load initial sheet");
-            }
+            setSpreadsheet(initialSheetPublisher, initialSheetName);
         }
 
         // setup initial table
