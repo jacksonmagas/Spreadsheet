@@ -244,6 +244,13 @@ public class HelloController implements Initializable {
         numRows = 0;
     }
 
+    /**
+     * Clears the current items in the openRecentMenu and initializes it based on the
+     * current spreadsheet managed by spreadsheetManager. Each publisher's available sheets
+     * are added as submenus under their respective publisher names.
+     *
+     * @author NikitaClark
+     */
     private void addItemsToOpenRecentMenu() {
         try {
             // Get the list of publishers
@@ -285,6 +292,16 @@ public class HelloController implements Initializable {
         setupTable();
     }
 
+    /**
+     * Deletes the currently selected sheet from the server via spreadsheetManager.
+     * If no sheet is selected, it prints a message and returns without performing any action.
+     * After deletion, refreshes the "Open Recent" menu, clears the current spreadsheet reference,
+     * and optionally updates the UI to reflect the changes.
+     *
+     *
+     * @throws APICallException if there is an issue with the API call during deletion.
+     * @author NikitaClark
+     */
     private void deleteSheet() {
         try {
             if (spreadsheet == null) {
@@ -307,6 +324,15 @@ public class HelloController implements Initializable {
     }
 
 
+
+    /**
+     * Creates a new spreadsheet with the name provided in the promptSheet TextField.
+     * If the sheet name is empty or null, prints a message and returns without performing any action.
+     * Deletes all existing sheets before creating a new one.
+     *
+     * @author NikitaClark
+     * @throws Exception if there is an issue during the sheet creation process.
+     */
     @FXML
     private void createSheet() {
         try {
@@ -336,6 +362,14 @@ public class HelloController implements Initializable {
         }
     }
 
+    /**
+     * Deletes all sheets managed by spreadsheetManager for each publisher.
+     * This method iterates through each publisher, retrieves the list of sheets,
+     * and deletes each sheet one by one.
+     *
+     * @author NikitaClark
+     * @throws APICallException if there is an issue with the API call during deletion.
+     */
 
     private void deleteAllSheets() {
         try {
