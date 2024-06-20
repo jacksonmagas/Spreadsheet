@@ -69,7 +69,8 @@ class ApiGetUpdatesForSubscriptionTest {
     // Arrange
     when(publishers.getPublisherByUsername("nonExistentPublisher")).thenReturn(null);
 
-    GetUpdatesRequest request = new GetUpdatesRequest("nonExistentPublisher", "Sheet1", "1");
+    GetUpdatesRequest request = new GetUpdatesRequest("nonExistentPublisher",
+            "Sheet1", "1");
 
     // Action
     ResponseEntity<?> response = controller.getUpdatesForSubscription(request);
@@ -82,7 +83,8 @@ class ApiGetUpdatesForSubscriptionTest {
   void getUpdatesForSubscription_invalidId() {
     // Arrange
     List<Spreadsheet> spreadsheets = new ArrayList<>();
-    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
+    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets),
+            "Sheet1");
     sheet.addSubscriptionUpdate("1,InitialUpdate") ;
     spreadsheets.add(sheet);
 
@@ -90,7 +92,8 @@ class ApiGetUpdatesForSubscriptionTest {
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
     //requesst
-    GetUpdatesRequest request = new GetUpdatesRequest("testPublisher", "Sheet1", "nonIntegerId");
+    GetUpdatesRequest request = new GetUpdatesRequest("testPublisher",
+            "Sheet1", "nonIntegerId");
 
     // Action
     ResponseEntity<Result> response = controller.getUpdatesForSubscription(request);

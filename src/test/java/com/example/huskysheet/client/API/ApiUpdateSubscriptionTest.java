@@ -47,14 +47,16 @@ public class ApiUpdateSubscriptionTest {
   void updateSubscription_sheetNotFound() {
     // Arrange mocks
     List<Spreadsheet> spreadsheets = new ArrayList<>();
-    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
+    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets),
+            "Sheet1");
     spreadsheets.add(sheet);
 
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
     // request
-    UpdateRequest request = new UpdateRequest("testPublisher", "NonExistentSheet", "New subscription payload");
+    UpdateRequest request = new UpdateRequest("testPublisher",
+            "NonExistentSheet", "New subscription payload");
 
     // Action
     ResponseEntity<Result> response = controller.updateSubscription(request);
@@ -69,7 +71,8 @@ public class ApiUpdateSubscriptionTest {
     when(publishers.getPublisherByUsername("nonExistentPublisher")).thenReturn(null);
 
     //request
-    UpdateRequest request = new UpdateRequest("nonExistentPublisher", "Sheet1", "New subscription payload");
+    UpdateRequest request = new UpdateRequest("nonExistentPublisher", "Sheet1",
+            "New subscription payload");
 
     // Action
     ResponseEntity<Result> response = controller.updateSubscription(request);

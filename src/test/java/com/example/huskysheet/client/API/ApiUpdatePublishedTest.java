@@ -50,17 +50,20 @@ class ApiUpdatePublishedTest {
   void updatePublished() {
     // Arrange mocks
     List<Spreadsheet> spreadsheets = new ArrayList<>();
-    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets), "Sheet1");
+    Spreadsheet sheet = new Spreadsheet(new Publisher("testPublisher", spreadsheets),
+            "Sheet1");
     spreadsheets.add(sheet);
 
     Publisher publisher = new Publisher("testPublisher", spreadsheets);
     when(publishers.getPublisherByUsername("testPublisher")).thenReturn(publisher);
 
     //request
-    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1", "New payload");
+    UpdateRequest request = new UpdateRequest("testPublisher", "Sheet1",
+            "New payload");
 
     // Authentification (bad)
-    Authentication authentication = new UsernamePasswordAuthenticationToken("testUser", null);
+    Authentication authentication = new UsernamePasswordAuthenticationToken(
+            "testUser", null);
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
 

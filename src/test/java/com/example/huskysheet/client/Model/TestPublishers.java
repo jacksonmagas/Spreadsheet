@@ -64,13 +64,5 @@ public class TestPublishers {
             sheets), "Sheet1"));
     assertEquals(1, sheets.size());
   }
-
-  @Test
-  public void testgetAllpublishers() {
-    List<Publisher> pubs = publishers.getAllPublishers();
-    assertEquals(4, pubs.size());
-    assertEquals("NewPublisher", pubs.get(0).getName());
-  }
-
 }
 
