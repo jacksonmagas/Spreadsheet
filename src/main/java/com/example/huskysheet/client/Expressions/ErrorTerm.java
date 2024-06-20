@@ -4,6 +4,11 @@ import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents a term which was created from a parse error. It contains the text which gave rise to
+ * the error.
+ * @author Jackson Magas
+ */
 public class ErrorTerm extends AbstractValueTerm {
     public ErrorTerm(String plaintext) {
         super(plaintext);

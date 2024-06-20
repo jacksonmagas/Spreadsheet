@@ -10,6 +10,10 @@ import java.util.List;
 public abstract class AbstractValueTerm implements ITerm {
     protected final String plaintext;
 
+    /**
+     * Constructor to set plaintext
+     * @param plaintext the test of the term
+     */
     public AbstractValueTerm(String plaintext) {
         this.plaintext = plaintext;
     }
@@ -24,7 +28,6 @@ public abstract class AbstractValueTerm implements ITerm {
         return false;
     }
 
-    // @author Jackson Magas
     @Override
     public void recalculate() {
         // intentionally empty value terms do not need to recalculate

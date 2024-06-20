@@ -12,11 +12,21 @@ import java.util.Objects;
 public class NumberTerm extends AbstractValueTerm {
     private final double value;
 
+    /**
+     * Create a new number term from a double
+     * @param value the value of the new term to create
+     */
     public NumberTerm(double value) {
         super(format(value));
         this.value = value;
     }
 
+    /**
+     * Format the number term
+     * @param value the double to format
+     * @return the formatted double
+     * @author Jackson Magas
+     */
     private static String format(double value) {
         return new DecimalFormat("#.################").format(value);
     }

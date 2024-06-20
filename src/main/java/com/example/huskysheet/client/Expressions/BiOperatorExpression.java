@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class for an expression which is a binomial operator applied to two other terms.
+ * @author Jackson Magas
+ *
+ */
 public class BiOperatorExpression extends AbstractExpression {
     private static final List<String> OPERATORS = Arrays.asList("+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":");
     String operator;
@@ -12,6 +17,14 @@ public class BiOperatorExpression extends AbstractExpression {
     ITerm right;
     ResultType resultType;
 
+    /**
+     * Create a new expression from the operator and the two terms.
+     * @param operator one of "+", "-", "*", "/", "<", ">", "=", "<>", "&", "|", ":"
+     * @param left the left operand term
+     * @param right the right operand term
+     * @author Jackson Magas
+     * @throws IllegalArgumentException if the operator is not from that list
+     */
     public BiOperatorExpression(String operator, ITerm left, ITerm right) {
         super(left.toString() + " " + operator + " " + right.toString());
         if (OPERATORS.contains(operator)) {
@@ -38,12 +51,18 @@ public class BiOperatorExpression extends AbstractExpression {
 
     /**
      * An operator expression is never considered empty
+     * @author Jackson Magas
      */
     @Override
     public boolean isEmpty() {
         return false;
     }
 
+    /**
+     * Recalculate the value of this expression by recalculating both operands and then calculating
+     * the correct operation.
+     * @author Jackson Magas
+     */
     @Override
     public void recalculate() {
         left.recalculate();
@@ -116,6 +135,14 @@ public class BiOperatorExpression extends AbstractExpression {
         return left.dependsOn(cellLoc) || right.dependsOn(cellLoc);
     }
 
+    /**
+     * Set the value of this term to the sum of the adjacent terms if both numbers, otherwise set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateAddition(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;
@@ -126,6 +153,15 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+
+    /**
+     * Set the value of this term to the difference of the adjacent terms if both numbers, otherwise set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateMinus(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;
@@ -136,6 +172,15 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+
+    /**
+     * Set the value of this term to the product of the adjacent terms if both numbers, otherwise set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateTimes(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;
@@ -146,6 +191,14 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set the value of this term to the quotient of the adjacent terms if both numbers, otherwise set it
+     * to {@value VALUE_ERROR}, or if the divisor is 0 to {@value DIV_ZERO}.
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateDivision(boolean bothNumbers, double rightValue, double leftValue) {
         if (bothNumbers) {
             if (rightValue != 0) {
@@ -161,6 +214,14 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set the value of this term to 1 if left < right otherwise 0, if either is not a number set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateLess(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;
@@ -171,6 +232,14 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set the value of this term to 1 if left > right otherwise 0, if either is not a number set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateGreater(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;
@@ -181,6 +250,15 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set value to 1 if the terms are both equal numbers or both equal strings, 0 if they have
+     * the same type and are not equal, and {@value VALUE_ERROR} if they have different types
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @param bothStrings are both args strings?
+     * @author Jackson Magas
+     */
     private void calculateEquals(boolean bothNumbers, double leftValue, double rightValue,
         boolean bothStrings) {
         if (bothNumbers) {
@@ -195,6 +273,15 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set value to 0 if the terms are both equal numbers or both equal strings, 1 if they have
+     * the same type and are not equal, and {@value VALUE_ERROR} if they have different types
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @param bothStrings are both args strings?
+     * @author Jackson Magas
+     */
     private void calculateNeq(boolean bothNumbers, double leftValue, double rightValue,
         boolean bothStrings) {
         if (bothNumbers) {
@@ -209,6 +296,14 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set the value of this term to 1 if left != 0 && right != 0, if either is not a number set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateAnd(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;
@@ -219,6 +314,14 @@ public class BiOperatorExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set the value of this term to 1 if left != 0 || right != 0, if either is not a number set it
+     * to {@value VALUE_ERROR}
+     * @param bothNumbers are both args numbers?
+     * @param leftValue the numeric value of left arg
+     * @param rightValue the numeric value of right arg
+     * @author Jackson Magas
+     */
     private void calculateOr(boolean bothNumbers, double leftValue, double rightValue) {
         if (bothNumbers) {
             resultType = ResultType.number;

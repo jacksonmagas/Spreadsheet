@@ -126,6 +126,17 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         return handleResponse(response);
     }
 
+
+    /**
+     * Call the specified endpoint with the given argument, or null if no argument is needed
+     * This method is non-blocking and returns a future that can be checked to see if the result has
+     * arrived yet
+     * @author Jackson Magas
+     * @param target the endpoint to call
+     * @param arg the argument to call the endpoint with
+     * @return The result of the API call as a result record
+     * @throws JsonSyntaxException if the response is not the correct format
+     */
     private CompletableFuture<Result> callAPIAsync(Endpoint target, Argument arg) {
         var request = BuildRequest(target, arg);
         var response = client.sendAsync(request, BodyHandlers.ofString());
@@ -138,7 +149,13 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         });
     }
 
-
+    /**
+     * Parse the response into a result object and handle HTTP status codes.
+     * @param response the response from the server
+     * @return the Result object if the response was valid
+     * @throws IOException if the response was invalid
+     * @author Jackson Magas
+     */
     private static Result handleResponse(HttpResponse<String> response) throws IOException {
 //        System.out.println("Response: " + response.toString());
 //        System.out.println("Response Body: " + response.body());
@@ -161,6 +178,13 @@ public class SpreadsheetManager implements ISpreadsheetListener {
         }
     }
 
+    /**
+     * Create a HttpRequest for the specified endpoint with the given arguments
+     * @param target the endpoint to create a request for
+     * @param arg the argument to the api call
+     * @return the http request to send
+     * @author Jackson Magas
+     */
     private HttpRequest BuildRequest(Endpoint target, Argument arg) {
         var requestBuilder = HttpRequest.newBuilder()
             .header("Authorization", authHeader)

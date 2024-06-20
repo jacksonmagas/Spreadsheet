@@ -6,6 +6,11 @@ package com.example.huskysheet.client.Expressions;
  * @author Jackson Magas
  */
 public class StringTerm extends AbstractValueTerm {
+
+    /**
+     * Create a new string term with the given value
+     * @param value the string value of this term
+     */
     public StringTerm(String value) {
         super(value);
     }
@@ -26,8 +31,9 @@ public class StringTerm extends AbstractValueTerm {
         }
     }
 
-    // remove escaped slashes from escapes entered by the user
-    // @author Jackson Magas
+    /** Remove escaped slashes from escapes entered by the user
+     * @author Jackson Magas
+     */
     private String withoutEscapes(String value) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < value.length(); i++) {

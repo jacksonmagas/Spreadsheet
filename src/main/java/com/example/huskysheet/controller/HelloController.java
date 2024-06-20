@@ -38,6 +38,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.util.Duration;
 
+/**
+ * Controller for GUI
+ */
 public class HelloController implements Initializable {
     @FXML
     public Label currentSheetInfo;
@@ -230,6 +233,10 @@ public class HelloController implements Initializable {
         });
     }
 
+    /**
+     * Clear the current spreadsheet table from the view
+     * @author Jackson Magas
+     */
     private void clearTable() {
         table.getColumns().clear();
         table.getItems().clear();
@@ -262,6 +269,11 @@ public class HelloController implements Initializable {
         }
     }
 
+    /**
+     * Set the current spreadsheet for the gui
+     * @param publisher the publisher of the sheet
+     * @param sheet the name of the sheet
+     */
     private void setSpreadsheet(String publisher, String sheet) {
         try {
             spreadsheet = spreadsheetManager.getSpreadsheet(publisher, sheet);
@@ -344,6 +356,12 @@ public class HelloController implements Initializable {
     }
 
 
+    /**
+     * Set the text of the currently selected sheet display
+     * @param publisher the publisher of the current sheet
+     * @param sheet the name of the current sheet
+     * @author Jackson Magas
+     */
     private void setCurrentDisplay(String publisher, String sheet) {
         currentSheetInfo.setText(publisher + " : " + sheet);
     }

@@ -86,5 +86,6 @@ public class TestAPICalls {
         manager2.getUpdates();
         Assertions.assertEquals(sheet.getCell(new Coordinate(5, 5)).getPlaintext(),
             sheetCopy.getCell(new Coordinate(5, 5)).getPlaintext());
+        spreadsheetManager.deleteSpreadsheet();
     }
 }

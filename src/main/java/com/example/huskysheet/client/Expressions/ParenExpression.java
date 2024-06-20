@@ -4,10 +4,17 @@ import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents an ITerm which is another ITerm enclosed in parentheses.
+ * @author Jackson Magas
+ */
 public class ParenExpression extends AbstractExpression {
-
     ITerm enclosed;
 
+    /**
+     * Create a paren expression enclosing the given ITerm
+     * @param enclosed the enclosed term
+     */
     public ParenExpression(ITerm enclosed) {
         super("(" + enclosed.toString() + ")");
         this.enclosed = enclosed;

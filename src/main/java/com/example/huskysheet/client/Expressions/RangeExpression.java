@@ -37,7 +37,7 @@ public class RangeExpression extends AbstractExpression {
      */
     @Override
     public List<ITerm> getMultipleResults() {
-        return cells.stream().map(ICell::getTerm).toList();
+        return cells.stream().map(c -> (ITerm) new ReferenceExpression(c)).toList();
     }
 
     @Override

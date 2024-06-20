@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class representing a coordinate in a spreadsheet.
+ * @author Ezra Howe
+ */
 public class Coordinate {
     private int column;
     private int row;

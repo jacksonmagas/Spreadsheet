@@ -3,6 +3,10 @@ package com.example.huskysheet.client.Utils;
 import java.util.regex.Pattern;
 
 import java.util.regex.Matcher;
+
+/**
+ * Utility class for converting between strings and coordinates
+ */
 public final class Conversions {
 
     /**
@@ -67,6 +71,11 @@ public final class Conversions {
         }
     }
 
+    /**
+     * Convert a column number to the given string representation of the column, 1 = A, 27 = AA etc
+     * @param column the column number
+     * @return the column string
+     */
     public static String columnToString(int column) {
         if (column <= 0) {
             throw new IllegalArgumentException("Column must be greater than zero");

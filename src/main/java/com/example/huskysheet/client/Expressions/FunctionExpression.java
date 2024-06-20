@@ -8,6 +8,7 @@ import java.util.OptionalDouble;
 
 /**
  * Represents an expression that is a function of some list of arguments, including range args.
+ * @author Jackson Magas
  */
 public class FunctionExpression extends AbstractExpression {
     private final List<ITerm> args = new ArrayList<>();
@@ -39,6 +40,12 @@ public class FunctionExpression extends AbstractExpression {
         recalculate();
     }
 
+    /**
+     * Build up the plaintext of this function from the plaintext of the args
+     * @param type the function type
+     * @param parameters the arguments to the function
+     * @return the plaintext string
+     */
     private static String buildPlaintext(FunctionType type, List<ITerm> parameters) {
         StringBuilder plaintext = new StringBuilder().append(type).append("(");
         for (ITerm arg : parameters) {
@@ -118,6 +125,12 @@ public class FunctionExpression extends AbstractExpression {
         }
     }
 
+    /**
+     * Set the value of this term to the left argument and update the cell referenced by the right
+     * argument to the value of the left argument. Errors if there are not 2 arguments with the right
+     * side being a reference as a string
+     * @return the value of the left arg
+     */
     private String calculateCopy() {
         if (args.size() == 2
             && (args.getFirst() instanceof ReferenceExpression)

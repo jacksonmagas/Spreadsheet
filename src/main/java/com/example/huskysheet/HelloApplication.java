@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Application class for frontend.
+ */
 public class HelloApplication extends Application {
     private String userName;
     private String password;
@@ -15,6 +18,15 @@ public class HelloApplication extends Application {
     private String initialSheetName;
     private String initialSheetPublisher;
 
+    /**
+     * Start the GUI
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws IOException if loading the fxml fails
+     * @author Nikita Clark
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
@@ -29,7 +41,10 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-
+    /**
+     * Parse the command line arguments
+     * @author Jackson Magas
+     */
     private void parseArgs() {
         var params = getParameters().getNamed();
         url = params.get("url");

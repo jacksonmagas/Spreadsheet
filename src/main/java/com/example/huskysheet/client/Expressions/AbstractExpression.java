@@ -40,6 +40,12 @@ public abstract class AbstractExpression implements ITerm {
         return List.of();
     }
 
+    /**
+     * Format numbers consistently
+     * @param value the double to format
+     * @return a formatted string of the number
+     * @author Jackson Magas
+     */
     protected String format(double value) {
         return new DecimalFormat("#.################").format(value);
     }

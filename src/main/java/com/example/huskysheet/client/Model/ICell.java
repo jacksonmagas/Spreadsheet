@@ -11,10 +11,15 @@ import com.example.huskysheet.client.Utils.Coordinate;
  * @author Jackson Magas
  */
 public interface ICell extends ICellListener {
-    // Set the contents of this cell to the given data
+    /**
+     * Set the contents of this cell to the given data and notify listeners of the change
+     */
     boolean updateCell(String data);
 
-    // get the coordinates of this cell
+    /**
+     * Get the location of this cell
+     * @return the coordinates of this cell in its sheet
+     */
     Coordinate getCoordinate();
 
     /**
@@ -29,21 +34,30 @@ public interface ICell extends ICellListener {
      */
     String getPlaintext();
 
-    // returns an object containing details about the formatting of the cell
+    /**
+     * returns an object containing details about the formatting of the cell
+     */
     CellFormatDetails getFormatting();
 
-    // returns true if the cell is empty
+    /**
+     * returns true if the cell is empty
+     */
     boolean isEmpty();
 
-    // Recalculates the value of the cell in response to a cell
-    // this depends on changes
+    /**
+     * Recalculates the value of the cell in response to a cell this depends on changing
+     */
     void handleValueChange();
 
-    // Register as a listener for changes to the value of this cell including changes to underlying
-    // referenced cells
+    /**
+     * Register as a listener for changes to the value of this cell including changes to underlying
+     * referenced cells
+     */
     void registerListener(ICellListener listener);
 
-    // Notify all references to this cell that the cell has changed
+    /**
+     * Notify all registered listeners that this cell has changed.
+     */
     void notifyListeners();
 
     /**

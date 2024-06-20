@@ -3,11 +3,24 @@ package com.example.huskysheet.client.Expressions;
 import com.example.huskysheet.client.Utils.Coordinate;
 import java.util.List;
 
+/**
+ * Interface representing a term in an equation or a cell.
+ * A term can be a simple value holder such as a string or number, or a more complex term with
+ * references to cells and/or subterms combined.
+ */
 public interface ITerm {
-    // get the result of evaluating the term as a string
+    /**
+     * Get the result of this term as a string.
+     * @author Jackson Magas
+     * @return the result of evaluating this term
+     */
     String getResult();
-    
-    // get raw text entered into the formula
+
+    /**
+     * Get the exact text of the term as a string
+     * @return the text for the term to evaluate
+     * @author Jackson Magas
+     */
     @Override
     String toString();
 
@@ -24,6 +37,9 @@ public interface ITerm {
      */
     List<Coordinate> references();
 
+    /**
+     * Enum representing the possible types for the result of an ITerm
+     */
     enum ResultType {
         string, number, empty, error, range
     }

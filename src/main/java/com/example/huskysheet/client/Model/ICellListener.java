@@ -2,6 +2,9 @@ package com.example.huskysheet.client.Model;
 
 import com.example.huskysheet.client.Utils.Coordinate;
 
+/**
+ * Interface for anything that wants to be notified of cell value changes
+ */
 public interface ICellListener {
 
     /**

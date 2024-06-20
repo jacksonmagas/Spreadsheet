@@ -2,6 +2,9 @@ package com.example.huskysheet.client.Model;
 
 import com.example.huskysheet.client.Utils.Coordinate;
 
+/**
+ * Class to represent format information about a cell, ended up unused
+ */
 public class CellFormat {
     private String value; // Change the type to String
     private Coordinate coordinate;

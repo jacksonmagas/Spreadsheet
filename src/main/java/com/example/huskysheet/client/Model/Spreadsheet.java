@@ -28,6 +28,10 @@ import java.util.Objects;
 import java.util.Set;
 import javafx.util.Pair;
 
+/**
+ * Implementation of a spreadsheet
+ * @author Jackson Magas
+ */
 public class Spreadsheet implements ISpreadsheet {
     private final HashMap<Coordinate, SpreadsheetCell> cells;
     private final Set<ISpreadsheetListener> listeners;
@@ -39,9 +43,12 @@ public class Spreadsheet implements ISpreadsheet {
     int numRows;
     int numColumns;
 
+    /**
+     * Create a new empty spreadsheet
+     * @author Jackson Magas
+     */
     public Spreadsheet() {
         this.cells = new HashMap<>();
-        // TODO implement methods for setting default color/font/etc for a row/col
         rowDefaults = new HashMap<>();
         columnDefaults = new HashMap<>();
         this.listeners = new HashSet<>();
@@ -116,6 +123,12 @@ public class Spreadsheet implements ISpreadsheet {
 
     private String cachedUpdate = "";
 
+    /**
+     * Notify listeners of an update to this sheet, if the listener throws an exception include the
+     * update with the next notification
+     * @param coordinate the location of the change
+     * @param update the text of the change
+     */
     @Override
     public void notifyListeners(Coordinate coordinate, String update) {
         if (!updatingFromServer) {
@@ -169,6 +182,15 @@ public class Spreadsheet implements ISpreadsheet {
             }
         }
 
+        /**
+         * Parse the string of a formula into a term object.
+         * The formula language is defined at
+         * <a href="https://docs.google.com/document/d/1nWItOJFxdtYZNevAjCwZpr4hy0_rXr9A0sEDuyQV2As
+         * /edit#heading=h.w8o7itxcl6zz">Reference sheet</a>
+         * with the addition of special cases for strings on their own not needing quotes around them
+         * @param formula the formula to attempt to parse
+         * @return the parsed formula object
+         */
         public ITerm parse(String formula) {
             if (formula.isEmpty()) {
                 return new EmptyTerm();
@@ -206,6 +228,12 @@ public class Spreadsheet implements ISpreadsheet {
             }
         }
 
+        /**
+         * Recursively parse the tokenized formula after special cases are handled
+         * @param tokens the list of tokens to parse
+         * @return the parsed term
+         * @throws ParseException if parsing fails
+         */
         private ITerm parse(List<Token> tokens) throws ParseException {
             if (tokens.isEmpty()) {
                 return new EmptyTerm();
@@ -274,6 +302,12 @@ public class Spreadsheet implements ISpreadsheet {
             throw new ParseException("Reached the end of parse function without parsing", 0);
         }
 
+        /**
+         * Parse a term that is known to be an operator with a term on each side
+         * @param tokens the tokens to parse
+         * @return the operator term
+         * @throws ParseException if parsing fails
+         */
         private ITerm parseOperator(List<Token> tokens) throws ParseException {
             int operatorIndex = 0;
             int oParenCount = 0;
@@ -310,6 +344,11 @@ public class Spreadsheet implements ISpreadsheet {
             throw new ParseException("Illegal leading value", 0);
         }
 
+        /**
+         * Split a list of arguments by commas
+         * @param tokens the tokens to split
+         * @return a list of the tokens between each comma in a list
+         */
         private List<List<Token>> splitByCommas(List<Token> tokens) {
             List<List<Token>> result = new ArrayList<>();
             result.add(new ArrayList<>());
@@ -330,6 +369,13 @@ public class Spreadsheet implements ISpreadsheet {
             return result;
         }
 
+        /**
+         * Get the index of the closed parenthesis for an open paren
+         * @param tokens the tokens to search
+         * @param startIndex the index to start at
+         * @return the index of the close paren
+         * @throws ParseException if there is no close paren matching
+         */
         private int closeParenIndex(List<Token> tokens, int startIndex) throws ParseException {
             int oParenCount = 0;
             for (; startIndex < tokens.size(); startIndex++) {
@@ -348,6 +394,12 @@ public class Spreadsheet implements ISpreadsheet {
             throw new ParseException("unclosed parenthesis", 0);
         }
 
+        /**
+         * Split the string into token objects
+         * @param input the string to tokenize
+         * @return a list of the tokens of the string in order
+         * @throws ParseException if the string can't be tokenized
+         */
         private List<Token> tokenize(String input) throws ParseException {
             List<Token> tokens = new ArrayList<>();
             if (input.chars().allMatch(Character::isAlphabetic)) {
@@ -440,6 +492,10 @@ public class Spreadsheet implements ISpreadsheet {
         private ITerm term;
         private CellFormatDetails format;
 
+        /**
+         * Create a new cell at the given coordinate
+         * @param coordinate the location of this cell
+         */
         SpreadsheetCell(Coordinate coordinate) {
             this.coordinate = coordinate;
             this.valueListeners = new HashSet<>();
