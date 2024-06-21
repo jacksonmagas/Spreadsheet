@@ -140,8 +140,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
 
 
     private static Result handleResponse(HttpResponse<String> response) throws IOException {
-        System.out.println("Response: " + response.toString());
-        System.out.println("Response Body: " + response.body());
+//        System.out.println("Response: " + response.toString());
+//        System.out.println("Response Body: " + response.body());
         switch(response.statusCode()) {
             case 200, 201 -> {
                 return new Gson().fromJson(response.body(), Result.class);
@@ -180,8 +180,8 @@ public class SpreadsheetManager implements ISpreadsheetListener {
             }
         }
         var request = requestBuilder.build();
-        System.out.println("Request: " + request.toString());
-        System.out.println("Request Body: " + new Gson().toJson(arg));
+//        System.out.println("Request: " + request.toString());
+//        System.out.println("Request Body: " + new Gson().toJson(arg));
         return request;
     }
 
